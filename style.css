@@ -788,6 +788,8 @@ table.hosting-table td {
   padding:4px 5px 5px;
   border-top:1px solid #fff;
   position:relative;
+  max-width: 440px;
+  word-wrap: break-word;
   }
 
 .modalframe .ui-dialog-titlebar,
