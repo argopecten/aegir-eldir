@@ -1159,3 +1159,6 @@ div.form-item div.password-suggestions {
   max-width: 36.3em;
   width: 100%;
 }
+body.admin-menu .overlay-element.overlay-active {
+  top: 30px;
+}

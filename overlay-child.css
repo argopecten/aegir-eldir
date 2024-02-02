@@ -15,9 +15,11 @@ html.js body {
   }
 
 #overlay-titlebar {
-  position:relative;
+  position: relative;
+  position: sticky;
+  top: 0;
   z-index:100;
-  }
+}
 
 #overlay-title { display:none; }
 
@@ -107,6 +109,9 @@ html.js body {
   color:#FFF;
   height:30px;
   overflow:hidden;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .overlay div#header-region h2.page-title {
