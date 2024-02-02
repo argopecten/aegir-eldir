@@ -89,4 +89,119 @@ function eldir_preprocess_node(&$variables, $hook) {
       $variables['title'] = "<span class='label'>{$types[$type]->name}</span>" . $variables['title'];
     }
   }
+
+  if (isset($variables['content']['info']) && is_array($variables['content']['info'])) {
+    // Change the rendering of the info area to proper table.
+    $variables['content']['info']['#theme'] = 'item_info_listing';
+    $variables['content']['info']['#pre_render'][] = 'eldir_info_table_pre_render';
+    $variables['content']['info']['#weight'] = 100;
+
+    // Servers (at least) also have info tables _within_ the info area.
+    foreach (element_children($variables['content']['info']) as $child) {
+      if (isset($variables['content']['info'][$child]['title']['#type']) && $variables['content']['info'][$child]['title']['#type'] == 'item') {
+        $variables['content']['info'][$child]['#theme'] = 'item_info_listing';
+        $variables['content']['info'][$child]['#pre_render'][] = 'eldir_info_table_pre_render';
+      }
+    }
+  }
 }
+
+/**
+ * Implements hook_theme().
+ */
+function eldir_theme() {
+  $info = array();
+
+  $info['item_info_listing'] = array(
+    'render element' => 'info_listing',
+  );
+
+  return $info;
+}
+
+/**
+ * Theme implementation for a hosting info listing.
+ */
+function eldir_item_info_listing($variables) {
+  $info_listing = $variables['info_listing'];
+
+  if (!isset($info_listing['#items'])) {
+    $info_listing['#items'] = array();
+  }
+  // Sort the items, adding a weight if they don't have one.
+  $weight = 0;
+  foreach ($info_listing['#items'] as $k => $item) {
+    if (!isset($item['weight'])) {
+      $weight += 0.001;
+      $info_listing['#items'][$k]['weight'] = $weight;
+    }
+  }
+  usort($info_listing['#items'], 'drupal_sort_weight');
+
+  // Add the actual table of items.
+  $render['hosting_info_table'] = array(
+    '#theme' => 'table',
+    '#rows' => array(),
+    '#weight' => 1000,
+    '#attributes' => array(
+      'class' => array(
+        'hosting-info-table',
+      ),
+    ),
+  );
+  foreach ($info_listing['#items'] as $item) {
+    $row = array(
+      'no_striping' => TRUE,
+      'class' => array('item'),
+    );
+
+    $row['data'][] = array(
+      'data' => $item['title'],
+      'class' => array('item-title'),
+    );
+    $text = render($item['value']);
+    if (isset($item['description'])) {
+      $text .= '<div class="item-description">' . render($item['description']) . '</div>';
+    }
+    $row['data'][] = array(
+      'data' => $text,
+      'class' => array('item-value'),
+    );
+
+    $render['hosting_info_table']['#rows'][] = $row;
+  }
+
+  // Move any children of this element over to our new render array.
+  foreach (element_children($info_listing) as $child) {
+    $render[$child] = $info_listing[$child];
+  }
+
+  return render($render);
+}
+
+/**
+ * Pre render function to process an info item into a hosting info table.
+ */
+function eldir_info_table_pre_render($element) {
+  // Try to move children into the '#items'.
+  foreach (element_children($element) as $child) {
+    if (isset($element[$child]['#type']) && $element[$child]['#type'] == 'item') {
+      if (!empty($element[$child]['#title']) && !empty($element[$child]['#markup'])) {
+        $new_item = array(
+          'title' => $element[$child]['#title'],
+          'value' => $element[$child]['#markup'],
+        );
+        if (isset($element[$child]['#weight'])) {
+          $new_item['weight'] = $element[$child]['#weight'];
+        }
+        if (isset($element[$child]['#description'])) {
+          $new_item['description'] = $element[$child]['#description'];
+        }
+        $element['#items'][] = $new_item;
+        unset($element[$child]);
+      }
+    }
+  }
+  return $element;
+}
+

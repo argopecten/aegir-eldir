@@ -843,6 +843,40 @@ table.hosting-table th {
   margin:0px 0px 10px;
 }
 
+.hosting-info-table .item {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.hosting-info-table .item:last-child {
+  border-bottom: none;
+}
+
+.hosting-info-table tbody,
+.hosting-info-table td {
+  border-top: none;
+}
+
+.hosting-info-table .item-title {
+  width: 95px;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 0;
+  vertical-align: top;
+  padding: 5px 5px 4px;
+}
+
+.hosting-info-table .item-value {
+  vertical-align: top;
+  padding: 5px 5px 4px;
+  overflow-wrap: anywhere;
+}
+
+.hosting-info-table .item-description {
+  color: #666666;
+  margin: 5px 0;
+  line-height: 15px;
+}
+
 table.views-table { clear: both }
 
   #hosting-site-edit-info,
