@@ -1097,3 +1097,31 @@ body.not-logged-in.page-user h2.title {
 .sticky-header{
   z-index: 1;
 }
+
+/**
+ * Vertical tabs
+ */
+div.vertical-tabs .vertical-tabs-panes {
+  padding: 10px 0;
+  background: #f8f8f8;
+}
+.vertical-tabs-panes > fieldset {
+  min-width: 0;
+}
+.vertical-tabs .form-type-password input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/**
+ * Password confirm
+ */
+div.form-item div.password-suggestions {
+  max-width: 36.3em;
+  width: 100%;
+  box-sizing: border-box;
+}
+.password-parent, .confirm-parent {
+  max-width: 36.3em;
+  width: 100%;
+}
