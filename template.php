@@ -94,7 +94,6 @@ function eldir_preprocess_node(&$variables, $hook) {
     // Change the rendering of the info area to proper table.
     $variables['content']['info']['#theme'] = 'item_info_listing';
     $variables['content']['info']['#pre_render'][] = 'eldir_info_table_pre_render';
-    $variables['content']['info']['#weight'] = 100;
 
     // Servers (at least) also have info tables _within_ the info area.
     foreach (element_children($variables['content']['info']) as $child) {
