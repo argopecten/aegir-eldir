@@ -1,0 +1,73 @@
+<div id="page-wrapper">
+  {% set theme_logo = svg_logo is defined and svg_logo ? svg_logo : (logo is defined and logo ? logo : (site_logo is defined ? site_logo : '')) %}
+  <div id="header" class="reverse"><div class="limiter clearfix">
+      {% if theme_logo %}
+      <div class="logo">
+        <a href="{{ front_page }}"><img src="{{ theme_logo }}" alt="{{ 'Home'|t }}" /></a>
+      </div>
+      {% endif %}
+    {% if site_name %}<div class="site-name">{{ site_name }}</div>{% endif %}
+  </div></div><!-- /header -->
+
+  <div id="navigation" class="reverse"><div class="limiter clearfix">
+    {% if breadcrumb is defined and breadcrumb %}
+      {{ breadcrumb }}
+    {% elseif page.breadcrumb is defined and page.breadcrumb %}
+      {{ page.breadcrumb }}
+    {% endif %}
+    {% if page.primary_menu %}
+      <nav id="main-menu" class="main-menu">{{ page.primary_menu }}</nav>
+    {% endif %}
+  </div></div>
+
+  {% if messages is defined and messages %}
+  <div id="console" class="reverse"><div class="limiter clearfix">
+   {{ messages }}
+  </div></div>
+  {% endif %}
+
+  <div id="header-region"><div class="limiter clearfix">
+    {{ page.header }}
+    {{ title_prefix }}
+    {% if title %}<h2 class="page-title">{{ title }}</h2>{% endif %}
+    {{ title_suffix }}
+    {% if primary_local_tasks is defined and primary_local_tasks %}
+      {{ primary_local_tasks }}
+    {% elseif tabs is defined and tabs %}
+      {{ tabs }}
+    {% endif %}
+  </div></div>
+
+  <div id="page"><div class="limiter clearfix">
+    {% if secondary_local_tasks is defined and secondary_local_tasks %}
+      {{ secondary_local_tasks }}
+    {% endif %}
+    {% if action_links is defined and action_links %}
+      {{ action_links }}
+    {% endif %}
+
+    <div id="main">
+      <div class="page-content" id="main-content">
+        {{ page.help }}
+        {{ page.content }}
+        {{ page.content_bottom }}
+        {{ feed_icons }}
+      </div>
+    </div><!-- /main -->
+
+    {% if page.sidebar_first or page.sidebar_second %}
+      <div id="right" class="sidebar">
+        {{ page.sidebar_first }}
+        {{ page.sidebar_second }}
+      </div>
+    {% endif %}
+
+  </div></div>
+
+  <div id="footer" class="reverse"><div class="limiter">
+    {{ page.footer }}
+    {% if page.secondary_menu %}
+      <nav id="secondary-menu" class="secondary-menu">{{ page.secondary_menu }}</nav>
+    {% endif %}
+  </div></div>
+</div> <!-- /#page-wrapper -->

@@ -1,0 +1,36 @@
+<div id="auth_box" class="login">
+  {% set theme_logo = svg_logo is defined and svg_logo ? svg_logo : (logo is defined and logo ? logo : (site_logo is defined ? site_logo : '')) %}
+  <div id="top_part">
+      {% if theme_logo %}
+        <h1 id="the_logo">
+          <a href="{{ front_page }}"><img src="{{ theme_logo }}" alt="{{ 'Home'|t }}" /></a>
+        </h1>
+      {% endif %}
+  </div>
+
+  <div id="middle_part">
+    <div id="main-content">
+      {{ title_prefix }}
+      {% if title %}<h2 class="title">{{ title }}</h2>{% endif %}
+      {{ title_suffix }}
+
+      {% if messages is defined and messages %}
+        {{ messages }}
+      {% endif %}
+
+      {{ page.content }}
+    </div>
+  </div>
+
+  <div id="bottom_part">
+    <div class="password_link">
+      <a href="{{ path('user.pass') }}">{{ 'Forgot your password?'|t }}</a>
+    </div>
+
+    {% if user_register %}
+    <div class="register_link">
+      <a href="{{ path('user.register') }}">{{ 'Register a new account'|t }}</a>
+    </div>
+    {% endif %}
+  </div>
+</div>

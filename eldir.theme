@@ -1,0 +1,216 @@
+<?php
+
+use Drupal\Component\Render\MarkupInterface;
+use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\SortArray;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Render\Markup;
+use Drupal\node\Entity\Node;
+use Drupal\node\Entity\NodeType;
+use Drupal\node\NodeInterface;
+use Drupal\user\UserInterface;
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function eldir_preprocess_page(array &$variables) {
+  $theme_path = \Drupal::theme()->getActiveTheme()->getPath();
+  $svg_path = $theme_path . '/images-source/aegir_logo_horizontal.svg';
+  $use_default_logo = (bool) theme_get_setting('logo.use_default');
+  if ($use_default_logo && file_exists(DRUPAL_ROOT . '/' . $svg_path)) {
+    $variables['svg_logo'] = base_path() . $svg_path;
+  }
+
+  $register_setting = \Drupal::config('user.settings')->get('register');
+  $variables['user_register'] = $register_setting !== UserInterface::REGISTER_ADMINISTRATORS_ONLY;
+
+  $node = eldir_get_route_node();
+  if ($node instanceof NodeInterface && !empty($variables['title'])) {
+    $type_entity = NodeType::load($node->bundle());
+    if ($type_entity) {
+      $type_label = $type_entity->label();
+      $title_text = (string) $variables['title'];
+      $variables['title'] = Markup::create('<span class="label">' . Html::escape($type_label) . '</span>' . Html::escape($title_text));
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function eldir_preprocess_html(array &$variables) {
+  $node = eldir_get_route_node();
+  if ($node instanceof NodeInterface) {
+    $variables['attributes']->addClass('node-page');
+    $variables['attributes']->addClass('ntype-' . Html::getClass($node->bundle()));
+  }
+
+  $current_path = \Drupal::service('path.current')->getPath();
+  $path_class = trim($current_path, '/');
+  if ($path_class !== '') {
+    $variables['attributes']->addClass('path-' . Html::getClass($path_class));
+  }
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function eldir_preprocess_node(array &$variables) {
+  if (!empty($variables['node']) && $variables['node'] instanceof NodeInterface && !empty($variables['label'])) {
+    $type_entity = NodeType::load($variables['node']->bundle());
+    if ($type_entity) {
+      $type_label = $type_entity->label();
+      $label_text = (string) $variables['label'];
+      $variables['label'] = Markup::create('<span class="label">' . Html::escape($type_label) . '</span>' . Html::escape($label_text));
+    }
+  }
+
+  if (isset($variables['content']['info']) && is_array($variables['content']['info'])) {
+    // Change the rendering of the info area to proper table.
+    $variables['content']['info']['#theme'] = 'item_info_listing';
+    $variables['content']['info']['#pre_render'][] = 'eldir_info_table_pre_render';
+
+    // Servers (at least) also have info tables within the info area.
+    foreach (Element::children($variables['content']['info']) as $child) {
+      if (isset($variables['content']['info'][$child]['title']['#type']) && $variables['content']['info'][$child]['title']['#type'] === 'item') {
+        $variables['content']['info'][$child]['#theme'] = 'item_info_listing';
+        $variables['content']['info'][$child]['#pre_render'][] = 'eldir_info_table_pre_render';
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function eldir_theme() {
+  return [
+    'item_info_listing' => [
+      'render element' => 'info_listing',
+    ],
+  ];
+}
+
+/**
+ * Theme implementation for a hosting info listing.
+ */
+function eldir_item_info_listing($variables) {
+  $info_listing = $variables['info_listing'];
+  $items = $info_listing['#items'] ?? [];
+
+  // Sort the items, adding a weight if they don't have one.
+  $weight = 0.0;
+  foreach ($items as $index => $item) {
+    if (!isset($item['weight'])) {
+      $weight += 0.001;
+      $items[$index]['weight'] = $weight;
+    }
+  }
+  usort($items, [SortArray::class, 'sortByWeightElement']);
+
+  // Add the actual table of items.
+  $render['hosting_info_table'] = [
+    '#theme' => 'table',
+    '#rows' => [],
+    '#weight' => 1000,
+    '#attributes' => [
+      'class' => [
+        'hosting-info-table',
+      ],
+    ],
+  ];
+
+  foreach ($items as $item) {
+    $row = [
+      'class' => ['item'],
+      'data' => [],
+    ];
+
+    $row['data'][] = [
+      'data' => eldir_build_item_value($item['title'] ?? ''),
+      'class' => ['item-title'],
+    ];
+
+    $value_render = [];
+    if (array_key_exists('value', $item)) {
+      $value_render['value'] = eldir_build_item_value($item['value']);
+    }
+    if (array_key_exists('description', $item)) {
+      $value_render['description'] = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['item-description']],
+        'content' => eldir_build_item_value($item['description']),
+      ];
+    }
+    if ($value_render === []) {
+      $value_render = ['#markup' => ''];
+    }
+
+    $row['data'][] = [
+      'data' => $value_render,
+      'class' => ['item-value'],
+    ];
+
+    $render['hosting_info_table']['#rows'][] = $row;
+  }
+
+  // Move any children of this element over to our new render array.
+  foreach (Element::children($info_listing) as $child) {
+    $render[$child] = $info_listing[$child];
+  }
+
+  return $render;
+}
+
+/**
+ * Pre render function to process an info item into a hosting info table.
+ */
+function eldir_info_table_pre_render($element) {
+  // Try to move children into the '#items'.
+  foreach (Element::children($element) as $child) {
+    if (($element[$child]['#type'] ?? NULL) === 'item') {
+      if (!empty($element[$child]['#title']) && !empty($element[$child]['#markup'])) {
+        $new_item = [
+          'title' => $element[$child]['#title'],
+          'value' => $element[$child]['#markup'],
+        ];
+        if (isset($element[$child]['#weight'])) {
+          $new_item['weight'] = $element[$child]['#weight'];
+        }
+        if (isset($element[$child]['#description'])) {
+          $new_item['description'] = $element[$child]['#description'];
+        }
+        $element['#items'][] = $new_item;
+        unset($element[$child]);
+      }
+    }
+  }
+
+  return $element;
+}
+
+/**
+ * Build a render array for a value or render array.
+ */
+function eldir_build_item_value($value) {
+  if ($value instanceof MarkupInterface) {
+    return ['#markup' => $value];
+  }
+  if (is_array($value)) {
+    return $value;
+  }
+
+  return ['#plain_text' => (string) $value];
+}
+
+/**
+ * Get the node from the current route, if available.
+ */
+function eldir_get_route_node() {
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (is_numeric($node)) {
+    $node = Node::load($node);
+  }
+
+  return $node;
+}
