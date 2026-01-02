@@ -5,6 +5,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\Template\Attribute;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
@@ -39,16 +40,26 @@ function eldir_preprocess_page(array &$variables) {
  * Implements hook_preprocess_html().
  */
 function eldir_preprocess_html(array &$variables) {
+  if (!isset($variables['attributes']) || !$variables['attributes'] instanceof Attribute) {
+    $variables['attributes'] = new Attribute($variables['attributes'] ?? []);
+  }
+  $classes = [];
   $node = eldir_get_route_node();
   if ($node instanceof NodeInterface) {
-    $variables['attributes']->addClass('node-page');
-    $variables['attributes']->addClass('ntype-' . Html::getClass($node->bundle()));
+    $classes[] = 'node-page';
+    $bundle = $node->bundle();
+    if (!empty($bundle)) {
+      $classes[] = 'ntype-' . Html::getClass($bundle);
+    }
   }
 
   $current_path = \Drupal::service('path.current')->getPath();
   $path_class = trim($current_path, '/');
   if ($path_class !== '') {
-    $variables['attributes']->addClass('path-' . Html::getClass($path_class));
+    $classes[] = 'path-' . Html::getClass($path_class);
+  }
+  if ($classes) {
+    $variables['attributes']->addClass($classes);
   }
 }
 
@@ -71,6 +82,7 @@ function eldir_preprocess_node(array &$variables) {
     $variables['content']['info']['#pre_render'][] = 'eldir_info_table_pre_render';
 
     // Servers (at least) also have info tables within the info area.
+    eldir_sanitize_render_children($variables['content']['info']);
     foreach (Element::children($variables['content']['info']) as $child) {
       if (isset($variables['content']['info'][$child]['title']['#type']) && $variables['content']['info'][$child]['title']['#type'] === 'item') {
         $variables['content']['info'][$child]['#theme'] = 'item_info_listing';
@@ -155,6 +167,7 @@ function eldir_item_info_listing($variables) {
   }
 
   // Move any children of this element over to our new render array.
+  eldir_sanitize_render_children($info_listing);
   foreach (Element::children($info_listing) as $child) {
     $render[$child] = $info_listing[$child];
   }
@@ -167,6 +180,7 @@ function eldir_item_info_listing($variables) {
  */
 function eldir_info_table_pre_render($element) {
   // Try to move children into the '#items'.
+  eldir_sanitize_render_children($element);
   foreach (Element::children($element) as $child) {
     if (($element[$child]['#type'] ?? NULL) === 'item') {
       if (!empty($element[$child]['#title']) && !empty($element[$child]['#markup'])) {
@@ -187,6 +201,33 @@ function eldir_info_table_pre_render($element) {
   }
 
   return $element;
+}
+
+/**
+ * Ensure Element::children() only sees array children.
+ */
+function eldir_sanitize_render_children(array &$element) {
+  foreach ($element as $key => $value) {
+    if (is_string($key) && $key !== '' && $key[0] === '#') {
+      continue;
+    }
+    if (is_array($value)) {
+      continue;
+    }
+    if ($value instanceof MarkupInterface) {
+      $element[$key] = ['#markup' => $value];
+      continue;
+    }
+    if ($value instanceof \Drupal\Core\Link) {
+      $element[$key] = $value->toRenderable();
+      continue;
+    }
+    if (is_object($value) && method_exists($value, '__toString')) {
+      $element[$key] = ['#plain_text' => (string) $value];
+      continue;
+    }
+    unset($element[$key]);
+  }
 }
 
 /**
