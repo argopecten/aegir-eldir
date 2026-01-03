@@ -18,9 +18,11 @@ function eldir_preprocess_page(array &$variables) {
   $theme_path = \Drupal::theme()->getActiveTheme()->getPath();
   $svg_path = $theme_path . '/images-source/aegir_logo_horizontal.svg';
   $use_default_logo = (bool) theme_get_setting('logo.use_default');
+  $logo_url = theme_get_setting('logo.url') ?? '';
   if ($use_default_logo && file_exists(DRUPAL_ROOT . '/' . $svg_path)) {
-    $variables['svg_logo'] = base_path() . $svg_path;
+    $logo_url = base_path() . $svg_path;
   }
+  $variables['theme_logo'] = $logo_url;
 
   $register_setting = \Drupal::config('user.settings')->get('register');
   $variables['user_register'] = $register_setting !== UserInterface::REGISTER_ADMINISTRATORS_ONLY;
