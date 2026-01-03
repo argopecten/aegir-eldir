@@ -31,7 +31,9 @@ function eldir_preprocess_page(array &$variables) {
     if ($type_entity) {
       $type_label = $type_entity->label();
       $title_text = (string) $variables['title'];
-      $variables['title'] = Markup::create('<span class="label">' . Html::escape($type_label) . '</span>' . Html::escape($title_text));
+      $variables['title'] = [
+        '#markup' => Markup::create('<span class="label">' . Html::escape($type_label) . '</span>' . Html::escape($title_text)),
+      ];
     }
   }
 }
@@ -72,7 +74,9 @@ function eldir_preprocess_node(array &$variables) {
     if ($type_entity) {
       $type_label = $type_entity->label();
       $label_text = (string) $variables['label'];
-      $variables['label'] = Markup::create('<span class="label">' . Html::escape($type_label) . '</span>' . Html::escape($label_text));
+      $variables['label'] = [
+        '#markup' => Markup::create('<span class="label">' . Html::escape($type_label) . '</span>' . Html::escape($label_text)),
+      ];
     }
   }
 
