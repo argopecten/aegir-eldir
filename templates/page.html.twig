@@ -34,7 +34,9 @@
     {{ title_prefix }}
     {% if title %}<h2 class="page-title">{{ title }}</h2>{% endif %}
     {{ title_suffix }}
-    {% if primary_local_tasks is defined and primary_local_tasks %}
+    {% if page.tabs is defined and page.tabs %}
+      {{ page.tabs }}
+    {% elseif primary_local_tasks is defined and primary_local_tasks %}
       {{ primary_local_tasks }}
     {% endif %}
   </div></div>

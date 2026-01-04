@@ -38,6 +38,19 @@ function eldir_preprocess_page(array &$variables) {
       ];
     }
   }
+
+  if (empty($variables['page']['primary_menu'])) {
+    $menu_name = 'main';
+    $menu_tree = \Drupal::menuTree();
+    $parameters = $menu_tree->getCurrentRouteMenuTreeParameters($menu_name);
+    $parameters->setMinDepth(1);
+    $tree = $menu_tree->load($menu_name, $parameters);
+    $tree = $menu_tree->transform($tree, [
+      ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+      ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
+    ]);
+    $variables['page']['primary_menu'] = $menu_tree->build($tree);
+  }
 }
 
 /**

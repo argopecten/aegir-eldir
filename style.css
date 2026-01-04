@@ -232,6 +232,8 @@ div#navigation div.breadcrumb {
 div#navigation ul.links {
   padding:5px 0px 0px;
   float:right;
+  list-style:none;
+  margin-left:0;
   }
 
   div#navigation ul.links a {
@@ -248,9 +250,11 @@ div#navigation ul.links {
     }
 
   div#navigation ul.links li.active a,
-  div#navigation ul.links li a.active {
-    background:#e8e8e8;
-    color:#444;
+  div#navigation ul.links li a.active,
+  div#navigation ul.links li.menu-item--active-trail > a,
+  div#navigation ul.links li a.is-active {
+    background:#6ac;
+    color:#000;
     }
 
 /**
@@ -285,23 +289,32 @@ div#header-region h2.page-title {
     }
 
 #page ul.tabs,
-div#header-region ul.tabs { clear:both; }
+div#header-region ul.tabs,
+#page .tabs,
+div#header-region .tabs { clear:both; }
 
-  div#header-region ul.tabs li { height:30px; }
+  div#header-region ul.tabs li,
+  div#header-region .tabs .tab { height:30px; }
 
   #page ul.tabs li a,
-  div#header-region ul.tabs li a {
+  div#header-region ul.tabs li a,
+  #page .tabs .tab a,
+  div#header-region .tabs .tab a {
     padding:5px 15px;
     font-size:11px;
+    display:inline-block;
     }
 
-  div#header-region ul.tabs li a:hover {
+  div#header-region ul.tabs li a:hover,
+  div#header-region .tabs .tab a:hover {
     background:#666;
     color:#fff;
     }
 
   div#header-region ul.tabs li.active a,
-  div#header-region ul.tabs li a.active {
+  div#header-region ul.tabs li a.active,
+  div#header-region .tabs .tab.active a,
+  div#header-region .tabs .tab a.active {
     padding: 5px 15px;
     background:#fff;
     color:#444;
@@ -342,7 +355,8 @@ div.sidebar {
   padding:10px;
   }
 
-#page ul.tabs {
+#page ul.tabs,
+#page .tabs {
   height:29px;
   border-bottom:1px solid #e8e8e8;
   background:#fff;
