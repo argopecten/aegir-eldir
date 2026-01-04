@@ -118,8 +118,44 @@ function eldir_theme() {
   return [
     'item_info_listing' => [
       'render element' => 'info_listing',
+      'template' => 'item-info-listing',
     ],
   ];
+}
+
+/**
+ * Prepares variables for item info listing templates.
+ */
+function eldir_preprocess_item_info_listing(array &$variables) {
+  $info_listing = $variables['info_listing'] ?? [];
+  $items = $info_listing['#items'] ?? [];
+
+  $weight = 0.0;
+  foreach ($items as $index => $item) {
+    if (!isset($item['weight'])) {
+      $weight += 0.001;
+      $items[$index]['weight'] = $weight;
+    }
+  }
+  usort($items, [SortArray::class, 'sortByWeightElement']);
+
+  $render_items = [];
+  foreach ($items as $item) {
+    $render_items[] = [
+      'title' => eldir_build_item_value($item['title'] ?? ''),
+      'value' => eldir_build_item_value($item['value'] ?? ''),
+      'description' => isset($item['description']) ? eldir_build_item_value($item['description']) : NULL,
+    ];
+  }
+  $variables['items'] = $render_items;
+
+  $element = $info_listing;
+  eldir_sanitize_render_children($element);
+  $children = [];
+  foreach (Element::children($element) as $child) {
+    $children[] = $element[$child];
+  }
+  $variables['children'] = $children;
 }
 
 /**

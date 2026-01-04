@@ -1,0 +1,23 @@
+{#
+/**
+ * @file
+ * Theme override for a hosting info listing.
+ */
+#}
+<table class="hosting-info-table">
+  {% for item in items %}
+    <tr class="item">
+      <td class="item-title">{{ item.title }}</td>
+      <td class="item-value">
+        {{ item.value }}
+        {% if item.description %}
+          <div class="item-description">{{ item.description }}</div>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+
+{% for child in children %}
+  {{ child }}
+{% endfor %}
