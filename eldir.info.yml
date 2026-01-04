@@ -2,7 +2,6 @@ name: Eldir
 type: theme
 description: 'Companion theme for the Aegir hosting system.'
 core_version_requirement: ^11
-base theme: stable9
 libraries:
   - eldir/global-styling
 regions:
