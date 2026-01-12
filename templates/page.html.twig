@@ -1,0 +1,58 @@
+<div id="page-wrapper">
+
+  <div id="header" class="reverse"><div class="limiter clearfix">
+      {% if logo %}
+      <div class="logo">
+        <a href="{{ front_page }}"><img src="{{ svg_logo|default(logo) }}" alt="{{ 'Home'|t }}" /></a>
+      </div>
+      {% endif %}
+    {% if site_name %}<div class="site-name">{{ site_name }}</div>{% endif %}
+  </div></div>
+
+  <div id="navigation" class="reverse"><div class="limiter clearfix">
+    {% if breadcrumb %}{{ breadcrumb }}{% endif %}
+    {% if page.navigation %}
+      {{ page.navigation }}
+    {% elseif main_menu %}
+      {{ main_menu }}
+    {% endif %}
+  </div></div>
+
+  {% if messages %}
+  <div id="console" class="reverse"><div class="limiter clearfix">
+   {{ messages }}
+  </div></div>
+  {% endif %}
+
+  <div id="header-region"><div class="limiter clearfix">
+    {{ page.header }}
+    {{ title_prefix }}
+    {% if title %}<h2 class="page-title">{{ title }}</h2>{% endif %}
+    {{ title_suffix }}
+    {% if tabs %}{{ tabs }}{% endif %}
+  </div></div>
+
+  <div id="page"><div class="limiter clearfix">
+    {% if tabs2 %}{{ tabs2 }}{% endif %}
+    {% if action_links %}{{ action_links }}{% endif %}
+
+    <div id="main">
+      <div class="page-content" id="main-content">
+        {{ page.help }}
+        {{ page.content }}
+        {{ page.content_bottom }}
+        {{ feed_icons }}
+      </div>
+    </div>
+    {% if page.sidebar_first or page.sidebar_second %}
+      <div id="right" class="sidebar">{{ page.sidebar_first }}{{ page.sidebar_second }}</div>
+    {% endif %}
+
+  </div></div>
+
+  <div id="footer" class="reverse"><div class="limiter">
+    {{ page.footer }}
+    {% if page.footer is empty and secondary_menu %}{{ secondary_menu }}{% endif %}
+  </div></div>
+
+</div>

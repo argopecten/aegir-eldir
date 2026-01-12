@@ -1,0 +1,273 @@
+<?php
+
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Render\Markup;
+use Drupal\node\Entity\NodeType;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function eldir_theme($existing, $type, $theme, $path) {
+  return [
+    'item_info_listing' => [
+      'render element' => 'info_listing',
+      'template' => 'item-info-listing',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function eldir_preprocess_html(array &$variables) {
+  $attributes = &$variables['attributes'];
+  $attributes['class'][] = 'aegir';
+
+  if (theme_get_setting('wide_layout')) {
+    $attributes['class'][] = 'wide';
+  }
+
+  $current_user = \Drupal::currentUser();
+  if ($current_user->isAnonymous()) {
+    $attributes['class'][] = 'not-logged-in';
+  }
+
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof NodeInterface) {
+    $type = Html::getClass($node->bundle());
+    $attributes['class'][] = 'node-page';
+    $attributes['class'][] = 'ntype-' . $type;
+  }
+
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if (in_array($route_name, ['user.login', 'user.register', 'user.pass'], TRUE)) {
+    $attributes['class'][] = 'auth-page';
+  }
+
+  $current_path = \Drupal::service('path.current')->getPath();
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath($current_path);
+  $path_class = trim($alias, '/');
+  if ($path_class === '') {
+    $attributes['class'][] = 'path-frontpage';
+  }
+  else {
+    $attributes['class'][] = 'path-' . Html::getClass($path_class);
+  }
+
+  if (str_starts_with($path_class, 'user')) {
+    $attributes['class'][] = 'page-user';
+  }
+  if (str_starts_with($path_class, 'admin')) {
+    $attributes['class'][] = 'page-admin';
+  }
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function eldir_preprocess_page(array &$variables) {
+  if (empty($variables['messages']) && !empty($variables['page']['highlighted'])) {
+    $variables['messages'] = $variables['page']['highlighted'];
+  }
+
+  if (empty($variables['breadcrumb']) && !empty($variables['page']['breadcrumb'])) {
+    $variables['breadcrumb'] = $variables['page']['breadcrumb'];
+  }
+
+  if (empty($variables['tabs'])) {
+    if (!empty($variables['primary_tabs']) || !empty($variables['secondary_tabs'])) {
+      $variables['tabs'] = [
+        '#theme' => 'menu_local_tasks',
+        '#primary' => $variables['primary_tabs'] ?? [],
+        '#secondary' => $variables['secondary_tabs'] ?? [],
+      ];
+    }
+  }
+
+  if (!empty($variables['logo']) && theme_get_setting('use_svg_logo')) {
+    $theme_path = \Drupal::theme()->getActiveTheme()->getPath();
+    if (strpos($variables['logo'], $theme_path) !== FALSE && strpos($variables['logo'], 'logo.png') !== FALSE) {
+      $variables['svg_logo'] = base_path() . $theme_path . '/images/svg/aegir_logo_horizontal.svg';
+    }
+  }
+
+  $main_menu_name = theme_get_setting('main_menu_name') ?: 'main';
+  $secondary_menu_name = theme_get_setting('secondary_menu_name') ?: 'secondary';
+  $variables['main_menu'] = eldir_build_menu($main_menu_name);
+  $variables['secondary_menu'] = eldir_build_menu($secondary_menu_name);
+
+  if (!empty($variables['tabs']) && is_array($variables['tabs'])) {
+    $variables['tabs2'] = $variables['tabs'];
+    unset($variables['tabs']['#secondary']);
+    unset($variables['tabs2']['#primary']);
+  }
+
+  if (empty($variables['title'])) {
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if ($node instanceof NodeInterface) {
+      $variables['title'] = $node->label();
+    }
+  }
+
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof NodeInterface && !empty($variables['title'])) {
+    $type = NodeType::load($node->bundle());
+    if ($type) {
+      $label = Html::escape($type->label());
+      $variables['title'] = Markup::create('<span class="label">' . $label . '</span>' . $variables['title']);
+    }
+  }
+
+  $register_setting = \Drupal::config('user.settings')->get('register');
+  $variables['user_register'] = $register_setting !== 'admin_only';
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function eldir_preprocess_node(array &$variables) {
+  if (!empty($variables['node']) && $variables['node'] instanceof NodeInterface) {
+    $type = NodeType::load($variables['node']->bundle());
+    if ($type && !empty($variables['label'])) {
+      $label = Html::escape($type->label());
+      $variables['label'] = Markup::create('<span class="label">' . $label . '</span>' . $variables['label']);
+    }
+  }
+
+  if (isset($variables['content']['info']) && is_array($variables['content']['info'])) {
+    $variables['content']['info']['#theme'] = 'item_info_listing';
+    $variables['content']['info']['#pre_render'][] = 'eldir_info_table_pre_render';
+
+    foreach (Element::children($variables['content']['info']) as $child) {
+      if (isset($variables['content']['info'][$child]['title']['#type']) && $variables['content']['info'][$child]['title']['#type'] === 'item') {
+        $variables['content']['info'][$child]['#theme'] = 'item_info_listing';
+        $variables['content']['info'][$child]['#pre_render'][] = 'eldir_info_table_pre_render';
+      }
+    }
+  }
+}
+
+/**
+ * Preprocess for item_info_listing.
+ */
+function eldir_preprocess_item_info_listing(array &$variables) {
+  $info_listing = $variables['info_listing'];
+  $items = $info_listing['#items'] ?? [];
+
+  $weight = 0;
+  foreach ($items as &$item) {
+    if (!isset($item['weight'])) {
+      $weight += 0.001;
+      $item['weight'] = $weight;
+    }
+  }
+  usort($items, 'drupal_sort_weight');
+
+  $children = [];
+  foreach (Element::children($info_listing) as $child) {
+    $children[] = $info_listing[$child];
+  }
+
+  $variables['items'] = $items;
+  $variables['children'] = $children;
+}
+
+/**
+ * Pre-render callback to build hosting info table items.
+ */
+function eldir_info_table_pre_render(array $element) {
+  if (!isset($element['#items'])) {
+    $element['#items'] = [];
+  }
+
+  foreach (Element::children($element) as $child) {
+    if (isset($element[$child]['#type']) && $element[$child]['#type'] === 'item') {
+      if (!empty($element[$child]['#title']) && isset($element[$child]['#markup'])) {
+        $new_item = [
+          'title' => $element[$child]['#title'],
+          'value' => [
+            '#type' => 'markup',
+            '#markup' => $element[$child]['#markup'],
+          ],
+        ];
+        if (isset($element[$child]['#weight'])) {
+          $new_item['weight'] = $element[$child]['#weight'];
+        }
+        if (isset($element[$child]['#description'])) {
+          $new_item['description'] = [
+            '#type' => 'markup',
+            '#markup' => $element[$child]['#description'],
+          ];
+        }
+        $element['#items'][] = $new_item;
+        unset($element[$child]);
+      }
+    }
+  }
+
+  return $element;
+}
+
+/**
+ * Theme settings form.
+ */
+function eldir_form_system_theme_settings_alter(array &$form, FormStateInterface $form_state) {
+  $form['eldir_settings'] = [
+    '#type' => 'details',
+    '#title' => t('Eldir theme settings'),
+    '#open' => TRUE,
+  ];
+
+  $form['eldir_settings']['use_svg_logo'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Prefer SVG logo'),
+    '#default_value' => theme_get_setting('use_svg_logo'),
+  ];
+
+  $form['eldir_settings']['wide_layout'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Enable wide layout'),
+    '#default_value' => theme_get_setting('wide_layout'),
+  ];
+
+  $form['eldir_settings']['main_menu_name'] = [
+    '#type' => 'textfield',
+    '#title' => t('Main menu machine name'),
+    '#default_value' => theme_get_setting('main_menu_name'),
+    '#description' => t('Defaults to "main" if left blank.'),
+  ];
+
+  $form['eldir_settings']['secondary_menu_name'] = [
+    '#type' => 'textfield',
+    '#title' => t('Secondary menu machine name'),
+    '#default_value' => theme_get_setting('secondary_menu_name'),
+    '#description' => t('Defaults to "secondary" if left blank.'),
+  ];
+}
+
+/**
+ * Builds a menu render array by name.
+ */
+function eldir_build_menu($menu_name) {
+  if (empty($menu_name)) {
+    return [];
+  }
+
+  $menu_storage = \Drupal::entityTypeManager()->getStorage('menu');
+  if (!$menu_storage->load($menu_name)) {
+    return [];
+  }
+
+  $menu_tree = \Drupal::menuTree();
+  $parameters = $menu_tree->getCurrentRouteMenuTreeParameters($menu_name);
+  $tree = $menu_tree->load($menu_name, $parameters);
+  $tree = $menu_tree->transform($tree, [
+    ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+    ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
+  ]);
+
+  return $menu_tree->build($tree);
+}

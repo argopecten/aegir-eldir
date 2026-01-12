@@ -1,0 +1,13 @@
+eldir.mobile:
+  label: mobile
+  mediaQuery: '(min-width: 0px)'
+  weight: 0
+  multipliers:
+    - 1x
+
+eldir.wide:
+  label: wide
+  mediaQuery: '(min-width: 960px)'
+  weight: 1
+  multipliers:
+    - 1x

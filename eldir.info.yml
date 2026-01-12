@@ -1,0 +1,16 @@
+name: Eldir
+type: theme
+description: Companion theme for the Aegir hosting system.
+core_version_requirement: ^11
+base theme: stable9
+libraries:
+  - eldir/global-styling
+regions:
+  navigation: Navigation
+  header: Header
+  help: Help
+  content: Content
+  content_bottom: Content bottom
+  sidebar_first: Sidebar top
+  sidebar_second: Sidebar bottom
+  footer: Footer

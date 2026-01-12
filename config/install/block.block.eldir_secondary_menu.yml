@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - eldir
+id: eldir_secondary_menu
+theme: eldir
+region: footer
+weight: 10
+provider: null
+plugin: system_menu_block:secondary
+settings:
+  id: system_menu_block:secondary
+  label: 'Secondary navigation'
+  label_display: '0'
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: false
+visibility: { }

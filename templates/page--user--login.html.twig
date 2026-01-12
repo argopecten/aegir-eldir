@@ -1,0 +1,29 @@
+<div id="auth_box" class="login">
+  <div id="top_part">
+      {% if logo %}
+        <h1 id="the_logo">
+          <a href="{{ front_page }}"><img src="{{ svg_logo|default(logo) }}" alt="{{ 'Home'|t }}" /></a>
+        </h1>
+      {% endif %}
+  </div>
+
+  <div id="middle_part">
+    <h2 class="title">{{ title }}</h2>
+
+    {{ messages }}
+
+    {{ page.content }}
+  </div>
+
+  <div id="bottom_part">
+    <div class="password_link">
+      <a href="{{ path('user.pass') }}">{{ 'Forgot your password?'|t }}</a>
+    </div>
+
+    {% if user_register %}
+    <div class="register_link">
+      <a href="{{ path('user.register') }}">{{ 'Register a new account'|t }}</a>
+    </div>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,167 @@
+div.limiter {
+  width:940px;
+  margin:0px auto;
+}
+
+/**
+ * HEADER =============================================================
+ */
+div#header {
+  background:url(../images/raster/sprite.png) repeat-x;
+}
+
+div#header div.logo,
+div#header div.logo a,
+div#header div.site-name { float:left; }
+
+.logo img {
+  width: 120px;
+  margin-right: 10px;
+  margin-top: 18px;
+}
+
+div#header div.site-name {
+  font-size:18px;
+  letter-spacing:-1px;
+  color:#ace;
+  line-height:40px;
+  margin:20px 0px;
+  padding:0px 0px 0px 19px;
+  border-left:1px solid #258;
+}
+
+div#header form {
+  width:370px;
+  height:40px;
+  line-height:40px;
+  padding:20px 0px;
+  float:right;
+  text-align:right;
+}
+
+div#header form * { vertical-align:middle; }
+
+div#header form input.form-text { width:60%; }
+
+/**
+ * NAVIGATION =========================================================
+ */
+div#navigation {
+  border-top:1px solid #258;
+  background:url(../images/raster/sprite.png) 0px -80px;
+}
+
+div#navigation .breadcrumb {
+  line-height:40px;
+  font-size:11px;
+  float:left;
+}
+
+div#navigation ul.links {
+  padding:5px 0px 0px;
+  float:right;
+}
+
+div#navigation ul.links a {
+  background:#147;
+  font-size:11px;
+  line-height:25px;
+  padding:5px 15px;
+  margin-right:1px;
+}
+
+div#navigation ul.links a:hover {
+  background:#6ac;
+  color:#000;
+}
+
+div#navigation ul.links li.active a,
+div#navigation ul.links li a.active,
+div#navigation ul.links li a.is-active {
+  background:#e8e8e8;
+  color:#444;
+}
+
+/**
+ * HEADER REGION ======================================================
+ */
+div#header-region {
+  padding:20px 0px 0px;
+  background:#e8e8e8 url(../images/raster/grid_e8.png) 50% 0% repeat;
+}
+
+div#header-region h2.page-title {
+  border:0px;
+  padding:0px 0px 10px;
+  letter-spacing:-2px;
+  line-height:40px;
+  font-size:32px;
+  font-weight:normal;
+}
+
+div#header-region h2.page-title span.label {
+  font-size:13px;
+  font-weight:bold;
+  letter-spacing:0px;
+  float:left;
+  margin:5px 10px 5px 0px;
+  padding:0px 10px;
+  line-height:30px;
+  background:#666;
+  color:#fff;
+}
+
+/**
+ * PAGE LAYOUT ========================================================
+ */
+div#page {
+  background:#eee url(../images/raster/grid_e8.png) 50% 0% repeat;
+  padding-bottom:40px;
+}
+
+div#page div.limiter { background:url(../images/raster/page.png) repeat-y; }
+
+body.wide div#page div.limiter {
+  padding-right:190px;
+  width:750px;
+}
+
+div#main {
+  float:left;
+  width:600px;
+  padding:10px;
+  clear:both;
+}
+
+body.wide div#main {
+  background:#fff;
+  float:none;
+  width:950px;
+}
+
+div.sidebar {
+  float:right;
+  width:300px;
+  padding:10px;
+}
+
+/**
+ * FOOTER =============================================================
+ */
+#footer {
+  background:#666;
+  padding:20px 0px;
+  line-height:40px;
+  height:40px;
+}
+
+#footer ul.links { float:right; }
+
+#footer ul.links li {
+  margin: 0;
+  padding: 0;
+}
+
+#footer ul.links li a {
+  padding: 5px 0 5px 10px;
+}

@@ -1,0 +1,11 @@
+<article{{ attributes.addClass('node') }}>
+  {{ title_prefix }}
+  {% if label and not page %}
+    <h2{{ title_attributes }}><a href="{{ url }}">{{ label }}</a></h2>
+  {% endif %}
+  {{ title_suffix }}
+
+  <div{{ content_attributes.addClass('content') }}>
+    {{ content }}
+  </div>
+</article>

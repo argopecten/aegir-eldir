@@ -1,0 +1,16 @@
+eldir.settings:
+  type: theme_settings
+  label: 'Eldir settings'
+  mapping:
+    use_svg_logo:
+      type: boolean
+      label: 'Prefer SVG logo'
+    wide_layout:
+      type: boolean
+      label: 'Enable wide layout'
+    main_menu_name:
+      type: string
+      label: 'Main menu machine name'
+    secondary_menu_name:
+      type: string
+      label: 'Secondary menu machine name'

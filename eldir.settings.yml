@@ -1,0 +1,4 @@
+use_svg_logo: true
+wide_layout: false
+main_menu_name: main
+secondary_menu_name: secondary

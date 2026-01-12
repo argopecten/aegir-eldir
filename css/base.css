@@ -1,0 +1,119 @@
+/**
+ * Eldir for Drupal 11
+ * Designed for the Aegir hosting system.
+ *
+ * Based on the Drupal 7 Eldir theme by Young Hahn.
+ */
+
+/* Resets */
+body,
+
+table,
+table *,
+
+dl, dt, dd,
+
+ul.menu,
+ul.menu li,
+ul.menu li.leaf,
+ul.links,
+ul.links li,
+
+div.block ul,
+.breadcrumb,
+div.item-list ul li,
+
+div.form-item,
+div.form-radios,
+div.form-checkboxes,
+div.form-radios div.form-item,
+div.form-checkboxes div.form-item,
+
+div.hosting-task-retry,
+
+h1, h2, h3, h4, h5, h6,
+ul, ol, li,
+p, blockquote {
+  background-image:none;
+  background-color:transparent;
+
+  font-size:1em;
+  font-weight:normal;
+
+  margin:0px;
+  padding:0px;
+}
+
+ul, ol,
+.item-list ul, .item-list ol {
+  margin-left: 1em;
+}
+
+.block ul, .block ol, .block li {
+  list-style:none;
+  list-style-image:none;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font: 13px/20px "Helvetica Neue",Arial,sans-serif;
+}
+
+body.aegir {
+  color:#444;
+  background:#fff;
+  margin:0px;
+  padding:0px;
+  min-width: 950px;
+}
+
+strong {
+  font-weight:bold;
+}
+
+a {
+  color:#468;
+  text-decoration:none;
+}
+
+a:hover { text-decoration:underline; }
+
+/* No underline for links that are likely to have good hover classes anyway. */
+ul.menu li a:hover,
+ul.links li a:hover { text-decoration:none; }
+
+/* Reverse color text/links */
+div.reverse { color:#fff; }
+div.reverse a { color:#ace; }
+
+h1, h2 {
+  font-size:15px;
+  font-weight:bold;
+  padding:0px 0px 4px;
+  border-bottom:1px solid #e8e8e8;
+}
+
+h3, h4, h5, h6 {
+  color:#888;
+  font-weight:bold;
+  margin:0px 0px 5px;
+}
+
+dl,
+dd { margin:0px 0px 10px; }
+
+dt {
+  margin:10px 0px 0px;
+  font-weight:bold;
+}
+
+p { margin:0px 0px 10px; }
+
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}

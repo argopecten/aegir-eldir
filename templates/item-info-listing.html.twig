@@ -1,0 +1,23 @@
+{% set items = items|default(info_listing['#items']|default([])) %}
+
+<table class="hosting-info-table">
+  <tbody>
+    {% for item in items %}
+      <tr class="item">
+        <td class="item-title">{{ item.title }}</td>
+        <td class="item-value">
+          {{ item.value }}
+          {% if item.description %}
+            <div class="item-description">{{ item.description }}</div>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if children %}
+  {% for child in children %}
+    {{ child }}
+  {% endfor %}
+{% endif %}
