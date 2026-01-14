@@ -82,6 +82,15 @@ div#navigation ul.links li a.is-active {
   color:#444;
 }
 
+body.path-hosting-sites-add div#navigation ul.links a[data-drupal-link-system-path="hosting/sites"],
+body.path-hosting-platforms-add div#navigation ul.links a[data-drupal-link-system-path="hosting/platforms"],
+body.path-hosting-servers-add div#navigation ul.links a[data-drupal-link-system-path="hosting/servers"],
+body.path-hosting-tasks-add div#navigation ul.links a[data-drupal-link-system-path="hosting/tasks"],
+body.path-hosting-clients-add div#navigation ul.links a[data-drupal-link-system-path="hosting/clients"] {
+  background:#e8e8e8;
+  color:#444;
+}
+
 /**
  * HEADER REGION ======================================================
  */

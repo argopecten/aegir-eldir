@@ -10,10 +10,10 @@ theme: eldir
 region: footer
 weight: 10
 provider: null
-plugin: system_menu_block:secondary
+plugin: system_menu_block:footer
 settings:
-  id: system_menu_block:secondary
-  label: 'Secondary navigation'
+  id: system_menu_block:footer
+  label: 'Footer navigation'
   label_display: '0'
   provider: system
   level: 1

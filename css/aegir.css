@@ -57,6 +57,74 @@ table tr.even td { background-color:#fcfcfc; }
 
 table tr.odd td { background-color:#f8f8f8; }
 
+/**
+ * Hosting listings (sites/platforms/servers/tasks/clients).
+ * Scope to hosting paths to avoid styling unrelated tables.
+ */
+body.aegir.path-hosting-sites table,
+body.aegir.path-hosting-platforms table,
+body.aegir.path-hosting-servers table,
+body.aegir.path-hosting-tasks table,
+body.aegir.path-hosting-clients table,
+body.aegir.path-hosting-services table {
+  background:#fff;
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+body.aegir.path-hosting-sites table thead th,
+body.aegir.path-hosting-platforms table thead th,
+body.aegir.path-hosting-servers table thead th,
+body.aegir.path-hosting-tasks table thead th,
+body.aegir.path-hosting-clients table thead th,
+body.aegir.path-hosting-services table thead th {
+  background:#666;
+  color:#fff;
+  padding:6px 8px;
+  border-top:0;
+}
+
+body.aegir.path-hosting-sites table tbody tr,
+body.aegir.path-hosting-platforms table tbody tr,
+body.aegir.path-hosting-servers table tbody tr,
+body.aegir.path-hosting-tasks table tbody tr,
+body.aegir.path-hosting-clients table tbody tr,
+body.aegir.path-hosting-services table tbody tr {
+  background:#dff6cf;
+}
+
+body.aegir.path-hosting-sites table tbody tr:nth-child(even),
+body.aegir.path-hosting-platforms table tbody tr:nth-child(even),
+body.aegir.path-hosting-servers table tbody tr:nth-child(even),
+body.aegir.path-hosting-tasks table tbody tr:nth-child(even),
+body.aegir.path-hosting-clients table tbody tr:nth-child(even),
+body.aegir.path-hosting-services table tbody tr:nth-child(even) {
+  background:#cfe9bc;
+}
+
+body.aegir.path-hosting-sites table tbody td,
+body.aegir.path-hosting-platforms table tbody td,
+body.aegir.path-hosting-servers table tbody td,
+body.aegir.path-hosting-tasks table tbody td,
+body.aegir.path-hosting-clients table tbody td,
+body.aegir.path-hosting-services table tbody td {
+  border-top:1px solid #f4fbef;
+}
+
+body.aegir.path-hosting-servers .hosting-status {
+  display:inline-block;
+  font-weight:bold;
+  text-transform:uppercase;
+}
+
+body.aegir.path-hosting-servers .hosting-status--yes {
+  color:#0a7a0a;
+}
+
+body.aegir.path-hosting-servers .hosting-status--no {
+  color:#c00;
+}
+
 #hosting-wizard-account-details,
 #hosting-wizard-account-passwd {
   float:none;
