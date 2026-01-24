@@ -63,6 +63,9 @@ function eldir_preprocess_html(array &$variables) {
   if (str_starts_with($path_class, 'admin')) {
     $attributes['class'][] = 'page-admin';
   }
+  if (str_starts_with($path_class, 'hosting')) {
+    $attributes['class'][] = 'path-hosting';
+  }
 }
 
 /**
@@ -163,6 +166,101 @@ function eldir_preprocess_node(array &$variables) {
         $variables['content']['info'][$child]['#pre_render'][] = 'eldir_info_table_pre_render';
       }
     }
+  }
+}
+
+/**
+ * Implements hook_preprocess_entity__hosting_server().
+ */
+function eldir_preprocess_entity__hosting_server(array &$variables) {
+  eldir_add_entity_metadata_attributes($variables);
+}
+
+/**
+ * Implements hook_preprocess_entity__hosting_site().
+ */
+function eldir_preprocess_entity__hosting_site(array &$variables) {
+  eldir_add_entity_metadata_attributes($variables);
+
+  $entity = $variables['entity'] ?? NULL;
+  if ($entity instanceof \Drupal\Core\Entity\EntityInterface) {
+    $status = $entity->get('status')->value ?? NULL;
+    if ($status !== NULL) {
+      $attributes = &$variables['attributes'];
+      $attributes['data-hosting-status'] = (string) $status;
+      if (class_exists(\Drupal\hosting_site\Entity\HostingSite::class)) {
+        $status_map = [
+          \Drupal\hosting_site\Entity\HostingSite::STATUS_QUEUED => 'queued',
+          \Drupal\hosting_site\Entity\HostingSite::STATUS_ENABLED => 'enabled',
+          \Drupal\hosting_site\Entity\HostingSite::STATUS_DISABLED => 'disabled',
+          \Drupal\hosting_site\Entity\HostingSite::STATUS_DELETED => 'deleted',
+        ];
+        if (isset($status_map[$status])) {
+          $attributes['class'][] = 'hosting-site--status-' . $status_map[$status];
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_entity__hosting_client().
+ */
+function eldir_preprocess_entity__hosting_client(array &$variables) {
+  eldir_add_entity_metadata_attributes($variables);
+}
+
+/**
+ * Implements hook_preprocess_entity__hosting_task().
+ */
+function eldir_preprocess_entity__hosting_task(array &$variables) {
+  eldir_add_entity_metadata_attributes($variables);
+}
+
+/**
+ * Implements hook_preprocess_menu__main().
+ */
+function eldir_preprocess_menu__main(array &$variables) {
+  $variables['attributes']['class'][] = 'hosting-main-menu';
+}
+
+/**
+ * Implements hook_preprocess_menu_local_tasks().
+ */
+function eldir_preprocess_menu_local_tasks(array &$variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if (str_starts_with($route_name, 'hosting.') || str_starts_with($route_name, 'entity.hosting_')) {
+    $variables['attributes']['class'][] = 'hosting-local-tasks';
+  }
+}
+
+/**
+ * Implements hook_preprocess_table().
+ */
+function eldir_preprocess_table(array &$variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if (str_starts_with($route_name, 'hosting.') || str_starts_with($route_name, 'entity.hosting_')) {
+    $variables['attributes']['class'][] = 'hosting-table';
+  }
+}
+
+/**
+ * Implements hook_preprocess_form().
+ */
+function eldir_preprocess_form(array &$variables) {
+  $form_id = $variables['form_id'] ?? '';
+  if (str_starts_with($form_id, 'hosting_')) {
+    $variables['attributes']['class'][] = 'hosting-form';
+  }
+}
+
+/**
+ * Implements hook_preprocess_form_element().
+ */
+function eldir_preprocess_form_element(array &$variables) {
+  $form_id = $variables['element']['#form_id'] ?? '';
+  if (is_string($form_id) && str_starts_with($form_id, 'hosting_')) {
+    $variables['attributes']['class'][] = 'hosting-form__element';
   }
 }
 
@@ -291,4 +389,28 @@ function eldir_build_menu($menu_name) {
   ]);
 
   return $menu_tree->build($tree);
+}
+
+/**
+ * Adds standard data attributes for hosting entities.
+ */
+function eldir_add_entity_metadata_attributes(array &$variables): void {
+  $entity = $variables['entity'] ?? NULL;
+  if (!$entity instanceof \Drupal\Core\Entity\EntityInterface) {
+    return;
+  }
+
+  $attributes = &$variables['attributes'];
+  $attributes['data-entity-type'] = $entity->getEntityTypeId();
+  $attributes['data-entity-id'] = (string) $entity->id();
+
+  $view_mode = $variables['elements']['#view_mode'] ?? '';
+  if (is_string($view_mode) && $view_mode !== '') {
+    $attributes['data-view-mode'] = $view_mode;
+  }
+
+  $bundle = $variables['elements']['#bundle'] ?? '';
+  if (is_string($bundle) && $bundle !== '') {
+    $attributes['data-entity-bundle'] = $bundle;
+  }
 }

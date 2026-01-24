@@ -61,6 +61,7 @@ table tr.odd td { background-color:#f8f8f8; }
  * Hosting listings (sites/platforms/servers/tasks/clients).
  * Scope to hosting paths to avoid styling unrelated tables.
  */
+body.aegir.path-hosting table,
 body.aegir.path-hosting-sites table,
 body.aegir.path-hosting-platforms table,
 body.aegir.path-hosting-servers table,
@@ -72,6 +73,7 @@ body.aegir.path-hosting-services table {
   border-spacing:0;
 }
 
+body.aegir.path-hosting table thead th,
 body.aegir.path-hosting-sites table thead th,
 body.aegir.path-hosting-platforms table thead th,
 body.aegir.path-hosting-servers table thead th,
@@ -84,6 +86,7 @@ body.aegir.path-hosting-services table thead th {
   border-top:0;
 }
 
+body.aegir.path-hosting table tbody tr,
 body.aegir.path-hosting-sites table tbody tr,
 body.aegir.path-hosting-platforms table tbody tr,
 body.aegir.path-hosting-servers table tbody tr,
@@ -93,6 +96,7 @@ body.aegir.path-hosting-services table tbody tr {
   background:#dff6cf;
 }
 
+body.aegir.path-hosting table tbody tr:nth-child(even),
 body.aegir.path-hosting-sites table tbody tr:nth-child(even),
 body.aegir.path-hosting-platforms table tbody tr:nth-child(even),
 body.aegir.path-hosting-servers table tbody tr:nth-child(even),
@@ -102,6 +106,7 @@ body.aegir.path-hosting-services table tbody tr:nth-child(even) {
   background:#cfe9bc;
 }
 
+body.aegir.path-hosting table tbody td,
 body.aegir.path-hosting-sites table tbody td,
 body.aegir.path-hosting-platforms table tbody td,
 body.aegir.path-hosting-servers table tbody td,
@@ -123,6 +128,187 @@ body.aegir.path-hosting-servers .hosting-status--yes {
 
 body.aegir.path-hosting-servers .hosting-status--no {
   color:#c00;
+}
+
+body.aegir.path-hosting .hosting-status-cell {
+  display:inline-block;
+  font-weight:bold;
+  text-transform:uppercase;
+  padding:2px 6px;
+  border-radius:3px;
+  border:1px solid #ddd;
+}
+
+body.aegir.path-hosting .hosting-status-cell.is-available {
+  background:#cfe9bc;
+  border-color:#b6d8a0;
+  color:#0a7a0a;
+}
+
+body.aegir.path-hosting .hosting-status-cell.is-unavailable {
+  background:#f1c6c6;
+  border-color:#e1a6a6;
+  color:#c00;
+}
+
+body.aegir.path-hosting .hosting-queues-table {
+  margin:0 0 15px;
+  background:#fff;
+  border:1px solid #e8e8e8;
+  padding:10px;
+}
+
+body.aegir.path-hosting .hosting-queues-table table {
+  margin:0;
+}
+
+body.aegir.path-hosting .hosting-table {
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+body.aegir.path-hosting .hosting-site--status-enabled {
+  outline:1px solid #0a7a0a;
+}
+
+body.aegir.path-hosting .hosting-site--status-disabled,
+body.aegir.path-hosting .hosting-site--status-deleted {
+  outline:1px solid #c00;
+}
+
+body.aegir.path-hosting .hosting-site--status-queued {
+  outline:1px solid #a65a00;
+}
+
+body.aegir.path-hosting .hosting-form .form-item {
+  background:#fff;
+}
+
+body.aegir.path-hosting nav.tabs.hosting-local-tasks ul.tabs li a {
+  background:#f3f3f3;
+  color:#444;
+}
+
+body.aegir.path-hosting nav.tabs.hosting-local-tasks ul.tabs li.is-active a,
+body.aegir.path-hosting nav.tabs.hosting-local-tasks ul.tabs li a.is-active {
+  background:#fff;
+  color:#444;
+  border-bottom:1px solid #fff;
+}
+
+
+body.aegir.path-hosting .hosting-server-hero {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 10px;
+}
+
+body.aegir.path-hosting .hosting-entity-chip {
+  display:inline-block;
+  font-size:11px;
+  text-transform:uppercase;
+  background:#666;
+  color:#fff;
+  padding:4px 8px;
+}
+
+body.aegir.path-hosting .hosting-server-title {
+  font-size:26px;
+  margin:0;
+}
+
+body.aegir.path-hosting .hosting-server-layout {
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) 280px;
+  gap:20px;
+}
+
+body.aegir.path-hosting .hosting-server-main {
+  min-width:0;
+}
+
+body.aegir.path-hosting .hosting-server-sidebar {
+  min-width:0;
+}
+
+
+body.aegir.path-hosting .hosting-sidebar {
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+body.aegir.path-hosting .hosting-panel {
+  background:#fff;
+  border:1px solid #e8e8e8;
+  padding:10px;
+}
+
+body.aegir.path-hosting .hosting-panel h2 {
+  margin:0 0 8px;
+  font-size:12px;
+  text-transform:uppercase;
+  color:#333;
+}
+
+body.aegir.path-hosting .hosting-panel .item-list ul {
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+body.aegir.path-hosting .hosting-panel .item-list li {
+  margin:0 0 6px;
+}
+
+body.aegir.path-hosting .hosting-task-item,
+body.aegir.path-hosting .hosting-queue-item {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  padding:6px 8px;
+  border:1px solid #e8e8e8;
+  border-radius:3px;
+  background:#f8f8f8;
+}
+
+body.aegir.path-hosting .hosting-task-item--queued {
+  background:#e6f6ff;
+  border-color:#c9e6f7;
+}
+
+body.aegir.path-hosting .hosting-task-item--running {
+  background:#fff3cd;
+  border-color:#f3e1a6;
+}
+
+body.aegir.path-hosting .hosting-task-item--completed {
+  background:#dff6cf;
+  border-color:#b6d8a0;
+}
+
+body.aegir.path-hosting .hosting-task-item--failed {
+  background:#f1c6c6;
+  border-color:#e1a6a6;
+}
+
+body.aegir.path-hosting .hosting-task-status,
+body.aegir.path-hosting .hosting-queue-status {
+  font-size:10px;
+  text-transform:uppercase;
+  color:#555;
+}
+
+body.aegir.path-hosting .hosting-queue-item.is-enabled {
+  background:#dff6cf;
+  border-color:#b6d8a0;
+}
+
+body.aegir.path-hosting .hosting-queue-item.is-disabled {
+  background:#f1c6c6;
+  border-color:#e1a6a6;
 }
 
 #hosting-wizard-account-details,
