@@ -12,13 +12,15 @@ on:
 jobs:
   sync-wiki:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Clone wiki repository
         run: |
-          git clone https://github.com/argopecten/aegir-eldir.wiki.git wiki
+          git clone https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/argopecten/aegir-eldir.wiki.git wiki
 
       - name: Copy documentation files
         run: |
