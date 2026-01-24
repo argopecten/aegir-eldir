@@ -1,13 +1,18 @@
 # Eldir (Drupal 11) Theme System Architecture Document
 
 ## Scope
-This document describes how to implement the Eldir theme for Drupal 11 using current theming best practices and Drupal 11 core architecture. It is based on the Drupal 7 Eldir theme documented in `architecture/eldir-d7.md`, preserving layout intent, key selectors, and Aegir-specific UI patterns while modernizing templates, preprocessors, and asset handling.
+This document describes the Eldir theme for Drupal 11, which is a modernized implementation based on the Drupal 7 Eldir theme (documented in [eldir-d7.md](eldir-d7.md)). It preserves the Eldir visual identity, layout structure, key selectors, and Aegir-specific UI patterns while using Drupal 11 theming standards (Twig, libraries, asset pipelines).
+
+## Implementation Status
+**Status: Implemented and operational**
+
+This theme is fully functional and actively used in Aegir Hostmaster Drupal 11 installations. All core features from the Drupal 7 version have been migrated to modern Drupal 11 standards.
 
 ## Goals and constraints
-- Preserve the Eldir visual identity and layout structure from Drupal 7.
-- Keep Aegir-specific selectors and UI behaviors that modules may rely on.
-- Align with Drupal 11 theming (Twig, libraries, asset pipelines, SDC).
-- Provide a maintainable, component-oriented template structure.
+- ✅ Preserve the Eldir visual identity and layout structure from Drupal 7
+- ✅ Keep Aegir-specific selectors and UI behaviors that modules rely on
+- ✅ Align with Drupal 11 theming (Twig, libraries, asset pipelines)
+- ✅ Provide a maintainable template structure
 
 ## Drupal 11 theming architecture overview
 - Templates are Twig (`*.html.twig`), not PHP templates.
@@ -17,9 +22,10 @@ This document describes how to implement the Eldir theme for Drupal 11 using cur
 - Single Directory Components (SDC) can be used for reusable UI blocks.
 - Layouts can be provided by core Layout Builder or theme templates.
 
-## Theme file structure (proposed)
+## Theme file structure (actual)
 ```
 eldir/
+  composer.json
   eldir.info.yml
   eldir.libraries.yml
   eldir.settings.yml
@@ -29,6 +35,8 @@ eldir/
     install/
       block.block.eldir_main_menu.yml
       block.block.eldir_secondary_menu.yml
+    schema/
+      eldir.schema.yml
   templates/
     html.html.twig
     page.html.twig
@@ -41,19 +49,9 @@ eldir/
     block.html.twig
     region.html.twig
     item-info-listing.html.twig
-  components/
-    header/
-      header.twig
-      header.css
-    navigation/
-      navigation.twig
-      navigation.css
-    console/
-      console.twig
-      console.css
-    footer/
-      footer.twig
-      footer.css
+    hosting-server.html.twig
+    hosting-queues-table.html.twig
+    hosting-service-status-cell.html.twig
   css/
     base.css
     layout.css
@@ -61,38 +59,43 @@ eldir/
     aegir.css
   images/
     raster/
-      sprite.png
-      page.png
-      bleeds.png
-      buttons.png
-      grid_e8.png
+      (sprite.png, page.png, etc.)
     svg/
       aegir_logo_horizontal.svg
       aegir_logo.svg
       aegir_sprite.svg
       aegir_icons.svg
   logo.png
+  doc/
+    README.md
+    eldir-d11.md
+    eldir-d7.md
 ```
 
 ## Theme metadata and regions
-- `eldir.info.yml`
-  - `name: Eldir`
-  - `type: theme`
-  - `core_version_requirement: ^11`
-  - `base theme: stable9`
-  - `libraries-override:` used to replace any core module styling that must be themed (overlay-style CSS if still required).
-  - `libraries:` include core and Eldir libraries.
-  - `regions:`
-    - `navigation`
-    - `header`
-    - `help`
-    - `content`
-    - `content_bottom`
-    - `sidebar_first`
-    - `sidebar_second`
-    - `footer`
+**File: `eldir.info.yml`**
 
-Region placement mirrors Drupal 7:
+```yaml
+name: Eldir
+type: theme
+description: Companion theme for the Aegir hosting system.
+core_version_requirement: ^11
+base theme: stable9
+libraries:
+  - eldir/global-styling
+regions:
+  navigation: Navigation
+  header: Header
+  help: Help
+  content: Content
+  content_bottom: Content bottom
+  sidebar_first: Sidebar top
+  sidebar_second: Sidebar bottom
+  footer: Footer
+```
+
+### Region placement
+Region placement matches the Drupal 7 implementation:
 - `navigation` renders in the navigation bar.
 - `header` renders before page title and tabs.
 - `help` renders above main content.
@@ -138,41 +141,148 @@ Region placement mirrors Drupal 7:
   - Renders a table with `.hosting-info-table`, `.item-title`, `.item-value`.
 
 ## Preprocess and theme hooks (eldir.theme)
-### Preprocess hooks
-- `eldir_preprocess_html()`
-  - Adds `aegir` body class.
-  - Adds `node-page` and `ntype-<type>` when a node is present.
-  - Adds `path-<current_path>` class for path-based styling.
 
-- `eldir_preprocess_page()`
-  - Adds `svg_logo` when theme logo contains `eldir`, enabling SVG substitution.
-  - Maps primary/secondary tabs and action links into header and secondary tabs.
-  - Ensures title is set from node or route title.
-  - Prefixes page title with node type label when appropriate.
-  - Exposes `$tabs2` equivalent for D7-style secondary tabs placement.
+### Implemented hooks
 
-- `eldir_preprocess_node()`
-  - Adds node type label to node titles.
-  - Converts `content.info` into structured table rows for `item-info-listing`.
+**`eldir_theme()`**
+- Registers `item_info_listing` theme hook with template `item-info-listing.html.twig`
+- Used for hosting entity info tables
 
-### Theme hooks
-- `eldir_theme()`
-  - Registers `item_info_listing` using `item-info-listing.html.twig`.
+**`eldir_preprocess_html()`**
+- Adds `aegir` body class
+- Adds `wide` class when wide layout is enabled via theme settings
+- Adds `not-logged-in` class for anonymous users
+- Adds `node-page` and `ntype-<type>` classes on node pages
+- Adds `auth-page` class for login/register/password pages
+- Adds `page-user`, `page-admin`, `path-hosting` classes based on current path
+- Generates path-based classes (`path-<current_path>`)
 
-### D11-specific data mapping notes
-- Primary and secondary tabs are exposed in Twig as `primary_tabs` and `secondary_tabs`; action links are available via `action_links` and should be rendered where D7 put secondary tabs.
-- `$breadcrumb` becomes the `breadcrumb` variable in Twig; keep it in `#navigation` with `.breadcrumb`.
-- Messages are rendered via `messages` and should stay inside `#console`.
+**`eldir_preprocess_page()`**
+- Handles messages and breadcrumb fallbacks
+- Generates tabs from local task plugins
+- Provides SVG logo when enabled and theme logo is used
+- Builds main and secondary menus via `eldir_build_menu()`
+- Splits tabs into `tabs` (primary) and `tabs2` (secondary) for layout
+- Ensures title is set from node or route
+- Prefixes node titles with type label (`<span class="label">Type</span>`)
+- Exposes `user_register` variable for auth pages
 
-### Optional hook suggestions
-- `eldir_theme_suggestions_page_alter()`
-  - Adds route-based suggestions for auth pages if needed.
-  - Add suggestions for Aegir-specific routes to map node types to templates when markup needs per-type adjustments.
+**`eldir_preprocess_node()`**
+- Adds type label to node titles
+- Converts `content.info` render arrays into `item_info_listing` format
+- Applies `eldir_info_table_pre_render()` callback
+
+**Hosting entity preprocessors:**
+- `eldir_preprocess_entity__hosting_server()`
+- `eldir_preprocess_entity__hosting_site()`
+- `eldir_preprocess_entity__hosting_client()`
+- `eldir_preprocess_entity__hosting_task()`
+- All add data attributes via `eldir_add_entity_metadata_attributes()`
+- Site entities get `data-hosting-status` and status-based CSS classes
+
+**Additional preprocessors:**
+- `eldir_preprocess_menu__main()` - adds `hosting-main-menu` class
+- `eldir_preprocess_menu_local_tasks()` - adds `hosting-local-tasks` class on hosting routes
+- `eldir_preprocess_table()` - adds `hosting-table` class on hosting routes
+- `eldir_preprocess_form()` - adds `hosting-form` class to hosting forms
+- `eldir_preprocess_form_element()` - adds `hosting-form__element` class
+- `eldir_preprocess_item_info_listing()` - prepares items and children for table rendering
+
+### Helper functions
+
+**`eldir_info_table_pre_render()`**
+- Pre-render callback that converts item-type children into `#items` array
+- Extracts title, markup, weight, and description from form elements
+
+**`eldir_form_system_theme_settings_alter()`**
+- Adds theme settings form with:
+  - `use_svg_logo` - checkbox to prefer SVG logo
+  - `wide_layout` - checkbox to enable wide layout
+  - `main_menu_name` - machine name for main menu (default: "main")
+  - `secondary_menu_name` - machine name for secondary menu (default: "secondary")
+
+**`eldir_build_menu()`**
+- Builds menu render array by menu machine name
+- Uses menu tree API with current route parameters
+- Special handling for hosting entity add forms
+
+**`eldir_add_entity_metadata_attributes()`**
+- Adds standard data attributes to hosting entities:
+  - `data-entity-type`
+  - `data-entity-id`
+  - `data-view-mode`
+  - `data-entity-bundle`
 
 ## Styling and asset strategy
+
 ### Libraries
-- `eldir.libraries.yml`
-  - `global-styling` loads `css/base.css`, `css/layout.css`, `css/components.css`, `css/aegir.css`.
+**File: `eldir.libraries.yml`**
+
+```yaml
+global-styling:
+  css:
+    base:
+      css/base.css: {}
+      css/layout.css: {}
+      css/components.css: {}
+      css/aegir.css: {}
+```
+
+Loaded via `eldir.info.yml` libraries declaration.
+
+### CSS organization (implemented)
+- **`css/base.css`** - Reset, typography, link styles, form controls
+- **`css/layout.css`** - Header/nav/page/sidebar/footer layout, limiter, grid background
+- **`css/components.css`** - Tabs, menus, blocks, messages, buttons, tables
+- **`css/aegir.css`** - Aegir-specific UI (hosting tables, task buttons, queue forms)
+
+### Assets
+- Raster assets in `images/raster/` referenced by CSS
+- SVG logo sources in `images/svg/` for SVG logo output
+- `logo.png` at theme root for fallback and theme settings
+
+### Theme settings
+**File: `eldir.settings.yml`**
+
+```yaml
+use_svg_logo: true
+wide_layout: false
+main_menu_name: main
+secondary_menu_name: secondary
+```
+
+Settings configurable via **Appearance → Settings → Eldir**:
+- **Prefer SVG logo** - Use SVG version of theme logo
+- **Enable wide layout** - Apply wider layout (adds `body.wide` class)
+- **Main menu machine name** - Which menu to use as main menu
+- **Secondary menu machine name** - Which menu to use as secondary menu
+
+### Breakpoints
+**File: `eldir.breakpoints.yml`**
+
+```yaml
+eldir.mobile:
+  label: mobile
+  mediaQuery: '(min-width: 0px)'
+  weight: 0
+  multipliers:
+    - 1x
+
+eldir.wide:
+  label: wide
+  mediaQuery: '(min-width: 960px)'
+  weight: 1
+  multipliers:
+    - 1x
+```
+
+### Default block placement
+**Files in `config/install/`:**
+- `block.block.eldir_main_menu.yml` - Places Main menu in `navigation` region
+- `block.block.eldir_secondary_menu.yml` - Places Secondary menu in `footer` region
+
+**Config schema:**
+- `config/schema/eldir.schema.yml` - Defines schema for theme settings
 
 ### CSS organization
 - `css/base.css`: reset, typography, link styles, form controls.
@@ -218,36 +328,117 @@ These selectors should be preserved or reintroduced in Twig templates and CSS to
 - Replace `page.tpl.php` with `page.html.twig` and move PHP logic into preprocess.
 - Replace theme functions with Twig templates and preprocess mapping.
 - Remove legacy IE6 support and `ie6.css`.
-- Replace `hook_css_alter()` with library overrides and `libraries-override` in `eldir.info.yml`.
+- Replace `hook_css_alter()` with library overrides and `libraries-override` in `eldir.info.yml`
 
-## D7 source-driven behaviors to preserve
-- **SVG logo substitution**: when logo is the theme default, prefer `images/svg/aegir_logo_horizontal.svg`.
-- **Node-type label in titles**: prepend `<span class="label">Type</span>` to titles on node pages.
-- **Info listing tables**: convert Aegir info render arrays into `.hosting-info-table` rows with `.item-title` and `.item-value`.
-- **Console message styles**: keep `#console` reverse palette and severity classes.
-- **Auth layout**: `#auth_box` with `#top_part`, `#middle_part`, `#bottom_part`.
+## Key Features Implemented
 
-## Implementation checklist (minimal)
-- Create `eldir.info.yml`, `eldir.libraries.yml`, `eldir.theme`, `eldir.settings.yml`.
-- Port `html.tpl.php` to `templates/html.html.twig` with `aegir` class and skip link.
-- Port `page.tpl.php` and auth templates to Twig with matching IDs/classes.
-- Add menu templates to preserve `#main-menu` and `#secondary-menu` selectors.
-- Split and port CSS from D7 into `css/` layers, preserving selectors.
-- Implement preprocess hooks for title labels, tab placement, and info listings.
-- Verify Aegir task pages, server/platform/site info pages, and user auth pages.
-## Verification checklist
-- Aegir hosting entities: server/platform/site/package nodes display `.hosting-info-table` and type labels.
-- Task pages: `.ntype-task` styles apply to task forms and queues.
-- Navigation: main menu appears inside `#navigation` and secondary menu inside `#footer`.
-- Auth pages: `/user/login`, `/user/register`, `/user/password` show `#auth_box` layout.
-- Console messages: status/warning/error messages render within `#console` with expected colors.
+### Body Classes
+The theme adds comprehensive body classes for styling hooks:
+- `aegir` - Always present on all pages
+- `wide` - When wide layout is enabled
+- `not-logged-in` - For anonymous users
+- `node-page` - On node pages
+- `ntype-{type}` - Node type identifier
+- `auth-page` - On login/register/password pages
+- `page-user`, `page-admin`, `path-hosting` - Path-based classes
+- `path-{current-path}` - Normalized current path
 
-## Open implementation decisions
-- Whether to use SDC components for header/nav/footer or keep classic templates only.
-- Whether to integrate Layout Builder for page regions or maintain template-driven layout.
+### SVG Logo Support
+When "Prefer SVG logo" is enabled and the theme's default logo is used, the theme automatically substitutes the PNG logo with `images/svg/aegir_logo_horizontal.svg`.
 
-## Next steps
-- Implement `eldir.info.yml`, `eldir.libraries.yml`, and `eldir.theme`.
-- Port templates to Twig and align markup with required selectors.
-- Split and modernize CSS while retaining Eldir visual cues.
-- Verify Aegir-specific UI pages for selector and layout compatibility.
+### Node Type Labels
+Node titles are automatically prefixed with their type label wrapped in `<span class="label">Type</span>` for better visual hierarchy.
+
+### Hosting Entity Data Attributes
+All hosting entities receive standardized data attributes:
+- `data-entity-type` - Entity type ID
+- `data-entity-id` - Entity ID
+- `data-view-mode` - Current view mode
+- `data-entity-bundle` - Entity bundle
+- `data-hosting-status` - Site status (for hosting_site entities)
+
+### Menu Building
+Menus are built dynamically from menu names configured in theme settings, with special handling for hosting entity add forms to ensure proper active trail highlighting.
+
+## Selector Compatibility (Preserved from D7)
+These selectors are maintained in Twig templates and CSS for Aegir UI compatibility:
+- **Layout**: `#page-wrapper`, `.limiter`, `#page`, `#main`, `#right.sidebar`, `.page-content`
+- **Header/nav**: `#header`, `#navigation`, `.logo img`, `.site-name`, `#main-menu`, `#secondary-menu`
+- **Console**: `#console`, `.messages`, `.error`, `.warning`, `.ok`
+- **Tabs/actions**: `ul.tabs`, `ul.primary`, `ul.secondary`, `ul.action-links`
+- **Nodes**: `.node`, `.node-page`, `.ntype-<type>`, `.page-title`, `.label`
+- **Sidebar**: `.sidebar .block`, `.sidebar ul.menu`, `.sidebar .item-list`
+- **Aegir-specific**: `.hosting-info-table`, `.hosting-table`, `.hosting-main-menu`, `.hosting-form`, `.hosting-site--status-*`
+- **Auth pages**: `body.not-logged-in.page-user`, `.auth-page`, `#auth_box`
+
+## Implemented Templates
+All templates are in `templates/` directory:
+- `html.html.twig` - Document shell with body classes
+- `page.html.twig` - Main page layout
+- `page--user--login.html.twig` - Login page layout
+- `page--user--register.html.twig` - Registration page layout
+- `page--user--password.html.twig` - Password reset page layout
+- `menu--main.html.twig` - Main menu with preserved selectors
+- `menu--secondary.html.twig` - Secondary menu with preserved selectors
+- `node.html.twig` - Node display with type labels
+- `block.html.twig` - Block wrapper
+- `region.html.twig` - Region wrapper
+- `item-info-listing.html.twig` - Hosting info table template
+- `hosting-server.html.twig` - Server entity display
+- `hosting-queues-table.html.twig` - Task queue table
+- `hosting-service-status-cell.html.twig` - Service status indicator
+
+## D7-to-D11 Feature Parity
+
+### Preserved Behaviors
+✅ SVG logo substitution when theme logo is used  
+✅ Node-type label prefixing in titles  
+✅ Info listing tables (`.hosting-info-table`)  
+✅ Console message styles with severity classes  
+✅ Auth page layout (`#auth_box` structure)  
+✅ Wide layout toggle via theme settings  
+✅ Path-based and node-type body classes  
+✅ Primary/secondary tab separation  
+
+### Modernized Implementations
+- ✅ Twig templates replace PHP templates
+- ✅ Preprocess hooks replace theme functions
+- ✅ Theme settings form integration
+- ✅ Menu building via Menu Tree API
+- ✅ Entity data attributes for modern JS integration
+- ✅ Responsive breakpoints defined
+- ✅ Config schema for settings validation
+
+## Verification Checklist
+✅ Aegir hosting entities display `.hosting-info-table` and type labels  
+✅ Task pages apply `.ntype-task` styles  
+✅ Main menu appears in `#navigation` region  
+✅ Secondary menu appears in `#footer` region  
+✅ Auth pages (`/user/login`, `/user/register`, `/user/password`) show `#auth_box` layout  
+✅ Console messages render with expected severity colors  
+✅ SVG logo substitution works when enabled  
+✅ Wide layout applies when enabled  
+✅ Hosting entity data attributes are present  
+
+## Development Notes
+
+### Adding New Hosting Entity Support
+To add support for new hosting entity types:
+1. Create preprocess hook: `eldir_preprocess_entity__hosting_ENTITY()`
+2. Call `eldir_add_entity_metadata_attributes($variables)`
+3. Add entity-specific logic as needed
+4. Create custom template if needed: `templates/hosting-ENTITY.html.twig`
+
+### Customizing Info Tables
+Info tables use the `item_info_listing` theme hook. To customize:
+1. Modify `eldir_preprocess_item_info_listing()` for data preparation
+2. Edit `templates/item-info-listing.html.twig` for markup
+3. Style with `.hosting-info-table` selectors in `css/aegir.css`
+
+### Theme Settings
+Theme settings are exposed via `eldir_form_system_theme_settings_alter()` and stored in theme config. Access via `theme_get_setting('setting_name')`.
+
+## Implementation Status Summary
+**Status: Complete and Production-Ready**
+
+All core features from Drupal 7 have been successfully migrated to Drupal 11. The theme maintains visual and functional parity with the D7 version while using modern Drupal 11 APIs and best practices.
