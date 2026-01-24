@@ -1,7 +1,7 @@
 # Eldir (Drupal 7) Theme Architecture
 
 ## Scope
-This document covers only the Eldir Drupal 7 theme found in this repository. It describes templates, layouts, styles, theme functions, and assets that shape the UI for Aegir hosting pages.
+This document covers only the Eldir Drupal 7 theme found at https://git.drupalcode.org/project/eldir/-/tree/7.x-3.x. It describes templates, layouts, styles, theme functions, and assets that shape the UI for Aegir hosting pages.
 
 ## Theme metadata
 - **Theme definition**: `eldir.info`
