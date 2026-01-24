@@ -1,0 +1,30 @@
+{
+  "name": "argopecten/aegir-eldir",
+  "description": "Eldir: Aegir Hostmaster theme for Drupal 11 with hosting entity templates",
+  "type": "drupal-theme",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://aegir.hu/",
+  "keywords": ["aegir", "eldir", "theme", "hosting", "drupal"],
+  "authors": [
+    {
+      "name": "Aegir D11 Project",
+      "homepage": "https://aegir.hu/"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/argopecten/aegir-eldir/issues",
+    "source": "https://github.com/argopecten/aegir-eldir",
+    "docs": "https://github.com/argopecten/aegir-eldir/wiki"
+  },
+  "require": {
+    "php": ">=8.3",
+    "drupal/core": "^11.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-main": "11.x-dev"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
