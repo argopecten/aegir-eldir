@@ -65,8 +65,22 @@ For developers working on the theme:
 - **Accessibility** - WCAG 2.1 AA compliance required
 - **Performance** - Optimize asset loading, use libraries.yml for dependencies
 
+## AI-Assisted Development
+
+For detailed implementation guidance, coding patterns, and comprehensive API documentation, see:
+
+- **[AI-INSTRUCTIONS.md](../.github/AI-INSTRUCTIONS.md)** - Complete theme architecture guide
+  - Custom theme hooks and usage patterns
+  - Preprocess function implementations
+  - CSS architecture and responsive design
+  - JavaScript integration patterns
+  - Module integration checklist
+  - Anti-patterns to avoid
+  - Future development roadmap
+
 ## Related Documentation
 
 - [Aegir Provision Backend](../../../vendor/aegir-provision/doc/provision-d11.md) - Backend hosting automation
 - [Hostmaster Hosting Module](../../modules/aegir-hosting/hosting/doc/hosting-d11-sad.md) - Frontend entity system
-- [Main Project Documentation](../../../.github/copilot-instructions.md) - AI agent instructions
+- [AI Coding Agent Instructions](../.github/AI-INSTRUCTIONS.md) - Comprehensive theme development guide for AI agents
+- [Main Project Documentation](../../../.github/copilot-instructions.md) - Project-level AI agent instructions

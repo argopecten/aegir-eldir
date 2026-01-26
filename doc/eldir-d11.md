@@ -4,9 +4,26 @@
 This document describes the Eldir theme for Drupal 11, which is a modernized implementation based on the Drupal 7 Eldir theme (documented in [eldir-d7.md](eldir-d7.md)). It preserves the Eldir visual identity, layout structure, key selectors, and Aegir-specific UI patterns while using Drupal 11 theming standards (Twig, libraries, asset pipelines).
 
 ## Implementation Status
-**Status: Implemented and operational**
+**Status: Implemented and operational** (with ongoing enhancements)
 
 This theme is fully functional and actively used in Aegir Hostmaster Drupal 11 installations. All core features from the Drupal 7 version have been migrated to modern Drupal 11 standards.
+
+**Core Features:**
+- ✅ Twig templates for all page types and entity displays
+- ✅ CSS architecture (base, layout, components, aegir-specific)
+- ✅ Responsive breakpoint definitions
+- ✅ Custom theme hook for info tables (`item_info_listing`)
+- ✅ Preprocess functions for HTML, page, node, and entities
+- ✅ Authentication page layouts (login, register, password)
+- ✅ Menu templates (main and secondary)
+
+**In Progress / Planned:**
+- ⚠️ JavaScript integration (task queue updates, log filtering)
+- ⚠️ Complete mobile responsive optimization
+- ⚠️ Theme suggestions for hosting entities
+- ⚠️ Single Directory Components (SDC) migration
+
+For detailed implementation status and development roadmap, see [../.github/AI-INSTRUCTIONS.md](../.github/AI-INSTRUCTIONS.md).
 
 ## Goals and constraints
 - ✅ Preserve the Eldir visual identity and layout structure from Drupal 7
@@ -198,6 +215,19 @@ Region placement matches the Drupal 7 implementation:
 - Adds theme settings form with:
   - `use_svg_logo` - checkbox to prefer SVG logo
   - `wide_layout` - checkbox to enable wide layout
+
+## Additional Resources
+
+For comprehensive implementation details, code examples, and development guidelines, see:
+
+- **[AI-INSTRUCTIONS.md](../.github/AI-INSTRUCTIONS.md)** - Complete technical documentation for developers and AI coding agents
+  - Detailed preprocess function implementations
+  - CSS architecture and selector reference
+  - JavaScript integration patterns (planned)
+  - Module integration checklist
+  - Development workflow and testing procedures
+  - Anti-patterns to avoid
+  - Future enhancement roadmap
   - `main_menu_name` - machine name for main menu (default: "main")
   - `secondary_menu_name` - machine name for secondary menu (default: "secondary")
 
