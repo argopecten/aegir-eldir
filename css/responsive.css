@@ -1,0 +1,348 @@
+/**
+ * @file
+ * Responsive styles for Eldir theme
+ * 
+ * Mobile-first approach with progressive enhancement for larger screens.
+ * Preserves D7 desktop experience while making mobile functional.
+ */
+
+/* ========================================
+   MOBILE BASE (0-767px)
+   ======================================== */
+
+@media (max-width: 767px) {
+  
+  /* Remove fixed width constraint on mobile */
+  body.aegir {
+    min-width: 0;
+  }
+  
+  /* Container adjustments */
+  div.limiter {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 var(--space-base);
+  }
+  
+  /* Header: Stack logo and form */
+  div#header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-base) 0;
+  }
+  
+  div#header .limiter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  div#header form {
+    width: 100%;
+    float: none;
+    padding: var(--space-md) 0;
+  }
+  
+  div#header form input.form-text {
+    width: 100%;
+  }
+  
+  /* Navigation: Make horizontal links stack or scroll */
+  div#navigation .limiter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  div#navigation .breadcrumb {
+    width: 100%;
+    margin-bottom: var(--space-sm);
+    font-size: var(--font-size-tiny);
+  }
+  
+  div#navigation ul.links {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: var(--space-sm);
+  }
+  
+  /* Page layout: Stack main and sidebar */
+  div#page div.limiter {
+    flex-direction: column;
+  }
+  
+  div#main {
+    flex: 1 1 100%;
+    width: 100%;
+    order: 2;
+  }
+  
+  div.sidebar {
+    flex: 1 1 100%;
+    width: 100%;
+    order: 1;
+    margin-bottom: var(--space-lg);
+  }
+  
+  body.wide div#main {
+    width: 100%;
+  }
+  
+  body.wide div#page div.limiter {
+    padding-right: 0;
+    width: 100%;
+  }
+  
+  /* Tabs: Allow horizontal scroll */
+  ul.tabs,
+  nav.tabs ul.tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  #header-region > .limiter > ul {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  
+  /* Tables: Make scrollable */
+  table,
+  table.hosting-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table thead,
+  table tbody,
+  table tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  /* Forms: Full width inputs */
+  select,
+  textarea,
+  input.form-text {
+    width: 100%;
+  }
+  
+  form div.form-item-labeled {
+    padding-left: 0;
+  }
+  
+  form div.form-item-labeled label {
+    position: static;
+    width: 100%;
+    margin-bottom: var(--space-sm);
+    display: block;
+  }
+  
+  /* Hosting layout: Single column */
+  body.aegir.path-hosting .hosting-server-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  body.aegir.path-hosting .hosting-server-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  /* Footer: Stack links */
+  #footer .limiter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+  
+  #footer ul.links {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+/* ========================================
+   TABLET (768px - 1023px)
+   ======================================== */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  
+  /* Moderate container width */
+  div.limiter {
+    width: 90%;
+    max-width: 768px;
+  }
+  
+  /* Two-column layout but narrower */
+  div#main {
+    flex: 1 1 60%;
+  }
+  
+  div.sidebar {
+    flex: 0 0 35%;
+  }
+  
+  /* Hosting layout: Adjust grid */
+  body.aegir.path-hosting .hosting-server-layout {
+    grid-template-columns: 1fr 220px;
+    gap: var(--space-base);
+  }
+}
+
+/* ========================================
+   DESKTOP (1024px - 1279px)
+   ======================================== */
+
+@media (min-width: 1024px) {
+  /* Default layout is already optimized for desktop */
+  /* This is the D7 target size */
+}
+
+/* ========================================
+   WIDE SCREENS (1280px - 1599px)
+   ======================================== */
+
+@media (min-width: 1280px) {
+  
+  div.limiter {
+    max-width: 1140px;
+  }
+  
+  /* Allow wider layout */
+  body.wide div.limiter {
+    max-width: 1280px;
+  }
+  
+  /* Hosting layout: More sidebar space */
+  body.aegir.path-hosting .hosting-server-layout {
+    grid-template-columns: minmax(0, 1fr) 320px;
+  }
+}
+
+/* ========================================
+   ULTRA WIDE (1600px+)
+   ======================================== */
+
+@media (min-width: 1600px) {
+  
+  div.limiter {
+    max-width: var(--container-width-max);
+  }
+  
+  body.wide div.limiter {
+    max-width: 1400px;
+  }
+  
+  /* Even more generous spacing */
+  body.aegir.path-hosting .hosting-server-layout {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: var(--space-xxl);
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  
+  /* Hide navigation and non-essential elements */
+  div#header form,
+  div#navigation,
+  div.sidebar,
+  #footer,
+  ul.tabs,
+  nav.tabs,
+  .action-links {
+    display: none !important;
+  }
+  
+  /* Full width main content */
+  div#main {
+    width: 100%;
+    padding: 0;
+  }
+  
+  /* Remove backgrounds and shadows */
+  body,
+  div#page,
+  div#header-region,
+  table,
+  table tr,
+  table th,
+  table td {
+    background: white !important;
+    box-shadow: none !important;
+  }
+  
+  /* Black text for better printing */
+  body,
+  p,
+  li,
+  td,
+  th {
+    color: black !important;
+  }
+  
+  /* Show link URLs */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+  
+  /* Prevent page breaks inside important elements */
+  table,
+  figure,
+  pre,
+  blockquote {
+    page-break-inside: avoid;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+}
+
+/* ========================================
+   HIGH CONTRAST MODE
+   ======================================== */
+
+@media (prefers-contrast: high) {
+  
+  /* Increase border visibility */
+  table th,
+  table td,
+  input.form-text,
+  select,
+  textarea {
+    border-width: 2px;
+  }
+  
+  /* Stronger focus indicators */
+  a:focus,
+  button:focus,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline-width: 3px;
+    outline-offset: 2px;
+  }
+}
+
+/* ========================================
+   REDUCED MOTION
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  
+  /* Disable all transitions and animations */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,283 @@
+/**
+ * @file
+ * CSS Custom Properties (Variables) for Eldir Theme
+ * 
+ * Design tokens extracted from Drupal 7 Eldir heritage.
+ * These variables preserve the classic Aegir look while enabling
+ * modern CSS architecture and easier maintenance.
+ */
+
+:root {
+  /* ========================================
+     COLOR PALETTE - D7 Heritage
+     ======================================== */
+  
+  /* Primary Colors */
+  --color-primary: #16527f;
+  --color-primary-dark: #151f3e;
+  --color-accent: #6ac;
+  --color-accent-dark: #5a9bb8;
+  
+  /* Grayscale */
+  --color-header: #666;
+  --color-text: #000;
+  --color-text-light: #666;
+  --color-text-lighter: #999;
+  --color-border: #e8e8e8;
+  --color-border-dark: #ccc;
+  --color-bg: #fff;
+  --color-bg-subtle: #f8f8f8;
+  --color-bg-grid: #e8e8e8;
+  
+  /* Status Colors - Success */
+  --color-success-bg: #dff6cf;
+  --color-success-bg-dark: #cfe9bc;
+  --color-success-border: #c4dcaf;
+  --color-success-text: #0a7a0a;
+  
+  /* Status Colors - Error */
+  --color-error-bg: #f1c6c6;
+  --color-error-bg-dark: #e1a6a6;
+  --color-error-border: #d19595;
+  --color-error-text: #c00;
+  
+  /* Status Colors - Warning */
+  --color-warning-bg: #fff3cd;
+  --color-warning-bg-dark: #f3e1a6;
+  --color-warning-border: #e8d595;
+  --color-warning-text: #c80;
+  
+  /* Status Colors - Info */
+  --color-info-bg: #e6f6ff;
+  --color-info-bg-dark: #c9e6f7;
+  --color-info-border: #b8dce8;
+  --color-info-text: #00a;
+  
+  /* Interactive States */
+  --color-link: var(--color-accent);
+  --color-link-hover: var(--color-accent-dark);
+  --color-link-visited: #666699;
+  --color-focus: #0066cc;
+  --color-focus-outline: rgba(0, 102, 204, 0.4);
+  
+  /* ========================================
+     TYPOGRAPHY
+     ======================================== */
+  
+  /* Font Families */
+  --font-family-base: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --font-family-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
+                        "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: "Courier New", Courier, monospace;
+  
+  /* Font Sizes */
+  --font-size-tiny: 0.6923rem;    /* 9px */
+  --font-size-small: 0.8462rem;   /* 11px */
+  --font-size-base: 1rem;         /* 13px */
+  --font-size-medium: 1.1538rem;  /* 15px */
+  --font-size-large: 1.3846rem;   /* 18px */
+  --font-size-xlarge: 1.8462rem;  /* 24px */
+  --font-size-xxlarge: 2.4615rem; /* 32px */
+  
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-base: 1.5385;  /* 20/13 = 1.5385 */
+  --line-height-relaxed: 1.6;
+  --line-height-loose: 1.8;
+  
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  
+  /* ========================================
+     SPACING SCALE
+     ======================================== */
+  
+  --space-xs: 0.3846rem;   /* 5px */
+  --space-sm: 0.5385rem;   /* 7px */
+  --space-md: 0.7692rem;   /* 10px */
+  --space-base: 1rem;      /* 13px */
+  --space-lg: 1.5385rem;   /* 20px */
+  --space-xl: 2.3077rem;   /* 30px */
+  --space-xxl: 3.0769rem;  /* 40px */
+  
+  /* ========================================
+     LAYOUT DIMENSIONS
+     ======================================== */
+  
+  /* Container Widths */
+  --container-width: 940px;
+  --container-width-wide: 950px;
+  --container-width-max: 1200px;
+  
+  /* Column Widths (for 2-column layout) */
+  --main-column-width: 600px;
+  --sidebar-width: 300px;
+  --gutter-width: 20px;
+  
+  /* Header/Footer Heights */
+  --header-height: 60px;
+  --nav-height: 40px;
+  --footer-height: 40px;
+  
+  /* Table Columns */
+  --table-label-width: 95px;
+  
+  /* ========================================
+     BORDERS & RADIUS
+     ======================================== */
+  
+  --border-width: 1px;
+  --border-width-thick: 2px;
+  --border-style: solid;
+  
+  --border-radius-sm: 2px;
+  --border-radius-base: 3px;
+  --border-radius-md: 4px;
+  --border-radius-lg: 6px;
+  --border-radius-xl: 8px;
+  
+  /* ========================================
+     SHADOWS
+     ======================================== */
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.1);
+  
+  /* Focus Shadow */
+  --shadow-focus: 0 0 0 3px var(--color-focus-outline);
+  
+  /* ========================================
+     TRANSITIONS
+     ======================================== */
+  
+  --transition-speed-fast: 150ms;
+  --transition-speed-base: 250ms;
+  --transition-speed-slow: 350ms;
+  
+  --transition-timing: ease-in-out;
+  --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  --transition-base: all var(--transition-speed-base) var(--transition-timing);
+  --transition-fast: all var(--transition-speed-fast) var(--transition-timing);
+  --transition-slow: all var(--transition-speed-slow) var(--transition-timing);
+  
+  /* ========================================
+     Z-INDEX SCALE
+     ======================================== */
+  
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+  
+  /* ========================================
+     BREAKPOINTS (for reference in JS)
+     ======================================== */
+  
+  --breakpoint-mobile: 0px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+  --breakpoint-wide: 1280px;
+  --breakpoint-ultrawide: 1600px;
+  
+  /* ========================================
+     GRID TEXTURE (for background pattern)
+     ======================================== */
+  
+  --grid-texture: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    var(--color-bg-grid) 1px,
+    var(--color-bg-grid) 2px
+  ),
+  repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 1px,
+    var(--color-bg-grid) 1px,
+    var(--color-bg-grid) 2px
+  );
+  
+  /* ========================================
+     HOSTING MODULE INTEGRATION
+     ======================================== */
+  
+  /* Task Status Colors - Coordinated with hosting modules */
+  --hosting-task-queued-bg: var(--color-info-bg);
+  --hosting-task-queued-border: var(--color-info-border);
+  --hosting-task-queued-text: var(--color-info-text);
+  
+  --hosting-task-processing-bg: var(--color-warning-bg);
+  --hosting-task-processing-border: var(--color-warning-border);
+  --hosting-task-processing-text: var(--color-warning-text);
+  
+  --hosting-task-success-bg: var(--color-success-bg);
+  --hosting-task-success-border: var(--color-success-border);
+  --hosting-task-success-text: var(--color-success-text);
+  
+  --hosting-task-error-bg: var(--color-error-bg);
+  --hosting-task-error-border: var(--color-error-border);
+  --hosting-task-error-text: var(--color-error-text);
+  
+  /* Service Status Colors */
+  --hosting-status-available-bg: var(--color-success-bg-dark);
+  --hosting-status-available-border: var(--color-success-border);
+  --hosting-status-available-text: var(--color-success-text);
+  
+  --hosting-status-unavailable-bg: var(--color-error-bg);
+  --hosting-status-unavailable-border: var(--color-error-border);
+  --hosting-status-unavailable-text: var(--color-error-text);
+  
+  /* Panel Styling */
+  --hosting-panel-bg: var(--color-bg);
+  --hosting-panel-border: var(--color-border);
+  --hosting-panel-title-color: #333;
+  --hosting-panel-title-size: var(--font-size-small);
+  --hosting-panel-padding: var(--space-md);
+  --hosting-panel-gap: var(--space-md);
+  
+  /* Hosting Entity Chip */
+  --hosting-chip-bg: var(--color-header);
+  --hosting-chip-text: #fff;
+  --hosting-chip-padding: 4px 8px;
+  --hosting-chip-font-size: var(--font-size-small);
+  
+  /* BEM Component Spacing */
+  --hosting-section-gap: var(--space-lg);
+  --hosting-detail-gap: var(--space-xs);
+}
+
+/* ========================================
+   DARK MODE SUPPORT (Optional - Future)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root.dark-mode-enabled {
+    /* Placeholder for future dark mode implementation */
+    /* Currently disabled to maintain D7 light theme heritage */
+  }
+}
+
+/* ========================================
+   PRINT MEDIA
+   ======================================== */
+
+@media print {
+  :root {
+    --color-bg: #fff;
+    --color-text: #000;
+    --shadow-base: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+  }
+}

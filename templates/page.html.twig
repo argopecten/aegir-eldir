@@ -1,58 +1,110 @@
+{#
+/**
+ * @file
+ * Theme implementation for page template.
+ * Enhanced with semantic HTML5 and ARIA landmarks for accessibility.
+ */
+#}
 <div id="page-wrapper">
 
-  <div id="header" class="reverse"><div class="limiter clearfix">
+  <header id="header" class="reverse" role="banner">
+    <div class="limiter clearfix">
       {% if logo %}
       <div class="logo">
-        <a href="{{ front_page }}"><img src="{{ svg_logo|default(logo) }}" alt="{{ 'Home'|t }}" /></a>
+        <a href="{{ front_page }}" rel="home" aria-label="{{ 'Home'|t }}">
+          <img src="{{ svg_logo|default(logo) }}" alt="{{ 'Home'|t }}" />
+        </a>
       </div>
       {% endif %}
-    {% if site_name %}<div class="site-name">{{ site_name }}</div>{% endif %}
-  </div></div>
+      {% if site_name %}
+        <div class="site-name">{{ site_name }}</div>
+      {% endif %}
+    </div>
+  </header>
 
-  <div id="navigation" class="reverse"><div class="limiter clearfix">
-    {% if breadcrumb %}{{ breadcrumb }}{% endif %}
-    {% if page.navigation %}
-      {{ page.navigation }}
-    {% elseif main_menu %}
-      {{ main_menu }}
-    {% endif %}
-  </div></div>
+  <nav id="navigation" class="reverse" role="navigation" aria-label="{{ 'Main navigation'|t }}">
+    <div class="limiter clearfix">
+      {% if breadcrumb %}
+        <div class="breadcrumb" role="navigation" aria-label="{{ 'Breadcrumb'|t }}">
+          {{ breadcrumb }}
+        </div>
+      {% endif %}
+      {% if page.navigation %}
+        {{ page.navigation }}
+      {% elseif main_menu %}
+        {{ main_menu }}
+      {% endif %}
+    </div>
+  </nav>
 
   {% if messages %}
-  <div id="console" class="reverse"><div class="limiter clearfix">
-   {{ messages }}
-  </div></div>
+  <div id="console" class="reverse" role="status" aria-live="polite" aria-atomic="true">
+    <div class="limiter clearfix">
+      {{ messages }}
+    </div>
+  </div>
   {% endif %}
 
-  <div id="header-region"><div class="limiter clearfix">
-    {{ page.header }}
-    {{ title_prefix }}
-    {% if title %}<h2 class="page-title">{{ title }}</h2>{% endif %}
-    {{ title_suffix }}
-    {% if tabs %}{{ tabs }}{% endif %}
-  </div></div>
-
-  <div id="page"><div class="limiter clearfix">
-    {% if tabs2 %}{{ tabs2 }}{% endif %}
-    {% if action_links %}{{ action_links }}{% endif %}
-
-    <div id="main">
-      <div class="page-content" id="main-content">
-        {{ page.help }}
-        {{ page.content }}
-        {{ page.content_bottom }}
-        {{ feed_icons }}
-      </div>
+  {% if page.header or title or tabs %}
+  <div id="header-region">
+    <div class="limiter clearfix">
+      {{ page.header }}
+      {{ title_prefix }}
+      {% if title %}
+        <h1 class="page-title">{{ title }}</h1>
+      {% endif %}
+      {{ title_suffix }}
+      {% if tabs %}
+        <nav class="tabs" role="navigation" aria-label="{{ 'Primary tabs'|t }}">
+          {{ tabs }}
+        </nav>
+      {% endif %}
     </div>
-    {% if page.sidebar_first or page.sidebar_second %}
-      <div id="right" class="sidebar">{{ page.sidebar_first }}{{ page.sidebar_second }}</div>
-    {% endif %}
+  </div>
+  {% endif %}
 
-  </div></div>
+  <div id="page">
+    <div class="limiter clearfix">
+      {% if tabs2 %}
+        <nav class="tabs tabs-secondary" role="navigation" aria-label="{{ 'Secondary tabs'|t }}">
+          {{ tabs2 }}
+        </nav>
+      {% endif %}
+      {% if action_links %}
+        <nav class="action-links" role="navigation" aria-label="{{ 'Action links'|t }}">
+          {{ action_links }}
+        </nav>
+      {% endif %}
 
-  <div id="footer" class="reverse"><div class="limiter">
-    {{ page.footer }}
-    {% if page.footer is empty and secondary_menu %}{{ secondary_menu }}{% endif %}
-  </div></div>
+      <main id="main" role="main">
+        <a id="main-content" tabindex="-1"></a>
+        <div class="page-content">
+          {{ page.help }}
+          {{ page.content }}
+          {{ page.content_bottom }}
+          {{ feed_icons }}
+        </div>
+      </main>
+      
+      {% if page.sidebar_first or page.sidebar_second %}
+        <aside id="right" class="sidebar" role="complementary" aria-label="{{ 'Sidebar'|t }}">
+          {{ page.sidebar_first }}
+          {{ page.sidebar_second }}
+        </aside>
+      {% endif %}
+
+    </div>
+  </div>
+
+  <footer id="footer" class="reverse" role="contentinfo">
+    <div class="limiter">
+      {{ page.footer }}
+      {% if page.footer is empty and secondary_menu %}
+        <nav role="navigation" aria-label="{{ 'Footer menu'|t }}">
+          {{ secondary_menu }}
+        </nav>
+      {% endif %}
+    </div>
+  </footer>
 
 </div>

@@ -1,83 +1,120 @@
+/**
+ * Layout structure for Eldir theme
+ * Flexible responsive layout while preserving D7 appearance
+ */
+
 div.limiter {
-  width:940px;
-  margin:0px auto;
+  max-width: var(--container-width-max);
+  margin: 0 auto;
+  padding: 0 var(--space-base);
+  width: 100%;
 }
 
 /**
  * HEADER =============================================================
  */
+/**
+ * HEADER =============================================================
+ */
 div#header {
-  background:url(../images/raster/sprite.png) repeat-x;
+  background: url(../images/raster/sprite.png) repeat-x;
+  display: flex;
+  align-items: center;
+  min-height: var(--header-height);
+}
+
+div#header .limiter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 div#header div.logo,
 div#header div.logo a,
-div#header div.site-name { float:left; }
+div#header div.site-name {
+  float: left;
+}
 
 .logo img {
   width: 120px;
-  margin-right: 10px;
-  margin-top: 18px;
+  margin-right: var(--space-md);
+  margin-top: var(--space-large);
 }
 
 div#header div.site-name {
-  font-size:18px;
-  letter-spacing:-1px;
-  color:#ace;
-  line-height:40px;
-  margin:20px 0px;
-  padding:0px 0px 0px 19px;
-  border-left:1px solid #258;
+  font-size: var(--font-size-large);
+  letter-spacing: -1px;
+  color: #ace;
+  line-height: 40px;
+  margin: var(--space-lg) 0;
+  padding: 0 0 0 19px;
+  border-left: var(--border-width) var(--border-style) #258;
 }
 
 div#header form {
-  width:370px;
-  height:40px;
-  line-height:40px;
-  padding:20px 0px;
-  float:right;
-  text-align:right;
+  width: 370px;
+  height: 40px;
+  line-height: 40px;
+  padding: var(--space-lg) 0;
+  float: right;
+  text-align: right;
 }
 
-div#header form * { vertical-align:middle; }
+div#header form * {
+  vertical-align: middle;
+}
 
-div#header form input.form-text { width:60%; }
+div#header form input.form-text {
+  width: 60%;
+}
 
 /**
  * NAVIGATION =========================================================
  */
 div#navigation {
-  border-top:1px solid #258;
-  background:url(../images/raster/sprite.png) 0px -80px;
+  border-top: var(--border-width) var(--border-style) #258;
+  background: url(../images/raster/sprite.png) 0 -80px;
+  min-height: var(--nav-height);
+}
+
+div#navigation .limiter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 div#navigation .breadcrumb {
-  line-height:40px;
-  font-size:11px;
-  float:left;
+  line-height: 40px;
+  font-size: var(--font-size-small);
+  flex: 1;
 }
 
 div#navigation ul.links {
-  padding:5px 0px 0px;
-  float:right;
+  padding: 5px 0 0;
+  display: flex;
+  gap: 1px;
 }
 
 div#navigation ul.links a {
-  background:#147;
-  font-size:11px;
-  line-height:25px;
-  padding:5px 15px;
-  margin-right:1px;
+  background: #147;
+  font-size: var(--font-size-small);
+  line-height: 25px;
+  padding: 5px 15px;
+  border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+  transition: var(--transition-fast);
 }
 
 div#navigation ul.links a:hover {
-  background:#6ac;
-  color:#000;
+  background: var(--color-accent);
+  color: #000;
 }
 
 div#navigation ul.links li.active a,
 div#navigation ul.links li a.active,
 div#navigation ul.links li a.is-active {
+  background: var(--color-bg-grid);
+  color: var(--color-text);
+}
   background:#e8e8e8;
   color:#444;
 }
@@ -95,76 +132,91 @@ body.path-hosting-clients-add div#navigation ul.links a[data-drupal-link-system-
  * HEADER REGION ======================================================
  */
 div#header-region {
-  padding:20px 0px 0px;
-  background:#e8e8e8 url(../images/raster/grid_e8.png) 50% 0% repeat;
+  padding: var(--space-lg) 0 0;
+  background: var(--color-bg-grid) url(../images/raster/grid_e8.png) 50% 0% repeat;
 }
 
 div#header-region h2.page-title {
-  border:0px;
-  padding:0px 0px 10px;
-  letter-spacing:-2px;
-  line-height:40px;
-  font-size:32px;
-  font-weight:normal;
+  border: 0;
+  padding: 0 0 var(--space-md);
+  letter-spacing: -2px;
+  line-height: 40px;
+  font-size: var(--font-size-xxlarge);
+  font-weight: var(--font-weight-normal);
 }
 
 div#header-region h2.page-title span.label {
-  font-size:13px;
-  font-weight:bold;
-  letter-spacing:0px;
-  float:left;
-  margin:5px 10px 5px 0px;
-  padding:0px 10px;
-  line-height:30px;
-  background:#666;
-  color:#fff;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0;
+  float: left;
+  margin: 5px var(--space-md) 5px 0;
+  padding: 0 var(--space-md);
+  line-height: 30px;
+  background: var(--color-header);
+  color: #fff;
+  border-radius: var(--border-radius-sm);
 }
 
 /**
  * PAGE LAYOUT ========================================================
  */
 div#page {
-  background:#eee url(../images/raster/grid_e8.png) 50% 0% repeat;
-  padding-bottom:40px;
+  background: #eee url(../images/raster/grid_e8.png) 50% 0% repeat;
+  padding-bottom: 40px;
+  min-height: calc(100vh - var(--header-height) - var(--nav-height) - var(--footer-height));
 }
 
-div#page div.limiter { background:url(../images/raster/page.png) repeat-y; }
+div#page div.limiter {
+  background: url(../images/raster/page.png) repeat-y;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
 
 body.wide div#page div.limiter {
-  padding-right:190px;
-  width:750px;
+  max-width: var(--container-width-max);
 }
 
 div#main {
-  float:left;
-  width:600px;
-  padding:10px;
-  clear:both;
+  flex: 1 1 var(--main-column-width);
+  min-width: 0; /* Prevent flex overflow */
+  padding: var(--space-md);
+  background: var(--color-bg);
 }
 
 body.wide div#main {
-  background:#fff;
-  float:none;
-  width:950px;
+  flex: 1 1 100%;
+  max-width: 100%;
 }
 
 div.sidebar {
-  float:right;
-  width:300px;
-  padding:10px;
+  flex: 0 0 var(--sidebar-width);
+  padding: var(--space-md);
+  background: var(--color-bg);
 }
 
 /**
  * FOOTER =============================================================
  */
 #footer {
-  background:#666;
-  padding:20px 0px;
-  line-height:40px;
-  height:40px;
+  background: var(--color-header);
+  padding: var(--space-lg) 0;
+  line-height: 40px;
+  min-height: var(--footer-height);
 }
 
-#footer ul.links { float:right; }
+#footer .limiter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#footer ul.links {
+  display: flex;
+  gap: var(--space-md);
+  margin: 0;
+}
 
 #footer ul.links li {
   margin: 0;
@@ -172,5 +224,92 @@ div.sidebar {
 }
 
 #footer ul.links li a {
-  padding: 5px 0 5px 10px;
+  padding: 5px 0 5px var(--space-md);
+  color: #fff;
+  transition: var(--transition-fast);
 }
+
+#footer ul.links li a:hover {
+  color: var(--color-accent);
+}
+
+/**
+ * RESPONSIVE LAYOUT ==================================================
+ */
+
+/* Preserve D7 appearance on desktop by constraining to 940px */
+@media (min-width: 1024px) {
+  body:not(.wide) div.limiter {
+    max-width: var(--container-width);
+  }
+}
+
+/* Wide layout gets more space */
+@media (min-width: 1280px) {
+  body.wide div.limiter {
+    max-width: 100%;
+    padding: 0 var(--space-xl);
+  }
+}
+
+/* Tablet: Stack sidebar below content */
+@media (max-width: 1023px) {
+  div#page div.limiter {
+    flex-direction: column;
+  }
+  
+  div#main {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  
+  div.sidebar {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+  
+  /* Make navigation more compact */
+  div#navigation .limiter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  
+  div#navigation ul.links {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
+
+/* Mobile: Further adjustments */
+@media (max-width: 767px) {
+  div.limiter {
+    padding: 0 var(--space-sm);
+  }
+  
+  div#header .limiter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  
+  div#header div.logo,
+  div#header div.site-name {
+    float: none;
+  }
+  
+  div#header form {
+    width: 100%;
+    float: none;
+  }
+  
+  div#navigation ul.links a {
+    padding: 3px 10px;
+    font-size: var(--font-size-tiny);
+  }
+  
+  div#header-region h2.page-title {
+    font-size: var(--font-size-xlarge);
+  }
+}
+

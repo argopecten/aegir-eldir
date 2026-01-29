@@ -1,0 +1,40 @@
+{#
+/**
+ * @file
+ * Component: Hosting Panel
+ * 
+ * Reusable panel container for hosting content sections.
+ *
+ * Available variables:
+ * - title: Panel title
+ * - content: Panel content
+ * - collapsible: Boolean, whether the panel is collapsible
+ * - collapsed: Boolean, whether the panel starts collapsed
+ * - actions: Optional actions/buttons for the panel header
+ * - attributes: HTML attributes for the panel wrapper
+ *
+ * @ingroup themeable
+ */
+#}
+{% set panel_classes = [
+  'hosting-panel',
+  collapsible ? 'is-collapsible',
+  collapsed ? 'is-collapsed',
+] %}
+
+<div{{ attributes.addClass(panel_classes) }}{% if collapsible %} data-collapsible{% endif %}>
+  {% if title %}
+    <div class="panel-header">
+      <h3 class="panel-title">{{ title }}</h3>
+      {% if actions %}
+        <div class="panel-actions">
+          {{ actions }}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+  
+  <div class="panel-content">
+    {{ content }}
+  </div>
+</div>

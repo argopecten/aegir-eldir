@@ -1,0 +1,27 @@
+{#
+/**
+ * @file
+ * Component: Hosting Status Badge
+ * 
+ * Displays a status indicator badge with consistent styling.
+ *
+ * Available variables:
+ * - status: The status value (e.g., 'enabled', 'disabled', 'error', 'queued')
+ * - label: The display label for the status
+ * - icon: Optional icon name
+ * - attributes: HTML attributes for the badge wrapper
+ *
+ * @ingroup themeable
+ */
+#}
+{% set status_classes = [
+  'hosting-status-badge',
+  'status-' ~ status|clean_class,
+] %}
+
+<span{{ attributes.addClass(status_classes) }}>
+  {% if icon %}
+    <span class="status-icon" aria-hidden="true">{{ icon }}</span>
+  {% endif %}
+  <span class="status-label">{{ label }}</span>
+</span>

@@ -1,0 +1,46 @@
+{#
+/**
+ * @file
+ * Component: Hosting Entity Chip
+ * 
+ * Displays a hosting entity (site, platform, server, client) as a compact chip.
+ *
+ * Available variables:
+ * - entity_type: The entity type (site, platform, server, client)
+ * - entity_id: The entity ID
+ * - label: Display label
+ * - url: Link URL
+ * - status: Entity status
+ * - icon: Optional icon
+ * - attributes: HTML attributes for the chip wrapper
+ *
+ * @ingroup themeable
+ */
+#}
+{% set chip_classes = [
+  'hosting-entity-chip',
+  'entity-type-' ~ entity_type|clean_class,
+  status ? 'entity-status-' ~ status|clean_class,
+] %}
+
+{% if url %}
+  <a href="{{ url }}"{{ attributes.addClass(chip_classes) }}>
+    {% if icon %}
+      <span class="chip-icon" aria-hidden="true">{{ icon }}</span>
+    {% endif %}
+    <span class="chip-label">{{ label }}</span>
+    {% if status %}
+      <span class="chip-status status-{{ status|clean_class }}" aria-label="{{ status }}"></span>
+    {% endif %}
+  </a>
+{% else %}
+  <span{{ attributes.addClass(chip_classes) }}>
+    {% if icon %}
+      <span class="chip-icon" aria-hidden="true">{{ icon }}</span>
+    {% endif %}
+    <span class="chip-label">{{ label }}</span>
+    {% if status %}
+      <span class="chip-status status-{{ status|clean_class }}" aria-label="{{ status }}"></span>
+    {% endif %}
+  </span>
+{% endif %}

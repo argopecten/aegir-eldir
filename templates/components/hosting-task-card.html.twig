@@ -1,0 +1,68 @@
+{#
+/**
+ * @file
+ * Component: Hosting Task Card
+ * 
+ * Displays a task in card format for grid or list views.
+ *
+ * Available variables:
+ * - task_id: The task ID
+ * - task_type: The task type (e.g., 'verify', 'deploy', 'backup')
+ * - status: Task status
+ * - timestamp: Task timestamp
+ * - description: Task description
+ * - site: Associated site entity
+ * - platform: Associated platform entity
+ * - log: Task log output
+ * - attributes: HTML attributes for the card wrapper
+ *
+ * @ingroup themeable
+ */
+#}
+{% set card_classes = [
+  'hosting-task-card',
+  'task-type-' ~ task_type|clean_class,
+  'task-status-' ~ status|clean_class,
+] %}
+
+<article{{ attributes.addClass(card_classes) }} data-task-id="{{ task_id }}">
+  <div class="task-card-header">
+    <div class="task-meta">
+      <span class="task-type">{{ task_type }}</span>
+      <time class="task-timestamp" datetime="{{ timestamp|date('c') }}">
+        {{ timestamp|date('Y-m-d H:i:s') }}
+      </time>
+    </div>
+    
+    {% if status %}
+      {% include '@eldir/components/hosting-status-badge.html.twig' with {
+        'status': status,
+        'label': status,
+      } %}
+    {% endif %}
+  </div>
+  
+  <div class="task-card-body">
+    {% if description %}
+      <p class="task-description">{{ description }}</p>
+    {% endif %}
+    
+    {% if site or platform %}
+      <div class="task-entities">
+        {% if site %}
+          <span class="task-entity task-site">{{ site }}</span>
+        {% endif %}
+        {% if platform %}
+          <span class="task-entity task-platform">{{ platform }}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+  
+  {% if log %}
+    <details class="task-card-log">
+      <summary>{{ 'View log'|t }}</summary>
+      <pre class="task-log-output"><code>{{ log }}</code></pre>
+    </details>
+  {% endif %}
+</article>

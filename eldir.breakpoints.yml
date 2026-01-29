@@ -1,13 +1,39 @@
 eldir.mobile:
-  label: mobile
+  label: Mobile
   mediaQuery: '(min-width: 0px)'
   weight: 0
   multipliers:
     - 1x
+    - 2x
 
-eldir.wide:
-  label: wide
-  mediaQuery: '(min-width: 960px)'
+eldir.tablet:
+  label: Tablet
+  mediaQuery: '(min-width: 768px)'
   weight: 1
   multipliers:
     - 1x
+    - 2x
+
+eldir.desktop:
+  label: Desktop
+  mediaQuery: '(min-width: 1024px)'
+  weight: 2
+  multipliers:
+    - 1x
+    - 2x
+
+eldir.wide:
+  label: Wide Desktop
+  mediaQuery: '(min-width: 1280px)'
+  weight: 3
+  multipliers:
+    - 1x
+    - 2x
+
+eldir.ultrawide:
+  label: Ultra Wide
+  mediaQuery: '(min-width: 1600px)'
+  weight: 4
+  multipliers:
+    - 1x
+    - 2x

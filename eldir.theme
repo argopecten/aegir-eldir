@@ -16,6 +16,52 @@ function eldir_theme($existing, $type, $theme, $path) {
       'render element' => 'info_listing',
       'template' => 'item-info-listing',
     ],
+    'hosting_status_badge' => [
+      'variables' => [
+        'status' => NULL,
+        'label' => NULL,
+        'icon' => NULL,
+        'attributes' => [],
+      ],
+      'template' => 'components/hosting-status-badge',
+    ],
+    'hosting_panel' => [
+      'variables' => [
+        'title' => NULL,
+        'content' => NULL,
+        'collapsible' => FALSE,
+        'collapsed' => FALSE,
+        'actions' => NULL,
+        'attributes' => [],
+      ],
+      'template' => 'components/hosting-panel',
+    ],
+    'hosting_task_card' => [
+      'variables' => [
+        'task_id' => NULL,
+        'task_type' => NULL,
+        'status' => NULL,
+        'timestamp' => NULL,
+        'description' => NULL,
+        'site' => NULL,
+        'platform' => NULL,
+        'log' => NULL,
+        'attributes' => [],
+      ],
+      'template' => 'components/hosting-task-card',
+    ],
+    'hosting_entity_chip' => [
+      'variables' => [
+        'entity_type' => NULL,
+        'entity_id' => NULL,
+        'label' => NULL,
+        'url' => NULL,
+        'status' => NULL,
+        'icon' => NULL,
+        'attributes' => [],
+      ],
+      'template' => 'components/hosting-entity-chip',
+    ],
   ];
 }
 
@@ -323,6 +369,65 @@ function eldir_info_table_pre_render(array $element) {
   }
 
   return $element;
+}
+
+/**
+ * Preprocesses variables for hosting_status_badge template.
+ */
+function eldir_preprocess_hosting_status_badge(array &$variables) {
+  // Ensure attributes object exists
+  if (!isset($variables['attributes']) || !is_array($variables['attributes'])) {
+    $variables['attributes'] = [];
+  }
+  
+  // Add default label if not provided
+  if (empty($variables['label']) && !empty($variables['status'])) {
+    $variables['label'] = ucfirst($variables['status']);
+  }
+}
+
+/**
+ * Preprocesses variables for hosting_panel template.
+ */
+function eldir_preprocess_hosting_panel(array &$variables) {
+  // Ensure attributes object exists
+  if (!isset($variables['attributes']) || !is_array($variables['attributes'])) {
+    $variables['attributes'] = [];
+  }
+}
+
+/**
+ * Preprocesses variables for hosting_task_card template.
+ */
+function eldir_preprocess_hosting_task_card(array &$variables) {
+  // Ensure attributes object exists
+  if (!isset($variables['attributes']) || !is_array($variables['attributes'])) {
+    $variables['attributes'] = [];
+  }
+  
+  // Add live update data attribute for JavaScript
+  if (!empty($variables['task_id'])) {
+    $variables['attributes']['data-task-id'] = $variables['task_id'];
+    $variables['attributes']['data-task-status'] = $variables['status'] ?? 'unknown';
+  }
+}
+
+/**
+ * Preprocesses variables for hosting_entity_chip template.
+ */
+function eldir_preprocess_hosting_entity_chip(array &$variables) {
+  // Ensure attributes object exists
+  if (!isset($variables['attributes']) || !is_array($variables['attributes'])) {
+    $variables['attributes'] = [];
+  }
+  
+  // Add entity data attributes
+  if (!empty($variables['entity_type'])) {
+    $variables['attributes']['data-entity-type'] = $variables['entity_type'];
+  }
+  if (!empty($variables['entity_id'])) {
+    $variables['attributes']['data-entity-id'] = $variables['entity_id'];
+  }
 }
 
 /**

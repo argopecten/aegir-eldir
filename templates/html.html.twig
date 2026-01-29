@@ -1,13 +1,29 @@
+{#
+/**
+ * @file
+ * Theme implementation for HTML document wrapper.
+ * Enhanced for modern browsers and accessibility.
+ */
+#}
 <!DOCTYPE html>
-<html{{ html_attributes }}>
+<html{{ html_attributes.addClass('no-js') }}>
   <head>
     <head-placeholder token="{{ placeholder_token }}">
     <title>{{ head_title|safe_join(' | ') }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#666">
     <css-placeholder token="{{ placeholder_token }}">
     <js-placeholder token="{{ placeholder_token }}">
+    <script>
+      // Replace no-js with js class for progressive enhancement
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+    </script>
   </head>
-  <body{{ attributes }}>
-    <a href="#main-content" class="visually-hidden focusable skip-link">{{ 'Skip to main content'|t }}</a>
+  <body{{ attributes.addClass('aegir') }}>
+    <a href="#main-content" class="visually-hidden focusable skip-link">
+      {{ 'Skip to main content'|t }}
+    </a>
     {{ page_top }}
     {{ page }}
     {{ page_bottom }}
