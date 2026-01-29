@@ -1,39 +1,60 @@
 # Aegir Eldir Theme - AI Coding Agent Instructions
 
+**Last Updated**: January 29, 2026  
+**Status**: Modernized - D11 Production Ready
+
 ## Repository Overview
 
-**Aegir Eldir** is the official presentation layer for Aegir Hostmaster, providing the visual interface and user experience for all hosting management operations. It's a Drupal 11 theme that renders hosting entities (sites, platforms, servers, tasks) with specialized templates and styling.
+**Aegir Eldir** is the official presentation layer for Aegir Hostmaster, providing a modern, responsive visual interface for all hosting management operations. This is a fully modernized Drupal 11 theme that renders hosting entities (sites, platforms, servers, tasks) with BEM-structured templates, CSS variables, and responsive design while preserving the classic D7 Aegir look and feel.
 
-**Technology Stack**: Drupal 11, Twig, CSS3, JavaScript (Drupal.behaviors)
+**Technology Stack**: Drupal 11, Twig, CSS3 (with variables), Modern JavaScript (Drupal.behaviors)
 
-**Architecture**: Entity-driven rendering with custom theme hooks, preprocess functions, and Aegir-specific UI components.
+**Architecture**: Entity-driven rendering with custom theme hooks, comprehensive preprocess functions, BEM CSS methodology, and hosting module integration.
+
+**Theme Philosophy**: Modern, flexible, responsive implementation that maintains D7 visual identity on desktop while adapting seamlessly to all screen sizes.
 
 ## Directory Structure
 
 ```
 aegir-eldir/
 ├── templates/                    # Twig templates
-│   ├── page.html.twig           # Page layout
+│   ├── page.html.twig           # Page layout (responsive)
 │   ├── node.html.twig           # Node display
+│   ├── html.html.twig           # HTML document wrapper
 │   ├── item-info-listing.html.twig  # Custom: property tables
-│   ├── hosting-server.html.twig     # Server entity display
+│   ├── hosting-site.html.twig   # Site entity with sidebar support
+│   ├── hosting-task.html.twig   # Task entity (BEM structure)
+│   ├── hosting-server.html.twig # Server entity display
 │   ├── hosting-queues-table.html.twig  # Task queue table
-│   └── hosting-service-status-cell.html.twig  # Service status
-├── css/                          # Stylesheets
-│   ├── base.css                 # Typography, reset, forms
-│   ├── layout.css               # Page structure, grid, responsive
-│   ├── components.css           # Tabs, menus, blocks, buttons
-│   └── aegir.css                # Aegir-specific UI
-├── js/                          # JavaScript (to be implemented)
-│   └── aegir-tasks.js           # Task queue updates, log filtering
-├── eldir.theme                  # Preprocess hooks, theme logic
+│   ├── hosting-service-status-cell.html.twig  # Service status
+│   └── components/              # Reusable components
+│       ├── hosting-panel.html.twig
+│       ├── hosting-status-badge.html.twig
+│       ├── hosting-task-card.html.twig
+│       └── hosting-entity-chip.html.twig
+├── css/                          # Modern CSS architecture
+│   ├── variables.css            # CSS custom properties (NEW)
+│   ├── base.css                 # Typography, reset, forms (modernized)
+│   ├── layout.css               # Responsive flexbox layout
+│   ├── components.css           # Tabs, menus, blocks (modernized)
+│   ├── aegir.css                # Aegir-specific + BEM components
+│   └── responsive.css           # Additional responsive rules
+├── js/                          # Progressive enhancement
+│   └── eldir.js                 # All interactive behaviors (✅ complete)
+├── eldir.theme                  # Preprocess hooks, theme logic (enhanced)
 ├── eldir.info.yml               # Theme metadata, regions, libraries
 ├── eldir.libraries.yml          # CSS/JS library definitions
-├── eldir.breakpoints.yml        # Responsive breakpoints
-├── logo.svg                     # Aegir logo
-└── screenshot.png               # Theme preview
+├── eldir.breakpoints.yml        # 5-tier responsive breakpoints
+├── eldir.settings.yml           # Default theme settings
+├── images/                      # SVG and raster assets
+│   ├── svg/                     # SVG logos and icons
+│   └── raster/                  # Background sprites
+└── doc/                         # Documentation
+    ├── eldir-d7.md              # D7 architecture reference
+    └── eldir-d11.md             # D11 implementation guide
 
 **Key Principle**: This theme ONLY handles presentation. All data logic resides in hosting modules.
+**Design System**: CSS variables, BEM methodology, mobile-first responsive, WCAG AA compliant.
 ```
 
 ## Theme Architecture

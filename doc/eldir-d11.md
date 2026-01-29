@@ -1,474 +1,1053 @@
-# Eldir (Drupal 11) Theme System Architecture Document
+# Eldir Theme - Developer Guide (Drupal 11)
 
-## Scope
-This document describes the Eldir theme for Drupal 11, which is a modernized implementation based on the Drupal 7 Eldir theme (documented in [eldir-d7.md](eldir-d7.md)). It preserves the Eldir visual identity, layout structure, key selectors, and Aegir-specific UI patterns while using Drupal 11 theming standards (Twig, libraries, asset pipelines).
+## Overview
 
-## Implementation Status
-**Status: Implemented and operational** (with ongoing enhancements)
+Modern implementation of the Eldir theme for Drupal 11, preserving D7 visual identity while using modern CSS architecture and theming standards.
 
-This theme is fully functional and actively used in Aegir Hostmaster Drupal 11 installations. All core features from the Drupal 7 version have been migrated to modern Drupal 11 standards.
+**Status**: Production ready
 
-**Core Features:**
-- ✅ Twig templates for all page types and entity displays
-- ✅ CSS architecture (base, layout, components, aegir-specific)
-- ✅ Responsive breakpoint definitions
-- ✅ Custom theme hook for info tables (`item_info_listing`)
-- ✅ Preprocess functions for HTML, page, node, and entities
-- ✅ Authentication page layouts (login, register, password)
-- ✅ Menu templates (main and secondary)
+## Technical Stack
 
-**In Progress / Planned:**
-- ⚠️ JavaScript integration (task queue updates, log filtering)
-- ⚠️ Complete mobile responsive optimization
-- ⚠️ Theme suggestions for hosting entities
-- ⚠️ Single Directory Components (SDC) migration
+- **Templates**: Twig (`.html.twig`)
+- **CSS**: Modern CSS with Custom Properties (CSS Variables)
+- **Layout**: CSS Grid + Flexbox
+- **JavaScript**: ES6+ with Drupal.behaviors
+- **Responsive**: Mobile-first with 5 breakpoints
+- **Accessibility**: WCAG AA compliant
 
-For detailed implementation status and development roadmap, see [../.github/AI-INSTRUCTIONS.md](../.github/AI-INSTRUCTIONS.md).
+## Architecture
 
-## Goals and constraints
-- ✅ Preserve the Eldir visual identity and layout structure from Drupal 7
-- ✅ Keep Aegir-specific selectors and UI behaviors that modules rely on
-- ✅ Align with Drupal 11 theming (Twig, libraries, asset pipelines)
-- ✅ Provide a maintainable template structure
+### CSS Architecture
 
-## Drupal 11 theming architecture overview
-- Templates are Twig (`*.html.twig`), not PHP templates.
-- Theme info is defined in `eldir.info.yml`.
-- Assets are attached via `eldir.libraries.yml` and `attach_library()`.
-- Preprocess logic lives in `eldir.theme` using `hook_preprocess_HOOK()` and `hook_theme()`.
-- Single Directory Components (SDC) can be used for reusable UI blocks.
-- Layouts can be provided by core Layout Builder or theme templates.
+**Design Token System** (`css/variables.css`)
+```css
+:root {
+  /* Colors */
+  --color-primary: #16527f;
+  --color-accent: #6ac;
+  --color-header: #666;
+  --color-border: #e8e8e8;
+  
+  /* Spacing (1rem = 16px) */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Typography */
+  --font-family-base: "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 13px;
+  --line-height-base: 1.54;
+  
+  /* Other */
+  --border-radius: 4px;
+  --transition-duration: 0.2s;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+}
+```
 
-## Theme file structure (actual)
+**CSS Layer Structure**
+1. `variables.css` - Design tokens
+2. `base.css` - Reset, typography, forms
+3. `layout.css` - Grid structure, regions
+4. `components.css` - UI components
+5. `aegir.css` - Hosting-specific styles
+6. `responsive.css` - Media queries
+
+### File Structure
+
 ```
 eldir/
-  composer.json
-  eldir.info.yml
-  eldir.libraries.yml
-  eldir.settings.yml
-  eldir.theme
-  eldir.breakpoints.yml
-  config/
-    install/
-      block.block.eldir_main_menu.yml
-      block.block.eldir_secondary_menu.yml
-    schema/
-      eldir.schema.yml
-  templates/
-    html.html.twig
-    page.html.twig
-    page--user--login.html.twig
-    page--user--register.html.twig
-    page--user--password.html.twig
-    menu--main.html.twig
-    menu--secondary.html.twig
-    node.html.twig
-    block.html.twig
-    region.html.twig
-    item-info-listing.html.twig
-    hosting-server.html.twig
-    hosting-queues-table.html.twig
-    hosting-service-status-cell.html.twig
-  css/
-    base.css
-    layout.css
-    components.css
-    aegir.css
-  images/
-    raster/
-      (sprite.png, page.png, etc.)
-    svg/
-      aegir_logo_horizontal.svg
-      aegir_logo.svg
-      aegir_sprite.svg
-      aegir_icons.svg
-  logo.png
-  doc/
-    README.md
-    eldir-d11.md
-    eldir-d7.md
+├── eldir.info.yml              # Theme metadata
+├── eldir.libraries.yml         # Asset definitions
+├── eldir.theme                 # PHP preprocessors
+├── eldir.breakpoints.yml       # Responsive breakpoints
+├── eldir.settings.yml          # Settings schema
+├── css/
+│   ├── variables.css           # Design tokens
+│   ├── base.css                # Foundation styles
+│   ├── layout.css              # Layout grid
+│   ├── components.css          # UI components
+│   ├── aegir.css               # Hosting styles
+│   └── responsive.css          # Media queries
+├── js/
+│   └── eldir.js                # Behaviors
+├── templates/
+│   ├── html.html.twig
+│   ├── page.html.twig
+│   ├── node.html.twig
+│   ├── page--user--*.html.twig # Auth pages
+│   ├── hosting-*.html.twig     # Hosting entities
+│   └── components/             # Reusable components
+│       ├── hosting-status-badge.html.twig
+│       ├── hosting-panel.html.twig
+│       ├── hosting-task-card.html.twig
+│       └── hosting-entity-chip.html.twig
+└── images/
+    └── svg/                    # Vector assets
 ```
 
-## Theme metadata and regions
-**File: `eldir.info.yml`**
+## Component System
 
-```yaml
-name: Eldir
-type: theme
-description: Companion theme for the Aegir hosting system.
-core_version_requirement: ^11
-base theme: stable9
-libraries:
-  - eldir/global-styling
-regions:
-  navigation: Navigation
-  header: Header
-  help: Help
-  content: Content
-  content_bottom: Content bottom
-  sidebar_first: Sidebar top
-  sidebar_second: Sidebar bottom
-  footer: Footer
+### Registering Components
+
+**In `eldir.theme`:**
+```php
+function eldir_theme($existing, $type, $theme, $path) {
+  return [
+    'hosting_status_badge' => [
+      'variables' => [
+        'status' => NULL,
+        'label' => NULL,
+        'icon' => NULL,
+        'attributes' => [],
+      ],
+      'template' => 'components/hosting-status-badge',
+    ],
+  ];
+}
 ```
 
-### Region placement
-Region placement matches the Drupal 7 implementation:
-- `navigation` renders in the navigation bar.
-- `header` renders before page title and tabs.
-- `help` renders above main content.
-- `content` is main page content.
-- `content_bottom` renders after main content.
-- `sidebar_first` and `sidebar_second` render in the right sidebar.
-- `footer` renders before the secondary menu.
+### Using Components
 
-## Templates and layout
-### Document shell
-- `templates/html.html.twig`
-  - Outputs HTML5 doctype, language attributes, RDF namespaces (if enabled), and body classes.
-  - Adds the `aegir` class and preserves path- and node-type classes.
-  - Includes skip link for accessibility.
+**Render Array:**
+```php
+$build['status'] = [
+  '#theme' => 'hosting_status_badge',
+  '#status' => 'enabled',
+  '#label' => t('Active'),
+];
+```
 
-### Page layout
-- `templates/page.html.twig`
-  - Main wrapper: `#page-wrapper`.
-  - Header: `#header.reverse` with logo and site name.
-  - Navigation: `#navigation.reverse` with breadcrumb and `page.navigation` region.
-  - Console: `#console.reverse` with message output.
-  - Header region: `#header-region` for header blocks, page title, and primary tabs.
-  - Main content: `#page > #main > .page-content` for help, content, content_bottom, feed icons.
-  - Sidebar: `#right.sidebar` for `sidebar_first` and `sidebar_second`.
-  - Footer: `#footer.reverse` with footer region and secondary menu.
+**Twig Include:**
+```twig
+{% include '@eldir/components/hosting-status-badge.html.twig' with {
+  'status': 'enabled',
+  'label': 'Active'
+} %}
+```
 
-### Menus
-- `templates/menu--main.html.twig`
-  - Uses `.links.inline.clearfix` and `#main-menu` to preserve legacy selectors.
-- `templates/menu--secondary.html.twig`
-  - Uses `.links.inline` and `#secondary-menu` to match D7 selectors and footer styling.
+### Available Components
 
-### Auth pages
-- `templates/page--user--login.html.twig`
-- `templates/page--user--register.html.twig`
-- `templates/page--user--password.html.twig`
-  - Render the simplified auth box layout (`#auth_box`) from D7.
-  - Keep top/middle/bottom parts for logo, title/messages, and cross-links.
+**hosting_status_badge**
+- Variables: `status`, `label`, `icon`, `attributes`
+- Use: Color-coded status indicators
 
-### Custom theme hook template
-- `templates/item-info-listing.html.twig`
-  - Replaces D7 theme function for hosting info tables.
-  - Renders a table with `.hosting-info-table`, `.item-title`, `.item-value`.
+**hosting_panel**
+- Variables: `title`, `content`, `collapsible`, `collapsed`, `actions`, `attributes`
+- Use: Collapsible content sections
 
-## Preprocess and theme hooks (eldir.theme)
+**hosting_task_card**
+- Variables: `task_id`, `task_type`, `status`, `timestamp`, `description`, `site`, `platform`, `log`, `attributes`
+- Use: Enhanced task display with expandable logs
 
-### Implemented hooks
+**hosting_entity_chip**
+- Variables: `entity_type`, `entity_id`, `label`, `url`, `status`, `icon`, `attributes`
+- Use: Compact entity links with status
 
-**`eldir_theme()`**
-- Registers `item_info_listing` theme hook with template `item-info-listing.html.twig`
-- Used for hosting entity info tables
+## Preprocess Functions
+
+### Standard Preprocessors
 
 **`eldir_preprocess_html()`**
-- Adds `aegir` body class
-- Adds `wide` class when wide layout is enabled via theme settings
-- Adds `not-logged-in` class for anonymous users
-- Adds `node-page` and `ntype-<type>` classes on node pages
-- Adds `auth-page` class for login/register/password pages
-- Adds `page-user`, `page-admin`, `path-hosting` classes based on current path
-- Generates path-based classes (`path-<current_path>`)
+- Adds body classes: `.aegir`, `.wide`, `.path-*`, `.ntype-*`
+- Detects authentication pages
+- Handles logged-in state
 
 **`eldir_preprocess_page()`**
-- Handles messages and breadcrumb fallbacks
-- Generates tabs from local task plugins
-- Provides SVG logo when enabled and theme logo is used
-- Builds main and secondary menus via `eldir_build_menu()`
-- Splits tabs into `tabs` (primary) and `tabs2` (secondary) for layout
-- Ensures title is set from node or route
-- Prefixes node titles with type label (`<span class="label">Type</span>`)
-- Exposes `user_register` variable for auth pages
+- Manages messages and breadcrumbs
+- Builds local tasks (tabs)
+- Loads menu structures
+- Adds type labels to titles
 
 **`eldir_preprocess_node()`**
-- Adds type label to node titles
-- Converts `content.info` render arrays into `item_info_listing` format
-- Applies `eldir_info_table_pre_render()` callback
+- Adds node type labels
+- Converts info arrays to `item_info_listing`
 
-**Hosting entity preprocessors:**
-- `eldir_preprocess_entity__hosting_server()`
-- `eldir_preprocess_entity__hosting_site()`
-- `eldir_preprocess_entity__hosting_client()`
-- `eldir_preprocess_entity__hosting_task()`
-- All add data attributes via `eldir_add_entity_metadata_attributes()`
-- Site entities get `data-hosting-status` and status-based CSS classes
+### Entity Preprocessors
 
-**Additional preprocessors:**
-- `eldir_preprocess_menu__main()` - adds `hosting-main-menu` class
-- `eldir_preprocess_menu_local_tasks()` - adds `hosting-local-tasks` class on hosting routes
-- `eldir_preprocess_table()` - adds `hosting-table` class on hosting routes
-- `eldir_preprocess_form()` - adds `hosting-form` class to hosting forms
-- `eldir_preprocess_form_element()` - adds `hosting-form__element` class
-- `eldir_preprocess_item_info_listing()` - prepares items and children for table rendering
-
-### Helper functions
-
-**`eldir_info_table_pre_render()`**
-- Pre-render callback that converts item-type children into `#items` array
-- Extracts title, markup, weight, and description from form elements
-
-**`eldir_form_system_theme_settings_alter()`**
-- Adds theme settings form with:
-  - `use_svg_logo` - checkbox to prefer SVG logo
-  - `wide_layout` - checkbox to enable wide layout
-
-## Additional Resources
-
-For comprehensive implementation details, code examples, and development guidelines, see:
-
-- **[AI-INSTRUCTIONS.md](../.github/AI-INSTRUCTIONS.md)** - Complete technical documentation for developers and AI coding agents
-  - Detailed preprocess function implementations
-  - CSS architecture and selector reference
-  - JavaScript integration patterns (planned)
-  - Module integration checklist
-  - Development workflow and testing procedures
-  - Anti-patterns to avoid
-  - Future enhancement roadmap
-  - `main_menu_name` - machine name for main menu (default: "main")
-  - `secondary_menu_name` - machine name for secondary menu (default: "secondary")
-
-**`eldir_build_menu()`**
-- Builds menu render array by menu machine name
-- Uses menu tree API with current route parameters
-- Special handling for hosting entity add forms
+**`eldir_preprocess_entity__hosting_*`**
+- Adds data attributes for JavaScript
+- Adds status classes
+- Enhances entity metadata
 
 **`eldir_add_entity_metadata_attributes()`**
-- Adds standard data attributes to hosting entities:
-  - `data-entity-type`
-  - `data-entity-id`
-  - `data-view-mode`
-  - `data-entity-bundle`
-
-## Styling and asset strategy
-
-### Libraries
-**File: `eldir.libraries.yml`**
-
-```yaml
-global-styling:
-  css:
-    base:
-      css/base.css: {}
-      css/layout.css: {}
-      css/components.css: {}
-      css/aegir.css: {}
+Helper to add standard data attributes:
+```php
+$attributes['data-entity-type'] = $entity->getEntityTypeId();
+$attributes['data-entity-id'] = $entity->id();
+$attributes['data-view-mode'] = $view_mode;
 ```
 
-Loaded via `eldir.info.yml` libraries declaration.
+## JavaScript Behaviors
 
-### CSS organization (implemented)
-- **`css/base.css`** - Reset, typography, link styles, form controls
-- **`css/layout.css`** - Header/nav/page/sidebar/footer layout, limiter, grid background
-- **`css/components.css`** - Tabs, menus, blocks, messages, buttons, tables
-- **`css/aegir.css`** - Aegir-specific UI (hosting tables, task buttons, queue forms)
+All behaviors use `Drupal.behaviors` API and `once()` for proper attachment.
 
-### Assets
-- Raster assets in `images/raster/` referenced by CSS
-- SVG logo sources in `images/svg/` for SVG logo output
-- `logo.png` at theme root for fallback and theme settings
+### Available Behaviors
 
-### Theme settings
-**File: `eldir.settings.yml`**
+**eldirSmoothScroll**
+- Smooth scrolling for anchor links
+- Updates URL without page jump
 
-```yaml
-use_svg_logo: true
-wide_layout: false
-main_menu_name: main
-secondary_menu_name: secondary
+**eldirResponsiveTables**
+- Wraps tables in scroll containers
+- Adds data-label attributes for mobile
+
+**eldirMobileNav**
+- Mobile navigation toggle
+- ESC key to close
+- Click outside to close
+
+**eldirFormEnhancement**
+- Real-time validation feedback
+- Required field indicators
+
+**eldirAutoExpandTextarea**
+- Auto-height textareas as user types
+
+**eldirLiveTaskStatus**
+- Placeholder for WebSocket integration
+- Adds live update indicators
+
+**eldirCollapsible**
+- Collapsible panels via data attributes
+- Keyboard accessible
+
+**eldirActiveTrail**
+- Highlights current page in navigation
+
+**eldirCopyCode**
+- Copy-to-clipboard for code blocks
+- Visual feedback on copy
+
+### Creating New Behaviors
+
+```javascript
+Drupal.behaviors.myBehavior = {
+  attach: function (context, settings) {
+    once('my-behavior', '.my-selector', context).forEach(function(element) {
+      // Your code here
+    });
+  }
+};
 ```
 
-Settings configurable via **Appearance → Settings → Eldir**:
-- **Prefer SVG logo** - Use SVG version of theme logo
-- **Enable wide layout** - Apply wider layout (adds `body.wide` class)
-- **Main menu machine name** - Which menu to use as main menu
-- **Secondary menu machine name** - Which menu to use as secondary menu
+## Responsive Design
 
 ### Breakpoints
-**File: `eldir.breakpoints.yml`**
+
+Defined in `eldir.breakpoints.yml`:
 
 ```yaml
 eldir.mobile:
-  label: mobile
+  label: Mobile
   mediaQuery: '(min-width: 0px)'
   weight: 0
-  multipliers:
-    - 1x
-
-eldir.wide:
-  label: wide
-  mediaQuery: '(min-width: 960px)'
+  
+eldir.tablet:
+  label: Tablet
+  mediaQuery: '(min-width: 768px)'
   weight: 1
-  multipliers:
-    - 1x
+  
+eldir.desktop:
+  label: Desktop
+  mediaQuery: '(min-width: 1024px)'
+  weight: 2
+  
+eldir.wide:
+  label: Wide
+  mediaQuery: '(min-width: 1280px)'
+  weight: 3
+  
+eldir.ultrawide:
+  label: Ultrawide
+  mediaQuery: '(min-width: 1600px)'
+  weight: 4
 ```
 
-### Default block placement
-**Files in `config/install/`:**
-- `block.block.eldir_main_menu.yml` - Places Main menu in `navigation` region
-- `block.block.eldir_secondary_menu.yml` - Places Secondary menu in `footer` region
+### Using in CSS
 
-**Config schema:**
-- `config/schema/eldir.schema.yml` - Defines schema for theme settings
+```css
+/* Mobile first (base styles) */
+.element {
+  padding: var(--spacing-sm);
+}
 
-### CSS organization
-- `css/base.css`: reset, typography, link styles, form controls.
-- `css/layout.css`: header/nav/page/sidebar/footer layout, limiter, grid background.
-- `css/components.css`: tabs, menus, blocks, messages, buttons, tables.
-- `css/aegir.css`: Aegir-specific UI (hosting tables, task buttons, queue forms).
+/* Tablet */
+@media (min-width: 768px) {
+  .element {
+    padding: var(--spacing-md);
+  }
+}
 
-### Assets
-- Raster assets remain in `images/raster/` and are referenced by CSS.
-- SVG logo sources in `images/svg/` are referenced for modern SVG logo output.
-- `logo.png` retained at theme root for fallback and theme settings.
+/* Desktop */
+@media (min-width: 1024px) {
+  .element {
+    padding: var(--spacing-lg);
+  }
+}
+```
 
-### Theme settings
-- `eldir.settings.yml` should expose:
-  - Logo usage (SVG vs raster).
-  - “Wide layout” toggle to apply `body.wide` class.
+## CSS Class Naming
 
-### Default block placement
-- `block.block.eldir_main_menu.yml` places the Main menu block in the `navigation` region.
-- `block.block.eldir_secondary_menu.yml` places the Secondary menu block in the `footer` region.
+### Critical Classes (Hosting Module Dependencies)
 
-## Selector compatibility (carry-over from D7)
-These selectors should be preserved or reintroduced in Twig templates and CSS to maintain compatibility with Aegir UI and existing behavior:
-- Layout: `#page-wrapper`, `.limiter`, `#page`, `#main`, `#right.sidebar`, `.page-content`.
-- Header/nav: `#header`, `#navigation`, `.logo img`, `.site-name`, `#main-menu`, `#secondary-menu`.
-- Console: `#console`, `.messages`, `.error`, `.warning`, `.ok`.
-- Tabs/actions: `ul.tabs`, `ul.primary`, `ul.secondary`, `ul.action-links`.
-- Nodes: `.node`, `.node-page`, `.ntype-<type>`, `.page-title`, `.label`.
-- Sidebar: `.sidebar .block`, `.sidebar ul.menu`, `.sidebar .item-list`.
-- Aegir: `.hosting-info-table`, `.hosting-button-enabled`, `.hosting-button-disabled`, `#hosting-task-log`.
-- Auth pages: `body.not-logged-in.page-user`, `#auth_box`, `#top_part`, `#middle_part`, `#bottom_part`.
+These classes are used by hosting modules and must be preserved:
 
-## Rendering flow (Drupal 11)
-1. Theme registry loads `eldir.info.yml` and `eldir.libraries.yml`.
-2. Preprocess hooks in `eldir.theme` prepare variables.
-3. `html.html.twig` renders the page shell and body classes.
-4. `page.html.twig` composes layout and regions.
-5. Route-specific page templates override default layout (auth pages).
-6. Component templates (optional SDC) render header/navigation/footer blocks.
-7. Libraries attach CSS/JS to the page and components.
+**Info Tables:**
+- `.hosting-info-table` - Main table wrapper
+- `.item-title` - Table row label
+- `.item-value` - Table row value
 
-## Migration notes from Drupal 7
-- Replace `page.tpl.php` with `page.html.twig` and move PHP logic into preprocess.
-- Replace theme functions with Twig templates and preprocess mapping.
-- Remove legacy IE6 support and `ie6.css`.
-- Replace `hook_css_alter()` with library overrides and `libraries-override` in `eldir.info.yml`
+**Task Items:**
+- `.hosting-task-item` - Task wrapper
+- `.hosting-task-status` - Status cell
+- `.hosting-task-log` - Log output
 
-## Key Features Implemented
+**Status Indicators:**
+- `.hosting-status-cell` - Status display
+- `.is-available` / `.is-unavailable` - Server status
+- `.hosting-status-enabled` / `.hosting-status-disabled` - Entity state
 
-### Body Classes
-The theme adds comprehensive body classes for styling hooks:
-- `aegir` - Always present on all pages
-- `wide` - When wide layout is enabled
-- `not-logged-in` - For anonymous users
-- `node-page` - On node pages
-- `ntype-{type}` - Node type identifier
-- `auth-page` - On login/register/password pages
-- `page-user`, `page-admin`, `path-hosting` - Path-based classes
-- `path-{current-path}` - Normalized current path
+**Body Classes:**
+- `.aegir` - All Aegir pages
+- `.path-hosting` - Hosting module routes
+- `.ntype-{type}` - Node type specific
+- `.wide` - Wide layout mode
 
-### SVG Logo Support
-When "Prefer SVG logo" is enabled and the theme's default logo is used, the theme automatically substitutes the PNG logo with `images/svg/aegir_logo_horizontal.svg`.
+### Modern Classes (New)
 
-### Node Type Labels
-Node titles are automatically prefixed with their type label wrapped in `<span class="label">Type</span>` for better visual hierarchy.
+**Component Classes:**
+- `.hosting-status-badge` - Status indicators
+- `.hosting-panel` - Content panels
+- `.hosting-task-card` - Task display cards
+- `.hosting-entity-chip` - Entity reference chips
 
-### Hosting Entity Data Attributes
-All hosting entities receive standardized data attributes:
-- `data-entity-type` - Entity type ID
-- `data-entity-id` - Entity ID
-- `data-view-mode` - Current view mode
-- `data-entity-bundle` - Entity bundle
-- `data-hosting-status` - Site status (for hosting_site entities)
+**Utility Classes:**
+- `.table-responsive-wrapper` - Table scroll container
+- `.mobile-nav-toggle` - Mobile menu button
+- `.live-indicator` - Live update indicator
+- `.copy-code-button` - Copy button for code blocks
 
-### Menu Building
-Menus are built dynamically from menu names configured in theme settings, with special handling for hosting entity add forms to ensure proper active trail highlighting.
+## Theme Settings API
 
-## Selector Compatibility (Preserved from D7)
-These selectors are maintained in Twig templates and CSS for Aegir UI compatibility:
-- **Layout**: `#page-wrapper`, `.limiter`, `#page`, `#main`, `#right.sidebar`, `.page-content`
-- **Header/nav**: `#header`, `#navigation`, `.logo img`, `.site-name`, `#main-menu`, `#secondary-menu`
-- **Console**: `#console`, `.messages`, `.error`, `.warning`, `.ok`
-- **Tabs/actions**: `ul.tabs`, `ul.primary`, `ul.secondary`, `ul.action-links`
-- **Nodes**: `.node`, `.node-page`, `.ntype-<type>`, `.page-title`, `.label`
-- **Sidebar**: `.sidebar .block`, `.sidebar ul.menu`, `.sidebar .item-list`
-- **Aegir-specific**: `.hosting-info-table`, `.hosting-table`, `.hosting-main-menu`, `.hosting-form`, `.hosting-site--status-*`
-- **Auth pages**: `body.not-logged-in.page-user`, `.auth-page`, `#auth_box`
+### Accessing Settings
 
-## Implemented Templates
-All templates are in `templates/` directory:
-- `html.html.twig` - Document shell with body classes
-- `page.html.twig` - Main page layout
-- `page--user--login.html.twig` - Login page layout
-- `page--user--register.html.twig` - Registration page layout
-- `page--user--password.html.twig` - Password reset page layout
-- `menu--main.html.twig` - Main menu with preserved selectors
-- `menu--secondary.html.twig` - Secondary menu with preserved selectors
-- `node.html.twig` - Node display with type labels
-- `block.html.twig` - Block wrapper
-- `region.html.twig` - Region wrapper
-- `item-info-listing.html.twig` - Hosting info table template
-- `hosting-server.html.twig` - Server entity display
-- `hosting-queues-table.html.twig` - Task queue table
-- `hosting-service-status-cell.html.twig` - Service status indicator
+```php
+$use_svg = theme_get_setting('use_svg_logo');
+$wide = theme_get_setting('wide_layout');
+$main_menu = theme_get_setting('main_menu_name') ?: 'main';
+```
 
-## D7-to-D11 Feature Parity
+### Available Settings
 
-### Preserved Behaviors
-✅ SVG logo substitution when theme logo is used  
-✅ Node-type label prefixing in titles  
-✅ Info listing tables (`.hosting-info-table`)  
-✅ Console message styles with severity classes  
-✅ Auth page layout (`#auth_box` structure)  
-✅ Wide layout toggle via theme settings  
-✅ Path-based and node-type body classes  
-✅ Primary/secondary tab separation  
+- `use_svg_logo` (bool) - Prefer SVG logo
+- `wide_layout` (bool) - Enable 950px layout
+- `main_menu_name` (string) - Main menu machine name
+- `secondary_menu_name` (string) - Secondary menu machine name
 
-### Modernized Implementations
-- ✅ Twig templates replace PHP templates
-- ✅ Preprocess hooks replace theme functions
-- ✅ Theme settings form integration
-- ✅ Menu building via Menu Tree API
-- ✅ Entity data attributes for modern JS integration
-- ✅ Responsive breakpoints defined
-- ✅ Config schema for settings validation
+### Adding Settings
 
-## Verification Checklist
-✅ Aegir hosting entities display `.hosting-info-table` and type labels  
-✅ Task pages apply `.ntype-task` styles  
-✅ Main menu appears in `#navigation` region  
-✅ Secondary menu appears in `#footer` region  
-✅ Auth pages (`/user/login`, `/user/register`, `/user/password`) show `#auth_box` layout  
-✅ Console messages render with expected severity colors  
-✅ SVG logo substitution works when enabled  
-✅ Wide layout applies when enabled  
-✅ Hosting entity data attributes are present  
+In `eldir_form_system_theme_settings_alter()`:
 
-## Development Notes
+```php
+$form['my_setting'] = [
+  '#type' => 'checkbox',
+  '#title' => t('My Setting'),
+  '#default_value' => theme_get_setting('my_setting'),
+];
+```
 
-### Adding New Hosting Entity Support
-To add support for new hosting entity types:
-1. Create preprocess hook: `eldir_preprocess_entity__hosting_ENTITY()`
-2. Call `eldir_add_entity_metadata_attributes($variables)`
-3. Add entity-specific logic as needed
-4. Create custom template if needed: `templates/hosting-ENTITY.html.twig`
+## Template Suggestions
 
-### Customizing Info Tables
-Info tables use the `item_info_listing` theme hook. To customize:
-1. Modify `eldir_preprocess_item_info_listing()` for data preparation
-2. Edit `templates/item-info-listing.html.twig` for markup
-3. Style with `.hosting-info-table` selectors in `css/aegir.css`
+### Custom Suggestions
 
-### Theme Settings
-Theme settings are exposed via `eldir_form_system_theme_settings_alter()` and stored in theme config. Access via `theme_get_setting('setting_name')`.
+Add in preprocess functions:
 
-## Implementation Status Summary
-**Status: Complete and Production-Ready**
+```php
+function eldir_preprocess_node(&$variables) {
+  $node = $variables['node'];
+  $variables['theme_hook_suggestions'][] = 'node__' . $node->bundle() . '__' . $variables['view_mode'];
+}
+```
 
-All core features from Drupal 7 have been successfully migrated to Drupal 11. The theme maintains visual and functional parity with the D7 version while using modern Drupal 11 APIs and best practices.
+### Existing Suggestions
+
+- `page--user--login.html.twig` - Login page
+- `page--user--register.html.twig` - Registration page
+- `page--user--password.html.twig` - Password reset
+- `hosting-server.html.twig` - Server entities
+- `hosting-queues-table.html.twig` - Queue display
+
+## Performance
+
+### CSS Organization
+
+- Variables loaded first (all files use them)
+- Base styles second (foundation)
+- Layout third (structure)
+- Components fourth (UI elements)
+- Responsive last (overrides)
+
+### JavaScript Loading
+
+```yaml
+eldir/global:
+  js:
+    js/eldir.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/once
+```
+
+### Optimization Tips
+
+1. Use CSS variables for runtime theming
+2. Minimize specificity (prefer classes over IDs)
+3. Use `once()` in JavaScript behaviors
+4. Leverage browser caching with aggregation
+5. Minimize DOM queries in JavaScript
+
+## Testing
+
+### Visual Regression
+
+1. Compare with D7 screenshots at 1280px
+2. Verify responsive behavior at all breakpoints
+3. Check print styles
+4. Test with browser zoom (125%, 150%, 200%)
+
+### Functionality
+
+1. Keyboard navigation (Tab, Enter, ESC)
+2. Screen reader compatibility
+3. Form submission and validation
+4. Task status updates
+5. Table sorting and filtering
+
+### Browser Testing
+
+- Chrome/Edge (latest)
+- Firefox (latest)
+- Safari (latest)
+- Mobile Safari (iOS)
+- Chrome Mobile (Android)
+
+### Accessibility Testing
+
+- WAVE browser extension
+- axe DevTools
+- Lighthouse accessibility audit
+- Manual keyboard testing
+- Screen reader testing (NVDA, JAWS, VoiceOver)
+
+## Debugging
+
+### Template Debugging
+
+Enable Twig debug in `development.services.yml`:
+
+```yaml
+parameters:
+  twig.config:
+    debug: true
+    auto_reload: true
+    cache: false
+```
+
+### CSS Variables Inspection
+
+In browser DevTools:
+```javascript
+getComputedStyle(document.documentElement).getPropertyValue('--color-accent')
+```
+
+### JavaScript Console
+
+```javascript
+// Check if behavior attached
+Drupal.behaviors.eldirMobileNav.attach(document, drupalSettings);
+
+// List all behaviors
+Object.keys(Drupal.behaviors)
+```
+
+## Extending the Theme
+
+### Creating a Subtheme
+
+**my_eldir.info.yml:**
+```yaml
+name: My Eldir
+type: theme
+base theme: eldir
+core_version_requirement: ^11
+libraries:
+  - my_eldir/global
+```
+
+**my_eldir.libraries.yml:**
+```yaml
+global:
+  css:
+    theme:
+      css/custom.css: {}
+  js:
+    js/custom.js: {}
+```
+
+**Override CSS variables:**
+```css
+/* css/custom.css */
+:root {
+  --color-accent: #0066cc;
+}
+```
+
+### Adding Custom Components
+
+1. Create template in `templates/components/my-component.html.twig`
+2. Register in `eldir_theme()` hook (subtheme)
+3. Add CSS in subtheme stylesheet
+4. Add preprocess function if needed
+
+## API Reference
+
+### Theme Hooks
+
+```php
+// Register custom theme
+function eldir_theme($existing, $type, $theme, $path)
+
+// Preprocess functions
+function eldir_preprocess_html(&$variables)
+function eldir_preprocess_page(&$variables)
+function eldir_preprocess_node(&$variables)
+function eldir_preprocess_entity__TYPE(&$variables)
+function eldir_preprocess_HOOK(&$variables)
+
+// Theme settings
+function eldir_form_system_theme_settings_alter(&$form, $form_state)
+
+// Helper functions
+function eldir_build_menu($menu_name)
+function eldir_add_entity_metadata_attributes(&$variables)
+function eldir_info_table_pre_render($element)
+```
+
+### Twig Functions
+
+Available in templates:
+
+```twig
+{# Path functions #}
+{{ path('route.name') }}
+{{ url('route.name') }}
+
+{# Translation #}
+{{ 'Text to translate'|t }}
+{{ 'Hello @name'|t({'@name': name}) }}
+
+{# Theme functions #}
+{{ attach_library('eldir/global') }}
+
+{# Render #}
+{{ content }}
+{{ content.field_name }}
+{{ content|without('field_to_hide') }}
+
+{# Filters #}
+{{ text|clean_class }}
+{{ date|date('Y-m-d') }}
+```
+
+## Troubleshooting
+
+**Cache Issues**
+```bash
+drush cr  # Clear all caches
+drush cc css-js  # Clear CSS/JS aggregation
+```
+
+**Template Not Found**
+- Check file name matches theme hook
+- Verify template registered in `eldir_theme()`
+- Clear cache after adding templates
+
+**CSS Not Applied**
+- Verify library attached in template
+- Check library definition in `.libraries.yml`
+- Clear aggregation cache
+- Check for CSS syntax errors
+
+**JavaScript Not Running**
+- Check browser console for errors
+- Verify `once()` usage (prevents duplicate attachment)
+- Check behavior is properly structured
+- Ensure dependencies declared in library
+
+## Resources
+
+- [Drupal 11 Theming Guide](https://www.drupal.org/docs/theming-drupal)
+- [Twig Documentation](https://twig.symfony.com/doc/)
+- [CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/--*)
+- [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+
+---
+
+## Aegir Hosting Module Integration
+
+This section documents how Aegir hosting modules structure their output and what the theme needs to support.
+
+### Hosting Module Templates
+
+#### Core Module (`hosting`)
+
+**hosting-queues-table.html.twig**
+- Variables: `table` (render array), `queues` (array), `attributes`
+- Used by: `HostingQueuesController::listing()`
+- Classes: `.hosting-queues`, `.hosting-queues-table`
+
+#### Site Module (`hosting_site`)
+
+**hosting-site.html.twig**
+- Variables: `content`, `attributes`, `label`, `title_prefix`, `title_suffix`, `title_attributes`, `entity`, `view_mode`, `sidebar`
+- Classes: `.hosting-site`, `.hosting-site-content`, `.hosting-site-sidebar`
+- Sidebar includes: task queue, navigation
+
+**hosting-site-sidebar.html.twig**
+- Variables: `task_queue`, `navigation`, `attributes`
+- Used for: Entity view sidebar content
+
+**hosting-site-task-queue.html.twig**
+- Variables: `title`, `list`, `attributes`
+- Classes: `.hosting-panel`, `.hosting-panel--task-queue`, `.hosting-task-queue`
+
+**hosting-site-navigation.html.twig**
+- Variables: `title`, `list`, `attributes`
+- Classes: `.hosting-panel`, `.hosting-panel--navigation`, `.hosting-navigation`
+
+#### Server Module (`hosting_server`)
+
+**hosting-server.html.twig**
+- Variables: `content`, `attributes`, `label`, `title_prefix`, `title_suffix`, `title_attributes`, `entity`, `view_mode`, `sidebar`
+- Classes: `.hosting-server`, `.hosting-server-content`, `.hosting-server-sidebar`
+
+**hosting-service-status-cell.html.twig**
+- Variables: `text`, `available`, `service_type`, `provider_id`, `provider_label`, `attributes`
+- Used for: Service availability display
+- Classes: `.hosting-status-cell`, `.is-available` / `.is-unavailable`
+
+**hosting-server-sidebar.html.twig**
+- Variables: `task_queue`, `navigation`, `queue_summary`, `attributes`
+- Classes: `.hosting-sidebar`
+
+**hosting-server-task-queue.html.twig**
+- Variables: `title`, `list`, `attributes`
+- Classes: `.hosting-panel`, `.hosting-panel--task-queue`
+
+**hosting-server-navigation.html.twig**
+- Variables: `title`, `list`, `attributes`
+- Classes: `.hosting-panel`, `.hosting-panel--navigation`
+
+**hosting-server-queue-summary.html.twig**
+- Variables: `title`, `list`, `attributes`
+- Classes: `.hosting-panel`, `.hosting-queue-summary`
+
+#### Task Module (`hosting_task`)
+
+**hosting-task.html.twig**
+- Variables: `task`, `label`, `task_type`, `status`, `command`, `args`, `options`, `started`, `completed`, `duration`, `view_mode`
+- Classes: `.hosting-task`, `.hosting-task--{status}`, `.hosting-task--type-{type}`, `.hosting-task__header`, `.hosting-task__title`, `.hosting-task__meta`, `.hosting-task__type`, `.hosting-task__status`, `.hosting-task__status--{status}`, `.hosting-task__content`, `.hosting-task__section`, `.hosting-task__section--details`, `.hosting-task__section--timing`, `.hosting-task__details`, `.hosting-task__detail-item`, `.hosting-task__detail-label`, `.hosting-task__detail-value`, `.hosting-task__timing`, `.hosting-task__timing-item`, `.hosting-task__timing-label`, `.hosting-task__timing-value`
+- BEM-style naming convention
+
+### Entity Structure
+
+#### HostingSite Entity
+```php
+entity_keys: id, uuid, label (domain)
+fields:
+  - domain (string, required)
+  - client (entity_reference: hosting_client)
+  - platform (entity_reference: hosting_platform, required)
+  - db_server (entity_reference: hosting_server, required)
+  - db_name (string)
+  - profile (entity_reference: hosting_package)
+  - language (string)
+  - status (integer: QUEUED=0, ENABLED=1, DISABLED=-1, DELETED=-2)
+
+view_builder: HostingSiteViewBuilder
+routes:
+  - canonical: /hosting/sites/{hosting_site}
+  - add-form: /hosting/sites/add
+  - edit-form: /hosting/sites/{hosting_site}/edit
+  - delete-form: /hosting/sites/{hosting_site}/delete
+  - collection: /hosting/sites
+```
+
+#### HostingServer Entity
+```php
+Similar structure to HostingSite
+routes:
+  - canonical: /hosting/servers/{hosting_server}
+  - collection: /hosting/servers
+```
+
+#### HostingTask Entity
+```php
+entity_keys: id, uuid, label
+fields:
+  - label (string, required)
+  - task_type (string, required)
+  - status (string, required, default: 'queued')
+  - context_name (string, required)
+  - command (string, required)
+  - args (string_long, JSON array)
+  - options (string_long, JSON array)
+  - started (timestamp)
+  - completed (timestamp)
+  - log (text_long)
+
+Methods:
+  - getTaskType(): string
+  - getStatus(): string
+  - getCommand(): string
+  - getArgs(): array
+  - getOptions(): array
+
+routes:
+  - canonical: /hosting/tasks/{hosting_task}
+  - collection: /hosting/tasks
+```
+
+### Render Array Patterns
+
+#### Task Items in Sidebar
+```php
+[
+  '#type' => 'container',
+  '#attributes' => [
+    'class' => [
+      'hosting-task-item',
+      'hosting-task-item--{status}' // e.g., 'hosting-task-item--queued'
+    ],
+  ],
+  'title' => [
+    '#type' => 'link',
+    '#title' => 'Task label',
+    '#url' => Url::fromRoute('entity.hosting_task.canonical', [...]),
+  ],
+  'status' => [
+    '#type' => 'html_tag',
+    '#tag' => 'span',
+    '#value' => 'queued',
+    '#attributes' => ['class' => ['hosting-task-status']],
+  ],
+]
+```
+
+#### Panel Pattern
+```php
+[
+  '#theme' => 'hosting_site_task_queue',
+  '#title' => t('Recent tasks'),
+  '#list' => [
+    '#theme' => 'item_list',
+    '#items' => [...],
+    '#empty' => t('No tasks available.'),
+    '#attributes' => ['class' => ['hosting-task-queue']],
+  ],
+  '#attributes' => ['class' => ['hosting-panel', 'hosting-panel--task-queue']],
+]
+```
+
+#### Sidebar Assembly
+```php
+$build['hosting_sidebar'] = [
+  '#theme' => 'hosting_site_sidebar',
+  '#task_queue' => [...],
+  '#navigation' => [...],
+  '#attributes' => ['class' => ['hosting-sidebar']],
+  '#weight' => 60,
+];
+```
+
+### CSS Classes and Data Attributes
+
+#### Generated by Hosting Modules
+
+**Container Classes:**
+- `.hosting-site-view` - Added to entire site entity build
+- `.hosting-server-view` - Added to entire server entity build
+- `.hosting-queues` - Queue listing container
+- `.hosting-queues-table` - Queue table wrapper
+
+**Status-Based Classes:**
+- `.hosting-task-item--queued` - Task status: queued
+- `.hosting-task-item--processing` - Task status: processing
+- `.hosting-task-item--success` - Task status: success
+- `.hosting-task-item--error` - Task status: error
+- `.hosting-task--{status}` - Task entity status (BEM)
+- `.hosting-task--type-{type}` - Task entity type (BEM)
+- `.hosting-site--status-{status}` - Site status (added by eldir_preprocess_entity__hosting_site)
+
+**Service Status:**
+- `.hosting-status-cell` - Service status display
+- `.is-available` - Service is available
+- `.is-unavailable` - Service is unavailable
+
+**Panel and List Classes:**
+- `.hosting-panel` - Generic panel container
+- `.hosting-panel--task-queue` - Task queue panel variant
+- `.hosting-panel--navigation` - Navigation panel variant
+- `.hosting-panel--queue-summary` - Queue summary panel variant
+- `.hosting-task-queue` - Task list container
+- `.hosting-navigation` - Navigation list container
+- `.hosting-queue-summary` - Queue summary list container
+
+**Task Detail Classes (BEM):**
+- `.hosting-task__header` - Task header section
+- `.hosting-task__title` - Task title
+- `.hosting-task__meta` - Task metadata container
+- `.hosting-task__type` - Task type badge
+- `.hosting-task__status` - Task status badge
+- `.hosting-task__status--{status}` - Status-specific styling
+- `.hosting-task__content` - Task main content
+- `.hosting-task__section` - Content section
+- `.hosting-task__section--details` - Details section
+- `.hosting-task__section--timing` - Timing section
+- `.hosting-task__details` - Definition list for details
+- `.hosting-task__detail-item` - Detail row
+- `.hosting-task__detail-label` - Detail label (dt)
+- `.hosting-task__detail-value` - Detail value (dd)
+- `.hosting-task__timing` - Timing information list
+- `.hosting-task__timing-item` - Timing row
+- `.hosting-task__timing-label` - Timing label
+- `.hosting-task__timing-value` - Timing value
+
+**Data Attributes:**
+
+Added by Eldir theme preprocessors:
+```php
+// Entity metadata (eldir_add_entity_metadata_attributes)
+data-entity-type="hosting_site"
+data-entity-id="123"
+data-view-mode="full"
+data-entity-bundle="hosting_site"
+
+// Site-specific (eldir_preprocess_entity__hosting_site)
+data-hosting-status="1" // STATUS_ENABLED, STATUS_DISABLED, etc.
+```
+
+### Hosting Module CSS Variables
+
+All hosting modules use a standardized color scheme:
+
+```css
+:root {
+  /* Primary colors */
+  --hosting-primary: #0074bd;
+  --hosting-primary-hover: #005a9c;
+  
+  /* Status colors */
+  --hosting-success-bg: #d4edda;
+  --hosting-success-text: #155724;
+  --hosting-error-bg: #f8d7da;
+  --hosting-error-text: #721c24;
+  --hosting-warning-bg: #fff3cd;
+  --hosting-warning-text: #856404;
+  --hosting-info-bg: #cce5ff;
+  --hosting-info-text: #004085;
+  
+  /* Task status colors */
+  --hosting-task-queued: #ffc107;
+  --hosting-task-processing: #2196f3;
+  --hosting-task-success: #4caf50;
+  --hosting-task-error: #f44336;
+  --hosting-task-warning: #ff9800;
+  
+  /* UI elements */
+  --hosting-border: #ddd;
+  --hosting-panel-bg: #f5f5f5;
+  --hosting-panel-border: #ddd;
+  --hosting-text-dark: #333;
+  --hosting-bg-light: #f9f9f9;
+  --hosting-shadow: rgba(0, 0, 0, 0.1);
+  --hosting-text-muted: #666;
+}
+```
+
+**Note:** Eldir theme should coordinate these with its own color system for visual consistency.
+
+### Form Patterns
+
+#### Site Form (HostingSiteForm)
+
+**Key Features:**
+- Extends `ContentEntityForm`
+- Domain validation and normalization via `SiteManager` service
+- Auto-generates `cron_key` for new sites
+- Fields: domain, client, platform, db_server, db_name, profile, language, status
+
+**Validation:**
+- Domain must be valid hostname
+- Domain must be unique
+- Platform must exist and be enabled
+
+#### Standard Form Classes
+All hosting forms use:
+- `.hosting-form` - Form wrapper
+- `.hosting-form__element` - Form element wrapper
+
+### JavaScript Behaviors and Hooks
+
+**Current Status:** Hosting modules do not currently provide JavaScript behaviors.
+
+**Planned/Expected:**
+- Live task status updates (WebSocket integration)
+- Log viewer enhancements (filtering, syntax highlighting)
+- Queue management UI interactions
+- Form enhancements (conditional fields, AJAX updates)
+
+**Theme Integration Points:**
+
+The Eldir theme provides JavaScript hooks ready for hosting integration:
+
+```javascript
+// Live task status updates
+Drupal.behaviors.eldirLiveTaskStatus
+// Targets: .hosting-task-item[data-task-id]
+// Adds: .status-live, .live-indicator
+
+// Collapsible panels
+Drupal.behaviors.eldirCollapsible
+// Targets: .hosting-panel[data-collapsible]
+// Supports: keyboard navigation, ARIA
+
+// Copy code/logs
+Drupal.behaviors.eldirCopyCode
+// Targets: pre code, #hosting-task-log
+// Adds: .copy-code-button
+```
+
+### View Display Modes
+
+#### HostingSite View Modes
+- **full** - Complete entity display with sidebar
+- **teaser** - Summary display (if configured)
+- Custom modes can be added via display configuration
+
+#### Display Configuration
+Field display options are fully configurable via:
+- Admin UI: `/admin/structure/hosting_site/display`
+- Config: `core.entity_view_display.hosting_site.{bundle}.{view_mode}.yml`
+
+### Theme Suggestions
+
+**Provided by Hosting Modules:**
+
+```php
+// Site entity
+function hosting_site_theme_suggestions_hosting_site($variables) {
+  $suggestions[] = 'hosting_site__' . $entity->id();
+  $suggestions[] = 'hosting_site__' . $view_mode;
+}
+
+// Usage in theme:
+hosting-site.html.twig          // Base
+hosting-site--123.html.twig     // Specific site ID
+hosting-site--full.html.twig    // View mode
+```
+
+**Available in Eldir:**
+- `hosting-site.html.twig` ✓
+- `hosting-server.html.twig` ✓
+- `hosting-queues-table.html.twig` ✓
+- `hosting-service-status-cell.html.twig` ✓
+
+### Service Integrations
+
+#### QueueDispatcher Service
+- Service: `hosting.queue_dispatcher`
+- Used by: `HostingQueuesController::listing()`
+- Provides: Queue state, timing, and statistics
+
+#### SiteManager Service
+- Service: `hosting_site.manager`
+- Methods: `normalizeDomain()`, `isDomainValid()`, `isDomainUnique()`, `generateCronKey()`
+- Used by: `HostingSiteForm` validation and save operations
+
+### Libraries
+
+**hosting_site.entity_view**
+```yaml
+css:
+  theme:
+    css/hosting-site.css: {}
+```
+
+**hosting_server.entity_view**
+```yaml
+css:
+  theme:
+    css/hosting-server.css: {}
+```
+
+**hosting_task.entity_view**
+```yaml
+css:
+  theme:
+    css/hosting-task.css: {}
+```
+
+These libraries are attached automatically by the entity view builders.
+
+### Required Theme Support
+
+To fully support Aegir hosting modules, themes must provide:
+
+1. **Template overrides** for:
+   - `hosting-site.html.twig`
+   - `hosting-server.html.twig`
+   - `hosting-task.html.twig`
+   - `hosting-queues-table.html.twig`
+   - `hosting-service-status-cell.html.twig`
+
+2. **CSS for hosting classes:**
+   - `.hosting-panel` and variants
+   - `.hosting-task-item` and status variants
+   - `.hosting-status-cell` and availability states
+   - `.hosting-sidebar` and `.hosting-navigation`
+   - BEM classes for task display
+
+3. **Responsive layout support:**
+   - Two-column layout (content + sidebar)
+   - Mobile stacking for sidebar
+   - Responsive tables for queue listing
+
+4. **Status color coordination:**
+   - Align hosting module colors with theme palette
+   - Ensure status badges are distinguishable
+   - Maintain WCAG AA contrast
+
+5. **JavaScript hooks (optional):**
+   - Selectors for live updates
+   - Panel collapsibility
+   - Log viewer enhancements
+
+### Testing Checklist for Hosting Integration
+
+- [ ] Site entity displays with sidebar
+- [ ] Server entity displays with sidebar and service status
+- [ ] Task entity displays with proper BEM classes
+- [ ] Queue listing table displays correctly
+- [ ] Task items show correct status colors
+- [ ] Service status cells indicate availability
+- [ ] Panels are collapsible (if JavaScript enabled)
+- [ ] Sidebar stacks below content on mobile
+- [ ] All hosting routes render correctly
+- [ ] Entity forms submit successfully
+- [ ] Status-based classes apply correct styling
+- [ ] Data attributes are present for JavaScript hooks
