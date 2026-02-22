@@ -211,13 +211,12 @@ body.aegir.path-hosting .hosting-form .form-item {
   background:#fff;
 }
 
-body.aegir.path-hosting nav.tabs.hosting-local-tasks ul.tabs li a {
+body.aegir.path-hosting .tabs li a {
   background:#f3f3f3;
   color:#444;
 }
 
-body.aegir.path-hosting nav.tabs.hosting-local-tasks ul.tabs li.is-active a,
-body.aegir.path-hosting nav.tabs.hosting-local-tasks ul.tabs li a.is-active {
+body.aegir.path-hosting .tabs li a.is-active {
   background:#fff;
   color:#444;
   border-bottom:1px solid #fff;
@@ -267,81 +266,99 @@ body.aegir.path-hosting .hosting-server-sidebar {
 body.aegir.path-hosting .hosting-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 0;
 }
 
 body.aegir.path-hosting .hosting-panel {
-  background: var(--color-bg);
-  border: var(--border-width) var(--border-style) var(--color-border);
-  padding: var(--space-md);
-  border-radius: var(--border-radius-base);
-  box-shadow: var(--shadow-sm);
+  background: transparent;
+  border: none;
+  padding: 0 0 var(--space-md);
+  border-radius: 0;
+  box-shadow: none;
 }
 
 body.aegir.path-hosting .hosting-panel h2 {
   margin: 0 0 8px;
-  font-size: 12px;
-  text-transform:uppercase;
-  color:#333;
+  font-size: 1em;
+  text-transform: none;
+  color: #333;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
 }
 
-body.aegir.path-hosting .hosting-panel .item-list ul {
-  list-style:none;
-  margin:0;
-  padding:0;
+body.aegir.path-hosting .hosting-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-body.aegir.path-hosting .hosting-panel .item-list li {
-  margin:0 0 6px;
+body.aegir.path-hosting .hosting-panel li {
+  margin: 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+body.aegir.path-hosting .hosting-panel li:last-child {
+  border-bottom: none;
+}
+
+body.aegir.path-hosting .hosting-panel li a {
+  display: block;
+  padding: 6px 10px;
+  border-left: 3px solid transparent;
+}
+
+body.aegir.path-hosting .hosting-panel li a:hover {
+  background: #f5f5f5;
+  border-left-color: #0074bd;
 }
 
 body.aegir.path-hosting .hosting-task-item,
 body.aegir.path-hosting .hosting-queue-item {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  padding:6px 8px;
-  border:1px solid #e8e8e8;
-  border-radius:3px;
-  background:#f8f8f8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border: none;
+  border-bottom: 1px solid #e8e8e8;
+  border-radius: 0;
+  background: transparent;
+}
+
+body.aegir.path-hosting .hosting-task-item:last-child,
+body.aegir.path-hosting .hosting-queue-item:last-child {
+  border-bottom: none;
 }
 
 body.aegir.path-hosting .hosting-task-item--queued {
-  background:#e6f6ff;
-  border-color:#c9e6f7;
+  background: transparent;
 }
 
 body.aegir.path-hosting .hosting-task-item--running {
-  background:#fff3cd;
-  border-color:#f3e1a6;
+  background: transparent;
 }
 
 body.aegir.path-hosting .hosting-task-item--completed {
-  background:#dff6cf;
-  border-color:#b6d8a0;
+  background: transparent;
 }
 
 body.aegir.path-hosting .hosting-task-item--failed {
-  background:#f1c6c6;
-  border-color:#e1a6a6;
+  background: transparent;
 }
 
 body.aegir.path-hosting .hosting-task-status,
 body.aegir.path-hosting .hosting-queue-status {
-  font-size:10px;
-  text-transform:uppercase;
-  color:#555;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #555;
 }
 
 body.aegir.path-hosting .hosting-queue-item.is-enabled {
-  background:#dff6cf;
-  border-color:#b6d8a0;
+  background: transparent;
 }
 
 body.aegir.path-hosting .hosting-queue-item.is-disabled {
-  background:#f1c6c6;
-  border-color:#e1a6a6;
+  background: transparent;
 }
 
 #hosting-wizard-account-details,
@@ -595,101 +612,147 @@ a.hosting-button-stop:hover {
 .hosting-sidebar {
   display: flex;
   flex-direction: column;
-  gap: var(--hosting-panel-gap);
+  gap: 0;
   min-width: 0;
 }
 
-/* Hosting Panel Component */
+/* Hosting Panel Component — D7-style: clean sections with heading underline */
 .hosting-panel {
-  background: var(--hosting-panel-bg);
-  border: var(--border-width) var(--border-style) var(--hosting-panel-border);
-  border-radius: var(--border-radius-base);
-  padding: var(--hosting-panel-padding);
-  transition: var(--transition-fast);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 0 var(--space-md);
+  margin: 0 0 var(--space-sm);
 }
 
 .hosting-panel:hover {
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .hosting-panel h2,
+.hosting-panel h3,
 .hosting-panel__title {
   margin: 0 0 var(--space-sm);
-  font-size: var(--hosting-panel-title-size);
+  font-size: 1em;
   font-weight: var(--font-weight-bold);
-  text-transform: uppercase;
-  color: var(--hosting-panel-title-color);
-  border-bottom: var(--border-width) var(--border-style) var(--color-border);
+  text-transform: none;
+  color: var(--color-heading, #333);
+  border-bottom: 1px solid var(--color-border, #ccc);
   padding-bottom: var(--space-xs);
 }
 
-.hosting-panel .item-list {
-  margin: 0;
-}
-
-.hosting-panel .item-list ul {
+/* Navigation links — D7 style: simple links with left-border on hover */
+/* Note: Drupal 11 item_list renders <ul> directly without .item-list wrapper */
+.hosting-panel ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.hosting-panel .item-list li {
-  margin: 0 0 var(--space-xs);
+.hosting-panel li {
+  margin: 0;
+  border-bottom: 1px solid var(--color-border-light, #e8e8e8);
+}
+
+.hosting-panel li:last-child {
+  border-bottom: none;
+}
+
+.hosting-panel li a {
+  display: block;
+  padding: 6px 10px;
+  color: var(--color-link, #0074bd);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.hosting-panel li a:hover {
+  background: var(--color-bg-subtle, #f5f5f5);
+  border-left-color: var(--color-accent, #0074bd);
 }
 
 .hosting-panel--task-queue {
-  border-left: 3px solid var(--hosting-task-queued-border);
+  /* no left border — D7 uses clean headers */
 }
 
 .hosting-panel--navigation {
-  border-left: 3px solid var(--color-accent);
+  /* clean, no left border */
 }
 
-.hosting-panel--queue-summary {
-  border-left: 3px solid var(--color-info-border);
+.hosting-panel--queue-summary,
+.hosting-panel--queues {
+  /* clean, no left border */
 }
 
-/* Hosting Task Item (List Item) */
+.hosting-panel--queues h3 {
+  font-size: 1em;
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--space-sm);
+  color: var(--color-heading, #333);
+}
+
+.hosting-panel--queues .hosting-table {
+  font-size: var(--font-size-small);
+}
+
+/* Sidebar navigation separator — hide the parent <li> border */
+.hosting-nav-separator {
+  border: none;
+  border-top: 1px solid var(--color-border, #ccc);
+  margin: 4px 10px;
+}
+
+/* <li> that contains only a separator should not have its own border */
+.hosting-panel li:has(> .hosting-nav-separator) {
+  border-bottom: none;
+  padding: 0;
+}
+
+/* Hosting Task Item (Sidebar list item) — D7 style: compact, no individual borders */
 .hosting-task-item,
 .hosting-queue-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--space-sm);
-  padding: var(--space-xs) var(--space-sm);
-  border: var(--border-width) var(--border-style) var(--color-border);
-  border-radius: var(--border-radius-base);
-  background: var(--color-bg-subtle);
-  transition: var(--transition-fast);
+  padding: 5px 8px;
+  border: none;
+  border-bottom: 1px solid var(--color-border-light, #e8e8e8);
+  border-radius: 0;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+.hosting-task-item:last-child,
+.hosting-queue-item:last-child {
+  border-bottom: none;
 }
 
 .hosting-task-item:hover,
 .hosting-queue-item:hover {
-  transform: translateX(2px);
-  box-shadow: var(--shadow-sm);
+  background: var(--color-bg-subtle, #f5f5f5);
+  transform: none;
+  box-shadow: none;
 }
 
 .hosting-task-item--queued {
-  background: var(--hosting-task-queued-bg);
-  border-color: var(--hosting-task-queued-border);
+  background: transparent;
 }
 
 .hosting-task-item--processing,
 .hosting-task-item--running {
-  background: var(--hosting-task-processing-bg);
-  border-color: var(--hosting-task-processing-border);
+  background: transparent;
 }
 
 .hosting-task-item--completed,
 .hosting-task-item--success {
-  background: var(--hosting-task-success-bg);
-  border-color: var(--hosting-task-success-border);
+  background: transparent;
 }
 
 .hosting-task-item--failed,
 .hosting-task-item--error {
-  background: var(--hosting-task-error-bg);
-  border-color: var(--hosting-task-error-border);
+  background: transparent;
 }
 
 .hosting-task-status,
@@ -936,5 +999,673 @@ a.hosting-button-stop:hover {
   .hosting-task__content {
     padding: var(--space-lg);
   }
+}
+
+/**
+ * ========================================
+ * TASK ACTION BUTTONS
+ * ========================================
+ * Modal-enabled task action buttons displayed on entity view pages.
+ * D7 Aegir-style coloured operation buttons.
+ */
+
+.hosting-task-actions {
+  margin-bottom: var(--space-lg, 1.5rem);
+  padding: var(--space-md, 1rem);
+  background: var(--hosting-bg-light, #f9f9f9);
+  border: 1px solid var(--hosting-border, #ddd);
+  border-radius: var(--border-radius-base, 4px);
+}
+
+.hosting-task-actions__title {
+  margin: 0 0 var(--space-sm, 0.5rem) 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--hosting-text-muted, #666);
+}
+
+.hosting-task-actions__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm, 0.5rem);
+}
+
+.hosting-task-actions__item {
+  flex: 0 0 auto;
+}
+
+/* Task action button base */
+.button--hosting-task {
+  display: inline-block;
+  padding: 0.4em 1em;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--border-radius-base, 4px);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-fast, all 0.15s ease);
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+  line-height: 1.6;
+}
+
+.button--hosting-task:focus {
+  outline: 2px solid var(--color-accent, #0074bd);
+  outline-offset: 2px;
+}
+
+/* Green buttons: Verify, Enable, Unlock, Reset password */
+.button--green {
+  background: var(--hosting-task-success, #4caf50);
+  color: #fff;
+}
+
+.button--green:hover,
+.button--green:focus {
+  background: #388e3c;
+  color: #fff;
+}
+
+/* Yellow buttons: Backup, Restore, Migrate, Lock */
+.button--yellow {
+  background: var(--hosting-task-warning, #ff9800);
+  color: #000;
+}
+
+.button--yellow:hover,
+.button--yellow:focus {
+  background: #e68900;
+  color: #000;
+}
+
+/* Blue buttons: Clone */
+.button--blue {
+  background: var(--hosting-task-processing, #2196f3);
+  color: #fff;
+}
+
+.button--blue:hover,
+.button--blue:focus {
+  background: #1976d2;
+  color: #fff;
+}
+
+/* Red buttons: Delete, Disable */
+.button--red {
+  background: var(--hosting-task-error, #f44336);
+  color: #fff;
+}
+
+.button--red:hover,
+.button--red:focus {
+  background: #c62828;
+  color: #fff;
+}
+
+/* Entity-level task action container on main content */
+.hosting-site-actions,
+.hosting-platform-actions,
+.hosting-server-actions {
+  margin-bottom: var(--space-md, 1rem);
+}
+
+/* "Go to site" link */
+.hosting-site-links {
+  margin-bottom: var(--space-md, 1rem);
+}
+
+.hosting-site-links .button--primary {
+  background: var(--color-accent, #0074bd);
+  color: #fff;
+  text-decoration: none;
+  padding: 0.4em 1em;
+  border-radius: var(--border-radius-base, 4px);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.hosting-site-links .button--primary:hover {
+  background: var(--color-accent-dark, #005a94);
+}
+
+/* Responsive task action buttons */
+@media (max-width: 767px) {
+  .hosting-task-actions__buttons {
+    flex-direction: column;
+  }
+
+  .hosting-task-actions__item {
+    flex: 1 1 100%;
+  }
+
+  .button--hosting-task {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/**
+ * ========================================
+ * HOSTING SVG STATUS ICONS
+ * ========================================
+ */
+
+.hosting-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+/* Larger size variant for headers/badges */
+.hosting-icon--lg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Small size for inline text */
+.hosting-icon--sm {
+  width: 11px;
+  height: 11px;
+  margin-right: 2px;
+}
+
+/**
+ * ========================================
+ * TASK SIDEBAR BLOCK (auto-refresh)
+ * ========================================
+ */
+
+.hosting-task-sidebar {
+  padding: var(--space-md, 1rem);
+  background: var(--hosting-bg-light, #f9f9f9);
+  border: 1px solid var(--hosting-border, #ddd);
+  border-radius: var(--border-radius-base, 4px);
+}
+
+.hosting-task-sidebar__title {
+  margin: 0 0 var(--space-sm, 0.5rem) 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--hosting-secondary, #5c5c5c);
+}
+
+.hosting-task-sidebar__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hosting-task-sidebar__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs, 0.25rem) 0;
+  border-bottom: 1px solid var(--hosting-border, #ddd);
+}
+
+.hosting-task-sidebar__item:last-child {
+  border-bottom: none;
+}
+
+.hosting-task-sidebar__item-link {
+  flex: 1;
+  color: var(--hosting-primary, #0074bd);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.hosting-task-sidebar__item-link:hover {
+  text-decoration: underline;
+}
+
+.hosting-task-sidebar__item-status {
+  flex: 0 0 auto;
+  margin-left: var(--space-sm, 0.5rem);
+}
+
+/**
+ * ========================================
+ * PLATFORM COMPARISON
+ * ========================================
+ */
+
+.hosting-platform-compare {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hosting-platform-compare__title {
+  margin: 0 0 var(--space-lg, 1.5rem) 0;
+  font-size: 1.5rem;
+  color: var(--hosting-primary, #0074bd);
+}
+
+.hosting-platform-compare table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.hosting-platform-compare th,
+.hosting-platform-compare td {
+  padding: var(--space-sm, 0.5rem) var(--space-md, 1rem);
+  border: 1px solid var(--hosting-border, #ddd);
+  text-align: left;
+}
+
+.hosting-platform-compare th {
+  background: var(--hosting-bg-light, #f9f9f9);
+  font-weight: 600;
+}
+
+.hosting-platform-compare .pkg-same {
+  color: var(--hosting-text-muted, #666);
+}
+
+.hosting-platform-compare .pkg-upgraded {
+  color: var(--hosting-task-success, #4caf50);
+  font-weight: 600;
+}
+
+.hosting-platform-compare .pkg-downgraded {
+  color: var(--hosting-task-error, #f44336);
+  font-weight: 600;
+}
+
+.hosting-platform-compare .pkg-added {
+  color: var(--hosting-task-processing, #2196f3);
+  font-weight: 600;
+}
+
+.hosting-platform-compare .pkg-removed {
+  color: var(--hosting-task-warning, #ff9800);
+  font-weight: 600;
+  text-decoration: line-through;
+}
+
+/**
+ * ========================================
+ * HOSTING INFO TABLE (D7-style entity property table)
+ * ========================================
+ */
+
+.hosting-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 var(--space-base, 1rem);
+  background: #fff;
+  border: 1px solid var(--color-border, #e8e8e8);
+}
+
+.hosting-info-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--color-border, #e8e8e8);
+  vertical-align: top;
+  line-height: var(--line-height-relaxed, 1.6);
+}
+
+.hosting-info-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.hosting-info-table .info-label {
+  width: 160px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--color-text, #333);
+  white-space: nowrap;
+  background: var(--color-bg-subtle, #f9f9f9);
+}
+
+.hosting-info-table .info-value {
+  color: var(--color-text, #333);
+}
+
+.hosting-info-table .info-value a {
+  color: var(--color-link, #0074bd);
+}
+
+.hosting-info-table .info-description {
+  font-size: var(--font-size-small, 0.85em);
+  color: var(--color-text-muted, #666);
+  margin-top: 2px;
+}
+
+.hosting-info-table code {
+  font-family: var(--font-family-mono, monospace);
+  font-size: var(--font-size-small, 0.85em);
+  background: var(--color-bg-subtle, #f5f5f5);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/**
+ * ========================================
+ * HOSTING TASK TABLE (D7-style task action table)
+ * ========================================
+ */
+
+.hosting-task-list-wrapper {
+  margin: var(--space-base, 1rem) 0;
+}
+
+.hosting-task-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid var(--color-border, #e8e8e8);
+}
+
+.hosting-task-table th {
+  background: var(--color-header, #555) !important;
+  color: #fff;
+  padding: 6px 8px;
+  font-weight: var(--font-weight-bold, 700);
+  font-size: var(--font-size-small, 0.85em);
+  text-align: left;
+}
+
+.hosting-task-table td {
+  padding: 4px 8px;
+  border-top: 1px solid var(--color-border, #e8e8e8);
+  vertical-align: middle;
+}
+
+.hosting-task-table td.hosting-status {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.hosting-task-table td.hosting-actions {
+  white-space: nowrap;
+  text-align: right;
+  width: 130px;
+}
+
+/* Task action buttons - D7-style */
+.hosting-button-enabled,
+.hosting-button-disabled {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: var(--font-size-small, 0.85em);
+  text-decoration: none;
+  border-radius: 3px;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.hosting-button-enabled.hosting-button-run {
+  background: var(--color-success-bg, #cfe9bc);
+  border: 1px solid var(--color-success-dark, #4caf50);
+  color: var(--color-success-dark, #2e7d32);
+}
+
+.hosting-button-enabled.hosting-button-run:hover {
+  background: var(--color-success-dark, #4caf50);
+  color: #fff;
+}
+
+.hosting-button-enabled.hosting-button-log {
+  background: var(--color-bg-subtle, #f5f5f5);
+  border: 1px solid var(--color-border, #ccc);
+  color: var(--color-link, #0074bd);
+}
+
+.hosting-button-enabled.hosting-button-log:hover {
+  background: var(--color-link, #0074bd);
+  color: #fff;
+}
+
+.hosting-button-disabled {
+  background: var(--color-bg-subtle, #f5f5f5);
+  border: 1px solid var(--color-border, #ddd);
+  color: var(--color-text-muted, #999);
+  cursor: default;
+  opacity: 0.6;
+}
+
+/**
+ * ========================================
+ * HOSTING TASK LOG TABLE
+ * ========================================
+ */
+
+.hosting-task-log-wrapper {
+  margin: var(--space-base, 1rem) 0;
+}
+
+.hosting-task-log-jumps {
+  margin: 0 0 var(--space-sm, 0.5rem);
+}
+
+.hosting-task-log-jump {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: var(--font-size-small, 0.85em);
+  text-decoration: none;
+  border-radius: 3px;
+  margin-right: 6px;
+}
+
+.hosting-task-log-jump--error {
+  background: #f1c6c6;
+  border: 1px solid #e1a6a6;
+  color: #c00;
+}
+
+.hosting-task-log-jump--warning {
+  background: #fdf0d5;
+  border: 1px solid #e8d5a0;
+  color: #856404;
+}
+
+.hosting-task-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid var(--color-border, #e8e8e8);
+  font-size: var(--font-size-small, 0.85em);
+}
+
+.hosting-task-log-table th {
+  background: var(--color-header, #555) !important;
+  color: #fff;
+  padding: 4px 8px;
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.hosting-task-log-table td {
+  padding: 3px 8px;
+  border-top: 1px solid var(--color-border, #e8e8e8);
+  vertical-align: top;
+  word-wrap: break-word;
+}
+
+.hosting-task-log-table details {
+  margin: 0;
+}
+
+.hosting-task-log-table details summary {
+  cursor: pointer;
+  color: var(--color-link, #0074bd);
+}
+
+/**
+ * ========================================
+ * STATUS ROW CLASSES (D7-compatible)
+ * ========================================
+ */
+
+tr.hosting-success,
+.hosting-success {
+  background-color: var(--color-success-bg, #cfe9bc) !important;
+}
+
+tr.hosting-error,
+.hosting-error {
+  background-color: #f1c6c6 !important;
+  color: #c00;
+}
+
+tr.hosting-warning,
+.hosting-warning {
+  background-color: #fdf0d5 !important;
+  color: #856404;
+}
+
+tr.hosting-queue,
+.hosting-queue {
+  background-color: #e3f2fd !important;
+  color: #1565c0;
+}
+
+tr.hosting-info,
+.hosting-info {
+  background-color: #e1f5fe !important;
+  color: #01579b;
+}
+
+tr.hosting-disable,
+.hosting-disable {
+  background-color: #f5f5f5 !important;
+  color: var(--color-text-muted, #999);
+}
+
+/* Inline status text (strong/span within table cells) — text-only color. */
+strong.hosting-success,
+span.hosting-success:not(tr) {
+  background: none !important;
+  color: #2e7d32;
+}
+strong.hosting-error,
+span.hosting-error:not(tr) {
+  background: none !important;
+  color: #c00;
+}
+strong.hosting-warning,
+span.hosting-warning:not(tr) {
+  background: none !important;
+  color: #856404;
+}
+strong.hosting-queue,
+span.hosting-queue:not(tr) {
+  background: none !important;
+  color: #1565c0;
+}
+strong.hosting-info,
+span.hosting-info:not(tr) {
+  background: none !important;
+  color: #01579b;
+}
+strong.hosting-disable,
+span.hosting-disable:not(tr) {
+  background: none !important;
+  color: var(--color-text-muted, #999);
+}
+
+/**
+ * ========================================
+ * ENTITY VIEW LAYOUT INTEGRATION
+ * ========================================
+ */
+
+.hosting-entity__info,
+.hosting-site-info,
+.hosting-platform-info,
+.hosting-server-info {
+  margin: 0 0 var(--space-base, 1rem);
+}
+
+.hosting-entity__tasks,
+.hosting-site-tasks,
+.hosting-platform-tasks,
+.hosting-server-tasks {
+  margin: 0 0 var(--space-base, 1rem);
+}
+
+/**
+ * ========================================
+ * HOSTING DASHBOARD
+ * ========================================
+ */
+
+.hosting-dashboard {
+  max-width: 1100px;
+}
+
+.hosting-dashboard__cards {
+  display: flex;
+  gap: var(--space-base, 1rem);
+  margin: 0 0 var(--space-lg, 1.5rem);
+  flex-wrap: wrap;
+}
+
+.hosting-dashboard__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-base, 1rem) var(--space-lg, 1.5rem);
+  background: #fff;
+  border: 1px solid var(--color-border, #e8e8e8);
+  border-radius: var(--border-radius-base, 4px);
+  text-decoration: none;
+  color: var(--color-text, #333);
+  min-width: 120px;
+  transition: var(--transition-fast, 0.15s ease);
+}
+
+.hosting-dashboard__card:hover {
+  border-color: var(--color-link, #0074bd);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hosting-dashboard__card-count {
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+}
+
+.hosting-dashboard__card--sites .hosting-dashboard__card-count { color: var(--color-success-dark, #2e7d32); }
+.hosting-dashboard__card--platforms .hosting-dashboard__card-count { color: var(--color-link, #0074bd); }
+.hosting-dashboard__card--servers .hosting-dashboard__card-count { color: var(--color-header, #555); }
+.hosting-dashboard__card--tasks .hosting-dashboard__card-count { color: #ff9800; }
+
+.hosting-dashboard__card-label {
+  font-size: var(--font-size-small, 0.85em);
+  color: var(--color-text-muted, #666);
+  margin-top: 4px;
+}
+
+.hosting-dashboard__content {
+  /* Single column — sidebar is handled at page level */
+}
+
+.hosting-dashboard__main {
+  min-width: 0;
+}
+
+.hosting-dashboard__sidebar {
+  /* No longer used — sidebar handled by page--hosting.html.twig */
+  display: none;
+}
+
+.hosting-dashboard__section-title {
+  font-size: 1.1rem;
+  margin: 0 0 var(--space-sm, 0.5rem);
+  color: var(--color-text, #333);
+}
+
+/**
+ * ========================================
+ * HOSTING GOTO SITE LINK
+ * ========================================
+ */
+
+.hosting-goto-site-link {
+  color: var(--color-link, #0074bd);
+  font-weight: var(--font-weight-bold, 700);
 }
 

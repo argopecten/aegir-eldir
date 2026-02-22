@@ -1,8 +1,28 @@
+{#
+/**
+ * @file
+ * Eldir theme override for hosting_server entities.
+ *
+ * Variables: content, attributes, label, info, tasks_view, sidebar.
+ */
+#}
 <article{{ attributes }}>
   <header class="hosting-server-hero">
     <span class="hosting-entity-chip">{{ 'Server'|t }}</span>
     <h1 class="hosting-server-title">{{ label }}</h1>
   </header>
+
+  {% if info %}
+    <div class="hosting-entity__info">
+      {{ info }}
+    </div>
+  {% endif %}
+
+  {% if tasks_view %}
+    <div class="hosting-entity__tasks">
+      {{ tasks_view }}
+    </div>
+  {% endif %}
 
   <div class="hosting-server-layout">
     <div class="hosting-server-main">

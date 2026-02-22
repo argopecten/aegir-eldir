@@ -1,37 +1,19 @@
 {#
 /**
  * @file
- * Template for hosting_task entities (BEM structure).
+ * Eldir theme override for hosting_task entities.
  *
- * Variables:
- * - task: The hosting_task entity object.
- * - label: Task label.
- * - task_type: Task type (e.g., 'verify', 'enable', 'disable').
- * - status: Task status (e.g., 'queued', 'processing', 'success', 'error').
- * - command: Task command string.
- * - args: Task arguments (array).
- * - options: Task options (array).
- * - started: Start timestamp.
- * - completed: Completion timestamp.
- * - duration: Task duration formatted.
- * - view_mode: View mode (e.g., 'full', 'teaser').
- * - content: Full content render array.
- * - attributes: HTML attributes.
+ * Variables: task, label, task_type, status, command, args, options,
+ *   started, completed, duration, view_mode, content, attributes.
  */
 #}
-{% 
-  set classes = [
-    'hosting-task',
-    'hosting-entity',
-    'hosting-task--' ~ status|clean_class,
-    'hosting-task--type-' ~ task_type|clean_class,
-    'hosting-task--' ~ view_mode|clean_class,
-  ]
-%}
-
+{% set classes = [
+  'hosting-task', 'hosting-entity',
+  'hosting-task--' ~ status|clean_class,
+  'hosting-task--type-' ~ task_type|clean_class,
+  'hosting-task--' ~ view_mode|clean_class,
+] %}
 <article{{ attributes.addClass(classes) }}>
-  
-  {# Task Header #}
   <header class="hosting-task__header">
     {{ title_prefix }}
     {% if label %}
@@ -44,14 +26,10 @@
       </h2>
     {% endif %}
     {{ title_suffix }}
-    
     <div class="hosting-task__meta">
       {% if task_type %}
-        <span class="hosting-task__type hosting-entity-chip">
-          {{ task_type|capitalize }}
-        </span>
+        <span class="hosting-task__type hosting-entity-chip">{{ task_type|capitalize }}</span>
       {% endif %}
-      
       {% if status %}
         <span class="hosting-task__status hosting-task__status--{{ status|clean_class }} hosting-status-badge">
           {{ status|capitalize }}
@@ -59,79 +37,7 @@
       {% endif %}
     </div>
   </header>
-  
-  {# Task Content #}
   <div class="hosting-task__content">
-    
-    {# Task Details Section #}
-    {% if command or args or options %}
-      <section class="hosting-task__section hosting-task__section--details">
-        <h3 class="hosting-task__section-title">{{ 'Task Details'|t }}</h3>
-        
-        <dl class="hosting-task__details">
-          {% if command %}
-            <div class="hosting-task__detail-item">
-              <dt class="hosting-task__detail-label">{{ 'Command'|t }}</dt>
-              <dd class="hosting-task__detail-value"><code>{{ command }}</code></dd>
-            </div>
-          {% endif %}
-          
-          {% if args %}
-            <div class="hosting-task__detail-item">
-              <dt class="hosting-task__detail-label">{{ 'Arguments'|t }}</dt>
-              <dd class="hosting-task__detail-value">
-                <pre><code>{{ args|json_encode(constant('JSON_PRETTY_PRINT')) }}</code></pre>
-              </dd>
-            </div>
-          {% endif %}
-          
-          {% if options %}
-            <div class="hosting-task__detail-item">
-              <dt class="hosting-task__detail-label">{{ 'Options'|t }}</dt>
-              <dd class="hosting-task__detail-value">
-                <pre><code>{{ options|json_encode(constant('JSON_PRETTY_PRINT')) }}</code></pre>
-              </dd>
-            </div>
-          {% endif %}
-        </dl>
-      </section>
-    {% endif %}
-    
-    {# Task Timing Section #}
-    {% if started or completed or duration %}
-      <section class="hosting-task__section hosting-task__section--timing">
-        <h3 class="hosting-task__section-title">{{ 'Timing'|t }}</h3>
-        
-        <dl class="hosting-task__timing">
-          {% if started %}
-            <div class="hosting-task__timing-item">
-              <dt class="hosting-task__timing-label">{{ 'Started'|t }}</dt>
-              <dd class="hosting-task__timing-value">{{ started|date('Y-m-d H:i:s') }}</dd>
-            </div>
-          {% endif %}
-          
-          {% if completed %}
-            <div class="hosting-task__timing-item">
-              <dt class="hosting-task__timing-label">{{ 'Completed'|t }}</dt>
-              <dd class="hosting-task__timing-value">{{ completed|date('Y-m-d H:i:s') }}</dd>
-            </div>
-          {% endif %}
-          
-          {% if duration %}
-            <div class="hosting-task__timing-item">
-              <dt class="hosting-task__timing-label">{{ 'Duration'|t }}</dt>
-              <dd class="hosting-task__timing-value">{{ duration }}</dd>
-            </div>
-          {% endif %}
-        </dl>
-      </section>
-    {% endif %}
-    
-    {# Additional Content #}
-    {% if content %}
-      {{ content }}
-    {% endif %}
-    
+    {{ content }}
   </div>
-  
 </article>

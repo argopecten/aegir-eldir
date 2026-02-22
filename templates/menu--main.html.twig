@@ -1,19 +1,28 @@
+{#
+/**
+ * @file
+ * Main menu template for Eldir theme.
+ *
+ * Uses BEM naming following Drupal 11 theming standards.
+ * Renders a horizontal tab-style navigation matching the Aegir D7 appearance.
+ */
+#}
 {% macro menu_links(items, attributes, menu_level) %}
   {% if items %}
     {% if menu_level == 0 %}
-      <ul{{ attributes.addClass('links', 'inline', 'clearfix').setAttribute('id', 'main-menu') }}>
+      <ul{{ attributes.addClass('main-nav__menu') }}>
     {% else %}
-      <ul class="menu">
+      <ul class="main-nav__submenu">
     {% endif %}
     {% for item in items %}
-      {% set classes = [
-        item.is_expanded ? 'expanded',
-        item.is_collapsed ? 'collapsed',
-        item.in_active_trail ? 'active-trail',
-        item.in_active_trail ? 'active'
+      {% set item_classes = [
+        'main-nav__item',
+        item.in_active_trail ? 'main-nav__item--active-trail',
+        item.is_expanded ? 'main-nav__item--expanded',
+        item.is_collapsed ? 'main-nav__item--collapsed',
       ] %}
-      <li{{ item.attributes.addClass(classes) }}>
-        {{ link(item.title, item.url) }}
+      <li{{ item.attributes.addClass(item_classes) }}>
+        {{ link(item.title, item.url, {'class': ['main-nav__link']}) }}
         {% if item.below %}
           {{ _self.menu_links(item.below, create_attribute(), menu_level + 1) }}
         {% endif %}

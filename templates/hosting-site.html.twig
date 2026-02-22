@@ -1,27 +1,15 @@
 {#
 /**
  * @file
- * Template for hosting_site entities.
+ * Eldir theme override for hosting_site entities.
  *
- * Variables:
- * - content: Content render array.
- * - attributes: HTML attributes for the wrapper.
- * - label: Entity label/domain.
- * - title_prefix: Additional content before the title.
- * - title_suffix: Additional content after the title.
- * - title_attributes: HTML attributes for the title.
- * - entity: The hosting_site entity object.
- * - view_mode: View mode (e.g., 'full', 'teaser').
- * - sidebar: Sidebar render array (task queue, navigation).
- * - url: Entity canonical URL.
+ * Variables: content, attributes, label, title_prefix/suffix,
+ *   title_attributes, entity, view_mode, sidebar, info, tasks_view.
  */
 #}
 <article{{ attributes.addClass('hosting-site', 'hosting-entity', 'hosting-site--' ~ view_mode) }}>
-  
   {% if sidebar %}
-    {# Two-column layout with sidebar #}
     <div class="hosting-entity-layout hosting-entity-layout--with-sidebar">
-      
       <div class="hosting-entity-main">
         {{ title_prefix }}
         {% if label and not page %}
@@ -30,19 +18,28 @@
           </h2>
         {% endif %}
         {{ title_suffix }}
-        
+
+        {% if info %}
+          <div class="hosting-entity__info">
+            {{ info }}
+          </div>
+        {% endif %}
+
+        {% if tasks_view %}
+          <div class="hosting-entity__tasks">
+            {{ tasks_view }}
+          </div>
+        {% endif %}
+
         <div class="hosting-entity__content">
           {{ content|without('sidebar') }}
         </div>
       </div>
-      
       <aside class="hosting-entity-sidebar hosting-sidebar">
         {{ sidebar }}
       </aside>
-      
     </div>
   {% else %}
-    {# Single column layout #}
     {{ title_prefix }}
     {% if label and not page %}
       <h2{{ title_attributes.addClass('hosting-entity__title') }}>
@@ -50,10 +47,21 @@
       </h2>
     {% endif %}
     {{ title_suffix }}
-    
+
+    {% if info %}
+      <div class="hosting-entity__info">
+        {{ info }}
+      </div>
+    {% endif %}
+
+    {% if tasks_view %}
+      <div class="hosting-entity__tasks">
+        {{ tasks_view }}
+      </div>
+    {% endif %}
+
     <div class="hosting-entity__content">
       {{ content }}
     </div>
   {% endif %}
-  
 </article>

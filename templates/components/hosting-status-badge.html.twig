@@ -20,7 +20,9 @@
 ] %}
 
 <span{{ attributes.addClass(status_classes) }}>
-  {% if icon %}
+  {% if icon_svg %}
+    {{ icon_svg }}
+  {% elseif icon %}
     <span class="status-icon" aria-hidden="true">{{ icon }}</span>
   {% endif %}
   <span class="status-label">{{ label }}</span>

@@ -3,7 +3,7 @@
  * Flexible responsive layout while preserving D7 appearance
  */
 
-div.limiter {
+.limiter {
   max-width: var(--container-width-max);
   margin: 0 auto;
   padding: 0 var(--space-base);
@@ -13,26 +13,23 @@ div.limiter {
 /**
  * HEADER =============================================================
  */
-/**
- * HEADER =============================================================
- */
-div#header {
+#header {
   background: url(../images/raster/sprite.png) repeat-x;
   display: flex;
   align-items: center;
   min-height: var(--header-height);
 }
 
-div#header .limiter {
+#header .limiter {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0;
 }
 
-div#header div.logo,
-div#header div.logo a,
-div#header div.site-name {
-  float: left;
+#header .logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
 }
 
 .logo img {
@@ -41,7 +38,7 @@ div#header div.site-name {
   margin-top: var(--space-large);
 }
 
-div#header div.site-name {
+#header .site-name {
   font-size: var(--font-size-large);
   letter-spacing: -1px;
   color: #ace;
@@ -51,105 +48,105 @@ div#header div.site-name {
   border-left: var(--border-width) var(--border-style) #258;
 }
 
-div#header form {
+#header form {
   width: 370px;
   height: 40px;
   line-height: 40px;
   padding: var(--space-lg) 0;
-  float: right;
   text-align: right;
+  margin-inline-start: auto;
 }
 
-div#header form * {
+#header form * {
   vertical-align: middle;
 }
 
-div#header form input.form-text {
+#header form input.form-text {
   width: 60%;
 }
 
 /**
  * NAVIGATION =========================================================
  */
-div#navigation {
+#navigation {
   border-top: var(--border-width) var(--border-style) #258;
   background: url(../images/raster/sprite.png) 0 -80px;
   min-height: var(--nav-height);
 }
 
-div#navigation .limiter {
+#navigation .limiter {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-div#navigation .breadcrumb {
+#navigation .breadcrumb {
   line-height: 40px;
   font-size: var(--font-size-small);
   flex: 1;
 }
 
-div#navigation ul.links {
+#navigation .main-nav__menu {
   padding: 5px 0 0;
   display: flex;
   gap: 1px;
+  list-style: none;
+  margin: 0;
 }
 
-div#navigation ul.links a {
+#navigation .main-nav__link {
   background: #147;
   font-size: var(--font-size-small);
   line-height: 25px;
   padding: 5px 15px;
+  display: block;
   border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
   transition: var(--transition-fast);
 }
 
-div#navigation ul.links a:hover {
+#navigation .main-nav__link:hover {
   background: var(--color-accent);
   color: #000;
 }
 
-div#navigation ul.links li.active a,
-div#navigation ul.links li a.active,
-div#navigation ul.links li a.is-active {
-  background: var(--color-bg-grid);
-  color: var(--color-text);
-}
-  background:#e8e8e8;
-  color:#444;
+#navigation .main-nav__item--active-trail .main-nav__link,
+#navigation .main-nav__link.is-active {
+  background: #e8e8e8;
+  color: #444;
 }
 
-body.path-hosting-sites-add div#navigation ul.links a[data-drupal-link-system-path="hosting/sites"],
-body.path-hosting-platforms-add div#navigation ul.links a[data-drupal-link-system-path="hosting/platforms"],
-body.path-hosting-servers-add div#navigation ul.links a[data-drupal-link-system-path="hosting/servers"],
-body.path-hosting-tasks-add div#navigation ul.links a[data-drupal-link-system-path="hosting/tasks"],
-body.path-hosting-clients-add div#navigation ul.links a[data-drupal-link-system-path="hosting/clients"] {
-  background:#e8e8e8;
-  color:#444;
+body.path-hosting-sites-add #navigation .main-nav__link[data-drupal-link-system-path="hosting/sites"],
+body.path-hosting-platforms-add #navigation .main-nav__link[data-drupal-link-system-path="hosting/platforms"],
+body.path-hosting-servers-add #navigation .main-nav__link[data-drupal-link-system-path="hosting/servers"],
+body.path-hosting-tasks-add #navigation .main-nav__link[data-drupal-link-system-path="hosting/tasks"],
+body.path-hosting-clients-add #navigation .main-nav__link[data-drupal-link-system-path="hosting/clients"] {
+  background: #e8e8e8;
+  color: #444;
 }
 
 /**
  * HEADER REGION ======================================================
  */
-div#header-region {
+#header-region {
   padding: var(--space-lg) 0 0;
   background: var(--color-bg-grid) url(../images/raster/grid_e8.png) 50% 0% repeat;
 }
 
-div#header-region h2.page-title {
+#header-region .page-title {
   border: 0;
   padding: 0 0 var(--space-md);
   letter-spacing: -2px;
   line-height: 40px;
   font-size: var(--font-size-xxlarge);
   font-weight: var(--font-weight-normal);
+  margin: 0;
 }
 
-div#header-region h2.page-title span.label {
+#header-region .page-title span.label {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
   letter-spacing: 0;
-  float: left;
+  display: inline-block;
   margin: 5px var(--space-md) 5px 0;
   padding: 0 var(--space-md);
   line-height: 30px;
@@ -161,39 +158,55 @@ div#header-region h2.page-title span.label {
 /**
  * PAGE LAYOUT ========================================================
  */
-div#page {
+#page {
   background: #eee url(../images/raster/grid_e8.png) 50% 0% repeat;
   padding-bottom: 40px;
   min-height: calc(100vh - var(--header-height) - var(--nav-height) - var(--footer-height));
 }
 
-div#page div.limiter {
-  background: url(../images/raster/page.png) repeat-y;
+#page .limiter {
   display: flex;
   flex-wrap: wrap;
   gap: 0;
+  /* No background here — #main and .sidebar supply their own white backgrounds.
+     This keeps the gray #page background visible at the limiter edges,
+     and the content columns align with the navigation's padded width. */
 }
 
-body.wide div#page div.limiter {
+body.wide #page .limiter {
   max-width: var(--container-width-max);
 }
 
-div#main {
+#main {
   flex: 1 1 var(--main-column-width);
   min-width: 0; /* Prevent flex overflow */
   padding: var(--space-md);
   background: var(--color-bg);
 }
 
-body.wide div#main {
+body.wide #main {
   flex: 1 1 100%;
   max-width: 100%;
 }
 
-div.sidebar {
+/* When a sidebar is present (hosting pages), don't let wide layout push it off */
+body.wide #main:has(~ .sidebar) {
+  flex: 1 1 var(--main-column-width);
+  max-width: none;
+}
+
+/* Also handle cases where :has is not supported — .path-hosting override */
+body.wide.path-hosting #main {
+  flex: 1 1 var(--main-column-width);
+  max-width: none;
+}
+
+.sidebar,
+aside.sidebar {
   flex: 0 0 var(--sidebar-width);
   padding: var(--space-md);
   background: var(--color-bg);
+  border-inline-start: 1px solid #e8e8e8;
 }
 
 /**
@@ -212,24 +225,30 @@ div.sidebar {
   justify-content: space-between;
 }
 
-#footer ul.links {
+#footer .menu,
+#footer ul {
   display: flex;
   gap: var(--space-md);
   margin: 0;
+  list-style: none;
+  padding: 0;
 }
 
-#footer ul.links li {
+#footer .menu li,
+#footer ul li {
   margin: 0;
   padding: 0;
 }
 
-#footer ul.links li a {
+#footer .menu li a,
+#footer ul li a {
   padding: 5px 0 5px var(--space-md);
   color: #fff;
   transition: var(--transition-fast);
 }
 
-#footer ul.links li a:hover {
+#footer .menu li a:hover,
+#footer ul li a:hover {
   color: var(--color-accent);
 }
 
@@ -239,14 +258,14 @@ div.sidebar {
 
 /* Preserve D7 appearance on desktop by constraining to 940px */
 @media (min-width: 1024px) {
-  body:not(.wide) div.limiter {
+  body:not(.wide) .limiter {
     max-width: var(--container-width);
   }
 }
 
 /* Wide layout gets more space */
 @media (min-width: 1280px) {
-  body.wide div.limiter {
+  body.wide .limiter {
     max-width: 100%;
     padding: 0 var(--space-xl);
   }
@@ -254,28 +273,29 @@ div.sidebar {
 
 /* Tablet: Stack sidebar below content */
 @media (max-width: 1023px) {
-  div#page div.limiter {
+  #page .limiter {
     flex-direction: column;
   }
   
-  div#main {
+  #main {
     flex: 1 1 100%;
     width: 100%;
   }
   
-  div.sidebar {
+  .sidebar,
+  aside.sidebar {
     flex: 1 1 auto;
     width: 100%;
   }
   
   /* Make navigation more compact */
-  div#navigation .limiter {
+  #navigation .limiter {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-sm);
   }
   
-  div#navigation ul.links {
+  #navigation .main-nav__menu {
     width: 100%;
     flex-wrap: wrap;
   }
@@ -283,32 +303,26 @@ div.sidebar {
 
 /* Mobile: Further adjustments */
 @media (max-width: 767px) {
-  div.limiter {
+  .limiter {
     padding: 0 var(--space-sm);
   }
   
-  div#header .limiter {
+  #header .limiter {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-sm);
   }
   
-  div#header div.logo,
-  div#header div.site-name {
-    float: none;
-  }
-  
-  div#header form {
+  #header form {
     width: 100%;
-    float: none;
   }
   
-  div#navigation ul.links a {
+  #navigation .main-nav__link {
     padding: 3px 10px;
     font-size: var(--font-size-tiny);
   }
   
-  div#header-region h2.page-title {
+  #header-region .page-title {
     font-size: var(--font-size-xlarge);
   }
 }

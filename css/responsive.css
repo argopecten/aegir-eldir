@@ -18,47 +18,46 @@
   }
   
   /* Container adjustments */
-  div.limiter {
+  .limiter {
     width: 100%;
     max-width: 100%;
     padding: 0 var(--space-base);
   }
   
   /* Header: Stack logo and form */
-  div#header {
+  #header {
     flex-direction: column;
     align-items: flex-start;
     padding: var(--space-base) 0;
   }
   
-  div#header .limiter {
+  #header .limiter {
     flex-direction: column;
     align-items: flex-start;
   }
   
-  div#header form {
+  #header form {
     width: 100%;
-    float: none;
     padding: var(--space-md) 0;
   }
   
-  div#header form input.form-text {
+  #header form input.form-text {
     width: 100%;
   }
   
   /* Navigation: Make horizontal links stack or scroll */
-  div#navigation .limiter {
+  #navigation .limiter {
     flex-direction: column;
     align-items: flex-start;
   }
   
-  div#navigation .breadcrumb {
+  #navigation .breadcrumb {
     width: 100%;
     margin-bottom: var(--space-sm);
     font-size: var(--font-size-tiny);
   }
   
-  div#navigation ul.links {
+  #navigation .main-nav__menu {
     width: 100%;
     overflow-x: auto;
     flex-wrap: nowrap;
@@ -66,43 +65,38 @@
   }
   
   /* Page layout: Stack main and sidebar */
-  div#page div.limiter {
+  #page .limiter {
     flex-direction: column;
   }
   
-  div#main {
+  #main {
     flex: 1 1 100%;
     width: 100%;
     order: 2;
   }
   
-  div.sidebar {
+  .sidebar {
     flex: 1 1 100%;
     width: 100%;
     order: 1;
     margin-bottom: var(--space-lg);
   }
   
-  body.wide div#main {
-    width: 100%;
-  }
-  
-  body.wide div#page div.limiter {
-    padding-right: 0;
+  body.wide #main {
     width: 100%;
   }
   
   /* Tabs: Allow horizontal scroll */
-  ul.tabs,
-  nav.tabs ul.tabs {
+  .tabs ul {
     overflow-x: auto;
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
   }
-  
-  #header-region > .limiter > ul {
-    overflow-x: auto;
-    flex-wrap: nowrap;
+
+  /* Sidebar: top border instead of side border when stacked */
+  .sidebar {
+    border-inline-start: none;
+    border-top: 1px solid #e8e8e8;
   }
   
   /* Tables: Make scrollable */
@@ -156,7 +150,8 @@
     gap: var(--space-md);
   }
   
-  #footer ul.links {
+  #footer ul,
+  #footer .menu {
     flex-direction: column;
     width: 100%;
   }
@@ -169,17 +164,17 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   
   /* Moderate container width */
-  div.limiter {
+  .limiter {
     width: 90%;
     max-width: 768px;
   }
   
   /* Two-column layout but narrower */
-  div#main {
+  #main {
     flex: 1 1 60%;
   }
   
-  div.sidebar {
+  .sidebar {
     flex: 0 0 35%;
   }
   
@@ -205,12 +200,12 @@
 
 @media (min-width: 1280px) {
   
-  div.limiter {
+  .limiter {
     max-width: 1140px;
   }
   
   /* Allow wider layout */
-  body.wide div.limiter {
+  body.wide .limiter {
     max-width: 1280px;
   }
   
@@ -226,11 +221,11 @@
 
 @media (min-width: 1600px) {
   
-  div.limiter {
+  .limiter {
     max-width: var(--container-width-max);
   }
   
-  body.wide div.limiter {
+  body.wide .limiter {
     max-width: 1400px;
   }
   
@@ -248,26 +243,25 @@
 @media print {
   
   /* Hide navigation and non-essential elements */
-  div#header form,
-  div#navigation,
-  div.sidebar,
+  #header form,
+  #navigation,
+  .sidebar,
   #footer,
-  ul.tabs,
-  nav.tabs,
+  .tabs,
   .action-links {
     display: none !important;
   }
   
   /* Full width main content */
-  div#main {
+  #main {
     width: 100%;
     padding: 0;
   }
   
   /* Remove backgrounds and shadows */
   body,
-  div#page,
-  div#header-region,
+  #page,
+  #header-region,
   table,
   table tr,
   table th,

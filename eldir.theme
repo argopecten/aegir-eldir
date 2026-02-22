@@ -2,8 +2,8 @@
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\Url;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 
@@ -12,10 +12,6 @@ use Drupal\node\NodeInterface;
  */
 function eldir_theme($existing, $type, $theme, $path) {
   return [
-    'item_info_listing' => [
-      'render element' => 'info_listing',
-      'template' => 'item-info-listing',
-    ],
     'hosting_status_badge' => [
       'variables' => [
         'status' => NULL,
@@ -63,6 +59,24 @@ function eldir_theme($existing, $type, $theme, $path) {
       'template' => 'components/hosting-entity-chip',
     ],
   ];
+}
+
+/**
+ * Implements hook_theme_suggestions_page_alter().
+ *
+ * Adds 'page__hosting' suggestion for all /hosting/* routes so that
+ * page--hosting.html.twig is used, which always renders a hosting sidebar.
+ */
+function eldir_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if ($route_name && (str_starts_with($route_name, 'hosting.') || str_starts_with($route_name, 'entity.hosting_'))) {
+    // Don't override entity canonical pages — they have their own sidebar
+    // built via entity_view hooks and rendered in the entity template.
+    $is_entity_canonical = preg_match('/^entity\.hosting_\w+\.canonical$/', $route_name);
+    if (!$is_entity_canonical) {
+      $suggestions[] = 'page__hosting';
+    }
+  }
 }
 
 /**
@@ -118,6 +132,12 @@ function eldir_preprocess_html(array &$variables) {
  * Implements hook_preprocess_page().
  */
 function eldir_preprocess_page(array &$variables) {
+  // D11 no longer provides logo/site_name/front_page in page preprocess.
+  // Set them explicitly for the page template.
+  $variables['logo'] = theme_get_setting('logo.url');
+  $variables['site_name'] = \Drupal::config('system.site')->get('name');
+  $variables['front_page'] = Url::fromRoute('<front>')->toString();
+
   if (empty($variables['messages']) && !empty($variables['page']['highlighted'])) {
     $variables['messages'] = $variables['page']['highlighted'];
   }
@@ -165,9 +185,12 @@ function eldir_preprocess_page(array &$variables) {
   $variables['secondary_menu'] = eldir_build_menu($secondary_menu_name);
 
   if (!empty($variables['tabs']) && is_array($variables['tabs'])) {
-    $variables['tabs2'] = $variables['tabs'];
+    // Only create tabs2 when there are actual secondary tab items.
+    if (!empty($variables['tabs']['#secondary'])) {
+      $variables['tabs2'] = $variables['tabs'];
+      unset($variables['tabs2']['#primary']);
+    }
     unset($variables['tabs']['#secondary']);
-    unset($variables['tabs2']['#primary']);
   }
 
   if (empty($variables['title'])) {
@@ -188,6 +211,25 @@ function eldir_preprocess_page(array &$variables) {
 
   $register_setting = \Drupal::config('user.settings')->get('register');
   $variables['user_register'] = $register_setting !== 'admin_only';
+
+  // Build hosting sidebar for listing / admin pages.
+  // Entity detail pages get their sidebar injected via entity_view hooks.
+  // This handles all other /hosting/* routes (collections, dashboard, admin forms).
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if ($route_name && (str_starts_with($route_name, 'hosting.') || str_starts_with($route_name, 'entity.hosting_'))) {
+    // Only inject on listing/admin pages, not on entity canonical views
+    // (those get their sidebar via the entity_view hook → template).
+    $is_entity_canonical = preg_match('/^entity\.hosting_\w+\.canonical$/', $route_name);
+    if (!$is_entity_canonical) {
+      try {
+        $sidebar_builder = \Drupal::service('hosting.sidebar_builder');
+        $variables['hosting_sidebar'] = $sidebar_builder->build();
+      }
+      catch (\Exception) {
+        // Service may not be available.
+      }
+    }
+  }
 }
 
 /**
@@ -202,17 +244,6 @@ function eldir_preprocess_node(array &$variables) {
     }
   }
 
-  if (isset($variables['content']['info']) && is_array($variables['content']['info'])) {
-    $variables['content']['info']['#theme'] = 'item_info_listing';
-    $variables['content']['info']['#pre_render'][] = 'eldir_info_table_pre_render';
-
-    foreach (Element::children($variables['content']['info']) as $child) {
-      if (isset($variables['content']['info'][$child]['title']['#type']) && $variables['content']['info'][$child]['title']['#type'] === 'item') {
-        $variables['content']['info'][$child]['#theme'] = 'item_info_listing';
-        $variables['content']['info'][$child]['#pre_render'][] = 'eldir_info_table_pre_render';
-      }
-    }
-  }
 }
 
 /**
@@ -310,66 +341,7 @@ function eldir_preprocess_form_element(array &$variables) {
   }
 }
 
-/**
- * Preprocess for item_info_listing.
- */
-function eldir_preprocess_item_info_listing(array &$variables) {
-  $info_listing = $variables['info_listing'];
-  $items = $info_listing['#items'] ?? [];
 
-  $weight = 0;
-  foreach ($items as &$item) {
-    if (!isset($item['weight'])) {
-      $weight += 0.001;
-      $item['weight'] = $weight;
-    }
-  }
-  usort($items, 'drupal_sort_weight');
-
-  $children = [];
-  foreach (Element::children($info_listing) as $child) {
-    $children[] = $info_listing[$child];
-  }
-
-  $variables['items'] = $items;
-  $variables['children'] = $children;
-}
-
-/**
- * Pre-render callback to build hosting info table items.
- */
-function eldir_info_table_pre_render(array $element) {
-  if (!isset($element['#items'])) {
-    $element['#items'] = [];
-  }
-
-  foreach (Element::children($element) as $child) {
-    if (isset($element[$child]['#type']) && $element[$child]['#type'] === 'item') {
-      if (!empty($element[$child]['#title']) && isset($element[$child]['#markup'])) {
-        $new_item = [
-          'title' => $element[$child]['#title'],
-          'value' => [
-            '#type' => 'markup',
-            '#markup' => $element[$child]['#markup'],
-          ],
-        ];
-        if (isset($element[$child]['#weight'])) {
-          $new_item['weight'] = $element[$child]['#weight'];
-        }
-        if (isset($element[$child]['#description'])) {
-          $new_item['description'] = [
-            '#type' => 'markup',
-            '#markup' => $element[$child]['#description'],
-          ];
-        }
-        $element['#items'][] = $new_item;
-        unset($element[$child]);
-      }
-    }
-  }
-
-  return $element;
-}
 
 /**
  * Preprocesses variables for hosting_status_badge template.
@@ -383,6 +355,30 @@ function eldir_preprocess_hosting_status_badge(array &$variables) {
   // Add default label if not provided
   if (empty($variables['label']) && !empty($variables['status'])) {
     $variables['label'] = ucfirst($variables['status']);
+  }
+
+  // Map status to SVG icon name from aegir-icons-sprite.svg.
+  $icon_map = [
+    'enabled' => 'icon-ok',
+    'success' => 'icon-ok',
+    'active' => 'icon-ok',
+    'verified' => 'icon-ok',
+    'disabled' => 'icon-disabled',
+    'locked' => 'icon-disabled',
+    'queued' => 'icon-queue',
+    'processing' => 'icon-info',
+    'error' => 'icon-error',
+    'deleted' => 'icon-error',
+    'warning' => 'icon-warning',
+  ];
+  $status = $variables['status'] ?? '';
+  if (isset($icon_map[$status])) {
+    $theme_path = \Drupal::service('extension.list.theme')->getPath('aegir_eldir');
+    $sprite_url = base_path() . $theme_path . '/images/svg/aegir-icons-sprite.svg';
+    $icon_name = $icon_map[$status];
+    $variables['icon_svg'] = Markup::create(
+      '<svg class="hosting-icon" aria-hidden="true"><use href="' . $sprite_url . '#' . $icon_name . '"></use></svg>'
+    );
   }
 }
 
@@ -519,3 +515,74 @@ function eldir_add_entity_metadata_attributes(array &$variables): void {
     $attributes['data-entity-bundle'] = $bundle;
   }
 }
+
+/**
+ * Preprocesses variables for hosting_site templates at theme level.
+ *
+ * Adds status-based CSS classes and data attributes.
+ */
+function eldir_preprocess_hosting_site(array &$variables): void {
+  eldir_add_entity_metadata_attributes($variables);
+
+  $site = $variables['site'] ?? $variables['entity'] ?? NULL;
+  if ($site && method_exists($site, 'get')) {
+    $status = (int) $site->get('status')->value;
+    $status_map = [
+      0 => 'queued',
+      1 => 'enabled',
+      -1 => 'disabled',
+      -2 => 'deleted',
+    ];
+    $status_class = $status_map[$status] ?? 'unknown';
+    $variables['attributes']['class'][] = 'hosting-site--' . $status_class;
+    $variables['status_class'] = $status_class;
+  }
+}
+
+/**
+ * Preprocesses variables for hosting_platform templates at theme level.
+ *
+ * Adds status-based CSS classes and data attributes.
+ */
+function eldir_preprocess_hosting_platform(array &$variables): void {
+  eldir_add_entity_metadata_attributes($variables);
+
+  $platform = $variables['platform'] ?? $variables['entity'] ?? NULL;
+  if ($platform && method_exists($platform, 'get')) {
+    $status = (int) $platform->get('status')->value;
+    $status_map = [
+      0 => 'queued',
+      1 => 'enabled',
+      -1 => 'locked',
+      -2 => 'deleted',
+    ];
+    $status_class = $status_map[$status] ?? 'unknown';
+    $variables['attributes']['class'][] = 'hosting-platform--' . $status_class;
+    $variables['status_class'] = $status_class;
+  }
+}
+
+/**
+ * Preprocesses variables for hosting_server templates at theme level.
+ *
+ * Adds status-based CSS classes and data attributes.
+ */
+function eldir_preprocess_hosting_server(array &$variables): void {
+  eldir_add_entity_metadata_attributes($variables);
+
+  $server = $variables['server'] ?? $variables['entity'] ?? NULL;
+  if ($server && method_exists($server, 'get')) {
+    $status = (int) $server->get('status')->value;
+    $status_map = [
+      0 => 'queued',
+      1 => 'enabled',
+      -1 => 'locked',
+      -2 => 'deleted',
+    ];
+    $status_class = $status_map[$status] ?? 'unknown';
+    $variables['attributes']['class'][] = 'hosting-server--' . $status_class;
+    $variables['status_class'] = $status_class;
+  }
+}
+
+

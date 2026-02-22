@@ -1,10 +1,19 @@
 {#
 /**
  * @file
- * Theme implementation for page template.
+ * Page template for all /hosting/* routes.
+ *
+ * Extends the default page template by always rendering a hosting sidebar
+ * on the right, matching the D7 Aegir layout with Task Queue, Navigation,
+ * and Queue Summary in the sidebar.
  *
  * Uses semantic HTML5 elements, ARIA landmarks, and Drupal 11 Twig
- * patterns for accessibility and extensibility.
+ * attributes patterns throughout.
+ *
+ * Available variables:
+ * - All standard page.html.twig variables.
+ * - hosting_sidebar: Render array for the hosting sidebar (built by
+ *   HostingSidebarBuilder service and injected via preprocess).
  */
 #}
 <div id="page-wrapper">
@@ -85,8 +94,13 @@
           {{ feed_icons }}
         </div>
       </main>
-      
-      {% if page.sidebar_first or page.sidebar_second %}
+
+      {# Always render the hosting sidebar on /hosting/* pages #}
+      {% if hosting_sidebar %}
+        <aside id="right" class="sidebar" role="complementary" aria-label="{{ 'Hosting sidebar'|t }}">
+          {{ hosting_sidebar }}
+        </aside>
+      {% elseif page.sidebar_first or page.sidebar_second %}
         <aside id="right" class="sidebar" role="complementary" aria-label="{{ 'Sidebar'|t }}">
           {{ page.sidebar_first }}
           {{ page.sidebar_second }}

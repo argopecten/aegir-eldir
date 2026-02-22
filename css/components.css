@@ -1,63 +1,34 @@
-ul.primary {
-  line-height: inherit;
-}
-
 /**
  * LINKS ==============================================================
+ * D11 resets: no classes assumed on <ul>/<li> from Drupal output.
  */
-ul.primary,
-ul.primary li.active a,
-ul.secondary,
-ul.secondary li.active a,
-ul.tabs li,
-ul.tabs li a,
-ul.links li,
-ul.links li a {
-  background:transparent;
-  border:0px;
-  margin:0px;
-  padding:0px;
-}
-
-ul.tabs,
-ul.links,
 ul.menu,
-ul.tabs li,
-ul.links li,
-ul.menu li {
+.tabs ul,
+.action-links {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-div.tabs ul,
-nav.tabs ul,
-.tabs ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
+ul.menu li,
 .tabs li {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-ul.tabs li,
-ul.tabs li a,
-ul.links li,
-ul.links li a { float:left; }
-
-ul.action-links {
-  margin: 0 0;
-  padding: 0 20px 0 20px;
-  list-style-type: none;
+.action-links {
+  padding: 0 20px;
   overflow: hidden;
+  display: flex;
+  gap: var(--space-md);
 }
-ul.action-links li {
-  float: left;
-  margin: 0 1em 0 0;
+
+.action-links li {
+  margin: 0;
 }
-ul.action-links a {
+
+.action-links a {
   padding-left: 15px;
   line-height: 30px;
 }
@@ -66,131 +37,38 @@ ul.action-links a {
  * LISTS ==============================================================
  */
 div.node div.content ul,
-div#console div.messages ul { padding-left:20px; }
+#console div.messages ul { padding-left:20px; }
 
 div.node div.content ul li,
-div#console div.messages ul li { list-style: square; }
+#console div.messages ul li { list-style: square; }
 
-#page ul.tabs,
-div#header-region ul.tabs { clear:both; }
-
-div#header-region ul.tabs li { height:30px; }
-
-#page ul.tabs,
-div#header-region ul.tabs {
-  background:#fff;
-  border-bottom:1px solid #e8e8e8;
-}
-
-/* Primary tabs output can be an unclassed list in header-region. */
-#header-region > .limiter > ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-}
-
-#header-region > .limiter > ul > li {
-  margin: 0;
-  padding: 0;
-  float: none;
-}
-
-#header-region > .limiter > ul > li > a {
-  display: block;
-  padding: 5px 15px;
-  font-size: 11px;
-  background: #f3f3f3;
-  color: #444;
-}
-
-#header-region > .limiter > ul > li > a.is-active,
-#header-region > .limiter > ul > li > a.active {
-  background: #fff;
-  color: #444;
-  border-bottom: 1px solid #fff;
-}
-
-#header-region > .limiter > ul > li > a:hover {
-  background: #666;
-  color: #fff;
-}
-
-/* Active tab styling for hosting list/add routes (stable9 has no classes). */
-body.path-hosting-sites #header-region > .limiter > ul > li > a[data-drupal-link-system-path="hosting/sites"],
-body.path-hosting-platforms #header-region > .limiter > ul > li > a[data-drupal-link-system-path="hosting/platforms"],
-body.path-hosting-servers #header-region > .limiter > ul > li > a[data-drupal-link-system-path="hosting/servers"],
-body.path-hosting-tasks #header-region > .limiter > ul > li > a[data-drupal-link-system-path="hosting/tasks"],
-body.path-hosting-clients #header-region > .limiter > ul > li > a[data-drupal-link-system-path="hosting/clients"],
-body.path-hosting-sites-add #header-region > .limiter > ul > li > a[data-drupal-link-system-path="hosting/sites/add"],
-body.path-hosting-platforms-add #header-region > .limiter > ul > li > a[data-drupal-link-system-path="hosting/platforms/add"],
-body.path-hosting-servers-add #header-region > .limiter > ul > li > a[data-drupal-link-system-path="hosting/servers/add"],
-body.path-hosting-tasks-add #header-region > .limiter > ul > li > a[data-drupal-link-system-path="hosting/tasks/add"],
-body.path-hosting-clients-add #header-region > .limiter > ul > li > a[data-drupal-link-system-path="hosting/clients/add"] {
-  background: #fff;
-  color: #444;
-  border-bottom: 1px solid #fff;
-}
-
-#page ul.tabs li a,
-div#header-region ul.tabs li a {
-  padding: 5px 15px;
-  font-size: var(--font-size-small);
-  background: var(--color-bg-subtle);
-  color: var(--color-text);
-  display: block;
-  transition: var(--transition-fast);
-  border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
-}
-
-div#header-region ul.tabs li a:hover {
-  background: var(--color-header);
-  color: #fff;
-}
-
-div#header-region ul.tabs li.active a,
-div#header-region ul.tabs li a.active {
-  padding: 5px 15px;
-  background: var(--color-bg);
-  color: var(--color-text);
-  border-bottom: var(--border-width) var(--border-style) var(--color-bg);
-}
-
-#page ul.tabs {
-  height: 29px;
-}
-
-#page ul.tabs li a:hover {
-  background: var(--color-header);
-  color: #fff;
-}
-
-#page ul.tabs li.active a,
-#page ul.tabs li a.active {
-  background: var(--color-bg);
-  color: var(--color-text);
-  border-bottom: var(--border-width) var(--border-style) var(--color-bg);
-}
-
-/* Drupal 11 local task markup */
-nav.tabs {
+/**
+ * TABS ===============================================================
+ * D11 stable9 renders: <nav class="tabs"><ul><li><a>
+ * - No class on <ul> or <li>
+ * - Active link gets .is-active on <a>
+ */
+.tabs {
   margin: 0 0 var(--space-md);
+  clear: both;
 }
 
-nav.tabs ul.tabs {
+.tabs ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   gap: 1px;
+  background: var(--color-bg);
+  border-bottom: 1px solid #e8e8e8;
 }
 
-nav.tabs ul.tabs li {
+.tabs li {
   margin: 0;
   padding: 0;
 }
 
-nav.tabs ul.tabs li a {
+.tabs li a {
   display: block;
   padding: 5px 15px;
   font-size: var(--font-size-small);
@@ -200,35 +78,58 @@ nav.tabs ul.tabs li a {
   border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
 }
 
-nav.tabs ul.tabs li.is-active a,
-nav.tabs ul.tabs li a.is-active {
+.tabs li a.is-active {
   background: var(--color-bg);
   color: var(--color-text);
-  border-bottom: var(--border-width) var(--border-style) var(--color-bg);
+  border-bottom: 1px solid var(--color-bg);
 }
 
-nav.tabs ul.tabs li a:hover {
+.tabs li a:hover {
   background: var(--color-header);
   color: #fff;
+}
+
+/* Secondary tabs */
+.tabs-secondary ul {
+  border-bottom: none;
+}
+
+/* Active tab highlighting for hosting routes (no-JS fallback) */
+body.path-hosting-sites .tabs li a[data-drupal-link-system-path="hosting/sites"],
+body.path-hosting-platforms .tabs li a[data-drupal-link-system-path="hosting/platforms"],
+body.path-hosting-servers .tabs li a[data-drupal-link-system-path="hosting/servers"],
+body.path-hosting-tasks .tabs li a[data-drupal-link-system-path="hosting/tasks"],
+body.path-hosting-clients .tabs li a[data-drupal-link-system-path="hosting/clients"],
+body.path-hosting-features .tabs li a[data-drupal-link-system-path="hosting/features"],
+body.path-hosting-queues .tabs li a[data-drupal-link-system-path="hosting/queues"],
+body.path-hosting-settings .tabs li a[data-drupal-link-system-path="hosting/settings"],
+body.path-hosting-sites-add .tabs li a[data-drupal-link-system-path="hosting/sites/add"],
+body.path-hosting-platforms-add .tabs li a[data-drupal-link-system-path="hosting/platforms/add"],
+body.path-hosting-servers-add .tabs li a[data-drupal-link-system-path="hosting/servers/add"],
+body.path-hosting-tasks-add .tabs li a[data-drupal-link-system-path="hosting/tasks/add"],
+body.path-hosting-clients-add .tabs li a[data-drupal-link-system-path="hosting/clients/add"] {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-bg);
 }
 
 /**
  * BLOCKS > SIDEBAR ===================================================
  */
-div.sidebar div.block {
+.sidebar div.block {
   margin: 0 0 var(--space-lg);
 }
 
-div.sidebar div.block div.content {
+.sidebar div.block div.content {
   padding: 5px 0 0;
 }
 
-div.sidebar div.item-list {
+.sidebar div.item-list {
   margin: 0 0 var(--space-md);
 }
 
-div.sidebar ul.menu li,
-div.sidebar div.item-list li {
+.sidebar ul.menu li,
+.sidebar div.item-list li {
   list-style: none;
   font-size: var(--font-size-small);
   padding: 0;
@@ -238,40 +139,40 @@ div.sidebar div.item-list li {
   transition: var(--transition-fast);
 }
 
-div.sidebar div.item-list li,
-div.sidebar ul.menu a {
+.sidebar div.item-list li,
+.sidebar ul.menu a {
   display: block;
   padding: 2px var(--space-md);
 }
 
-div.sidebar ul.menu ul {
+.sidebar ul.menu ul {
   padding-left: var(--space-md);
 }
 
-div.sidebar ul.menu li li {
+.sidebar ul.menu li li {
   margin: 0;
   border-top: var(--border-width) var(--border-style) #f0f0f0;
 }
 
-div.sidebar ul.menu a:hover {
+.sidebar ul.menu a:hover {
   color: #fff;
   background: var(--color-accent);
 }
 
 /* Corner rounding logic */
-div.sidebar ul.menu li.expanded a {
+.sidebar ul.menu li.expanded a {
   border-radius: var(--border-radius-base) var(--border-radius-base) 0 0;
 }
 
-div.sidebar ul.menu li.expanded li,
-div.sidebar ul.menu li.expanded li a {
+.sidebar ul.menu li.expanded li,
+.sidebar ul.menu li.expanded li a {
   border-radius: 0;
 }
 
 /**
  * CONSOLE MESSAGES ===================================================
  */
-div#console {
+#console {
   font-size:15px;
   border-top:1px solid #111;
   border-bottom:1px solid #fff;
@@ -279,7 +180,7 @@ div#console {
   background:#222 url(../images/raster/sprite.png) 0px -240px repeat-x;
 }
 
-div#console div.messages {
+#console div.messages {
   color:#8cf;
   text-shadow:0px 0px 15px #06c;
   background:#024;
@@ -292,24 +193,24 @@ div#console div.messages {
   border-width:1px 1px 1px 6px;
 }
 
-div#console div.error,
-div#console .messages--error {
+#console div.error,
+#console .messages--error {
   background-color:#400;
   border-color:#800;
   color:#fa4;
   text-shadow:0px 0px 15px #c30;
 }
 
-div#console div.warning,
-div#console .messages--warning {
+#console div.warning,
+#console .messages--warning {
   background-color:#630;
   border-color:#a50;
   color:#fe4;
   text-shadow:0px 0px 15px #c80;
 }
 
-div#console div.ok,
-div#console .messages--status {
+#console div.ok,
+#console .messages--status {
   background-color:#040;
   border-color:#080;
   color:#cfc;
@@ -349,9 +250,9 @@ input.form-text:focus {
   outline-offset: 0;
 }
 
-div.reverse select,
-div.reverse textarea,
-div.reverse input.form-text {
+.reverse select,
+.reverse textarea,
+.reverse input.form-text {
   background-color:#124;
   color:#fff;
   border-color:#258;
@@ -396,7 +297,7 @@ input.form-submit[disabled] {
   opacity: 0.6;
 }
 
-div.reverse input.form-submit { background:#124; }
+.reverse input.form-submit { background:#124; }
 
 form div.form-item {
   clear: both;
@@ -419,7 +320,7 @@ form div.form-item-labeled label {
 }
 
 /* Exceptions */
-div.sidebar form div.form-item,
+.sidebar form div.form-item,
 form div.form-item div.form-item,
 form table div.form-item,
 form div.container-inline div.form-item,
@@ -430,7 +331,7 @@ form div.form-radios div.form-item {
   border:0px;
 }
 
-div.sidebar form div.form-item label,
+.sidebar form div.form-item label,
 form div.form-item label.option,
 form div.form-item div.form-item label,
 form table div.form-item label,
@@ -512,7 +413,7 @@ body.aegir fieldset.collapsed legend a {
   border-radius: var(--border-radius-base);
 }
 
-div#footer li {
+#footer li {
   font-weight:bold;
   margin: 0px 12px 5px;
 }
@@ -556,7 +457,7 @@ div.node h2 {
 }
 
 div.node h2 span.label {
-  float:left;
+  display: inline-block;
   font-size:9px;
   font-weight:bold;
   line-height:20px;
@@ -580,8 +481,10 @@ body.node-page div.node div.submitted {
 }
 
 div.node ul.links {
-  float:right;
+  margin-inline-start: auto;
   font-size:11px;
+  display: flex;
+  gap: 0;
 }
 
 div.node ul.links li a {
@@ -672,14 +575,14 @@ div.form-item div.password-suggestions {
 .hosting-status-badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius);
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--border-radius-base);
   font-size: var(--font-size-small);
   font-weight: 600;
   line-height: 1.2;
   white-space: nowrap;
-  transition: all var(--transition-duration) var(--transition-timing);
+  transition: all var(--transition-speed-base) var(--transition-timing);
 }
 
 .hosting-status-badge .status-icon {
@@ -692,41 +595,41 @@ div.form-item div.password-suggestions {
 
 .hosting-status-badge.status-enabled,
 .hosting-status-badge.status-active {
-  background-color: var(--color-success-light);
-  color: var(--color-success-dark);
-  border: 1px solid var(--color-success);
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
 }
 
 .hosting-status-badge.status-disabled,
 .hosting-status-badge.status-inactive {
-  background-color: var(--color-error-light);
-  color: var(--color-error-dark);
-  border: 1px solid var(--color-error);
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
 }
 
 .hosting-status-badge.status-queued,
 .hosting-status-badge.status-processing {
-  background-color: var(--color-info-light);
-  color: var(--color-info-dark);
-  border: 1px solid var(--color-info);
+  background-color: var(--color-info-bg);
+  color: var(--color-info-text);
+  border: 1px solid var(--color-info-border);
 }
 
 .hosting-status-badge.status-warning {
-  background-color: var(--color-warning-light);
-  color: var(--color-warning-dark);
-  border: 1px solid var(--color-warning);
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border: 1px solid var(--color-warning-border);
 }
 
 /**
  * Hosting Panel
  */
 .hosting-panel {
-  background: var(--color-bg-white);
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  margin-bottom: var(--spacing-md);
+  border-radius: var(--border-radius-base);
+  margin-bottom: var(--space-md);
   overflow: hidden;
-  transition: box-shadow var(--transition-duration) var(--transition-timing);
+  transition: box-shadow var(--transition-speed-base) var(--transition-timing);
 }
 
 .hosting-panel:hover {
@@ -737,7 +640,7 @@ div.form-item div.password-suggestions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-md);
+  padding: var(--space-md);
   background: var(--color-bg-subtle);
   border-bottom: 1px solid var(--color-border);
 }
@@ -750,12 +653,12 @@ div.form-item div.password-suggestions {
 
 .hosting-panel .panel-actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--space-sm);
 }
 
 .hosting-panel .panel-content {
-  padding: var(--spacing-md);
-  transition: max-height var(--transition-duration) var(--transition-timing);
+  padding: var(--space-md);
+  transition: max-height var(--transition-speed-base) var(--transition-timing);
 }
 
 .hosting-panel.is-collapsible .panel-header {
@@ -766,8 +669,8 @@ div.form-item div.password-suggestions {
 .hosting-panel.is-collapsible .panel-title::before {
   content: '▼';
   display: inline-block;
-  margin-right: var(--spacing-sm);
-  transition: transform var(--transition-duration) var(--transition-timing);
+  margin-right: var(--space-sm);
+  transition: transform var(--transition-speed-base) var(--transition-timing);
 }
 
 .hosting-panel.is-collapsed .panel-title::before {
@@ -782,12 +685,12 @@ div.form-item div.password-suggestions {
  * Hosting Task Card
  */
 .hosting-task-card {
-  background: var(--color-bg-white);
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-  transition: all var(--transition-duration) var(--transition-timing);
+  border-radius: var(--border-radius-base);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  transition: all var(--transition-speed-base) var(--transition-timing);
 }
 
 .hosting-task-card:hover {
@@ -796,30 +699,30 @@ div.form-item div.password-suggestions {
 }
 
 .hosting-task-card[data-task-status="running"] {
-  border-left: 4px solid var(--color-info);
+  border-left: 4px solid var(--color-info-border);
 }
 
 .hosting-task-card[data-task-status="success"] {
-  border-left: 4px solid var(--color-success-dark);
+  border-left: 4px solid var(--color-success-text);
 }
 
 .hosting-task-card[data-task-status="error"] {
-  border-left: 4px solid var(--color-error-dark);
+  border-left: 4px solid var(--color-error-text);
 }
 
 .hosting-task-card .task-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-sm);
-  padding-bottom: var(--spacing-sm);
+  margin-bottom: var(--space-sm);
+  padding-bottom: var(--space-sm);
   border-bottom: 1px solid var(--color-border);
 }
 
 .hosting-task-card .task-meta {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--space-xs);
 }
 
 .hosting-task-card .task-type {
@@ -832,11 +735,11 @@ div.form-item div.password-suggestions {
 
 .hosting-task-card .task-timestamp {
   font-size: var(--font-size-small);
-  color: var(--color-text-secondary);
+  color: var(--color-text-light);
 }
 
 .hosting-task-card .task-card-body {
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--space-sm);
 }
 
 .hosting-task-card .task-description {
@@ -846,29 +749,29 @@ div.form-item div.password-suggestions {
 
 .hosting-task-card .task-entities {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--space-sm);
   flex-wrap: wrap;
-  margin-top: var(--spacing-sm);
+  margin-top: var(--space-sm);
 }
 
 .hosting-task-card .task-entity {
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: var(--space-xs) var(--space-sm);
   background: var(--color-bg-subtle);
   border-radius: var(--border-radius-sm);
   font-size: var(--font-size-small);
 }
 
 .hosting-task-card .task-card-log {
-  margin-top: var(--spacing-md);
+  margin-top: var(--space-md);
   border-top: 1px solid var(--color-border);
-  padding-top: var(--spacing-sm);
+  padding-top: var(--space-sm);
 }
 
 .hosting-task-card .task-card-log summary {
   cursor: pointer;
   font-weight: 600;
   color: var(--color-accent);
-  padding: var(--spacing-xs) 0;
+  padding: var(--space-xs) 0;
   user-select: none;
 }
 
@@ -877,10 +780,10 @@ div.form-item div.password-suggestions {
 }
 
 .hosting-task-card .task-log-output {
-  margin: var(--spacing-sm) 0 0 0;
-  padding: var(--spacing-md);
+  margin: var(--space-sm) 0 0 0;
+  padding: var(--space-md);
   background: var(--color-bg-grid);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-base);
   overflow-x: auto;
   max-height: 300px;
 }
@@ -896,15 +799,15 @@ div.form-item div.password-suggestions {
 .hosting-entity-chip {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--color-bg-white);
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-pill);
   font-size: var(--font-size-small);
   text-decoration: none;
   color: var(--color-text);
-  transition: all var(--transition-duration) var(--transition-timing);
+  transition: all var(--transition-speed-base) var(--transition-timing);
   max-width: 200px;
   overflow: hidden;
 }
@@ -934,15 +837,15 @@ div.form-item div.password-suggestions {
 }
 
 .hosting-entity-chip .chip-status.status-enabled {
-  background: var(--color-success-dark);
+  background: var(--color-success-text);
 }
 
 .hosting-entity-chip .chip-status.status-disabled {
-  background: var(--color-error-dark);
+  background: var(--color-error-text);
 }
 
 .hosting-entity-chip .chip-status.status-queued {
-  background: var(--color-warning-dark);
+  background: var(--color-warning-text);
 }
 
 .hosting-entity-chip.entity-type-site {
@@ -969,8 +872,8 @@ div.form-item div.password-suggestions {
   background: none;
   border: none;
   cursor: pointer;
-  padding: var(--spacing-sm);
-  margin-right: var(--spacing-sm);
+  padding: var(--space-sm);
+  margin-right: var(--space-sm);
 }
 
 .mobile-nav-toggle .menu-icon {
@@ -979,7 +882,7 @@ div.form-item div.password-suggestions {
   height: 2px;
   background: var(--color-text);
   position: relative;
-  transition: background var(--transition-duration) var(--transition-timing);
+  transition: background var(--transition-speed-base) var(--transition-timing);
 }
 
 .mobile-nav-toggle .menu-icon::before,
@@ -990,7 +893,7 @@ div.form-item div.password-suggestions {
   height: 2px;
   background: var(--color-text);
   left: 0;
-  transition: transform var(--transition-duration) var(--transition-timing);
+  transition: transform var(--transition-speed-base) var(--transition-timing);
 }
 
 .mobile-nav-toggle .menu-icon::before {
@@ -1021,9 +924,9 @@ div.form-item div.password-suggestions {
 .table-responsive-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--space-md);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-base);
 }
 
 .table-responsive-wrapper table {
@@ -1038,8 +941,8 @@ div.form-item div.password-suggestions {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--color-success-dark);
-  margin-left: var(--spacing-sm);
+  background: var(--color-success-text);
+  margin-left: var(--space-sm);
   animation: pulse 2s infinite;
 }
 
@@ -1059,27 +962,27 @@ div.form-item div.password-suggestions {
  */
 .copy-code-button {
   position: absolute;
-  top: var(--spacing-xs);
-  right: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--color-bg-white);
+  top: var(--space-xs);
+  right: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-base);
   font-size: var(--font-size-small);
   cursor: pointer;
-  transition: all var(--transition-duration) var(--transition-timing);
+  transition: all var(--transition-speed-base) var(--transition-timing);
 }
 
 .copy-code-button:hover {
   background: var(--color-accent);
-  color: var(--color-bg-white);
+  color: var(--color-bg);
   border-color: var(--color-accent);
 }
 
 .copy-code-button.copied {
-  background: var(--color-success-dark);
-  color: var(--color-bg-white);
-  border-color: var(--color-success-dark);
+  background: var(--color-success-text);
+  color: var(--color-bg);
+  border-color: var(--color-success-text);
 }
 
 /**

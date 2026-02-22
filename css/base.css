@@ -79,7 +79,8 @@ body {
 
 body.aegir {
   color: var(--color-text);
-  background: var(--color-bg);
+  /* Match #page / #header-region gray so no white "bleed" between sections */
+  background: #eee;
   margin: 0;
   padding: 0;
   min-width: 950px;
@@ -119,11 +120,11 @@ ul.links li a:hover {
 }
 
 /* Reverse color text/links */
-div.reverse {
+.reverse {
   color: #fff;
 }
 
-div.reverse a {
+.reverse a {
   color: #ace;
 }
 
