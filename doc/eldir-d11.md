@@ -335,9 +335,11 @@ These classes are used by hosting modules and must be preserved:
 ### Accessing Settings
 
 ```php
-$use_svg = theme_get_setting('use_svg_logo');
-$wide = theme_get_setting('wide_layout');
-$main_menu = theme_get_setting('main_menu_name') ?: 'main';
+use Drupal\Core\Extension\ThemeSettingsProvider;
+
+$use_svg = \Drupal::service(ThemeSettingsProvider::class)->getSetting('use_svg_logo');
+$wide = \Drupal::service(ThemeSettingsProvider::class)->getSetting('wide_layout');
+$main_menu = \Drupal::service(ThemeSettingsProvider::class)->getSetting('main_menu_name') ?: 'main';
 ```
 
 ### Available Settings
@@ -355,7 +357,7 @@ In `eldir_form_system_theme_settings_alter()`:
 $form['my_setting'] = [
   '#type' => 'checkbox',
   '#title' => t('My Setting'),
-  '#default_value' => theme_get_setting('my_setting'),
+  '#default_value' => \Drupal::service(ThemeSettingsProvider::class)->getSetting('my_setting'),
 ];
 ```
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Eldir CSS Styling"
+  short_description: "Place styles correctly and consistently"
+  default_prompt: "Use $eldir-add-css-styles to implement a theme style change with correct CSS layer, BEM, and variables."

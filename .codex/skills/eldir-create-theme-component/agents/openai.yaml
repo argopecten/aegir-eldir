@@ -1,0 +1,4 @@
+interface:
+  display_name: "Eldir Theme Component"
+  short_description: "Create reusable theme-hook components"
+  default_prompt: "Use $eldir-create-theme-component to add a reusable Eldir component with hook, Twig, preprocess, and CSS."

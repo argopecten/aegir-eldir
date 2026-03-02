@@ -188,7 +188,7 @@ For detailed implementation guidance, coding patterns, and comprehensive API doc
 
 ## Related Documentation
 
-- [Aegir Provision Backend](../../../vendor/aegir-provision/doc/provision-d11.md) - Backend hosting automation
-- [Hostmaster Hosting Module](../../modules/aegir-hosting/hosting/doc/hosting-d11-sad.md) - Frontend entity system
-- [AI Coding Agent Instructions](../.github/AI-INSTRUCTIONS.md) - Comprehensive theme development guide for AI agents
-- [Main Project Documentation](../../../.github/copilot-instructions.md) - Project-level AI agent instructions
+- [Eldir D11 Architecture](eldir-d11.md) — Developer guide
+- [Eldir D7 Reference](eldir-d7.md) — Historical design reference
+- [Eldir TODO](TODO.md) — Development roadmap
+- [AI Instructions](../.github/AI-INSTRUCTIONS.md) — Theme development guide for AI agents

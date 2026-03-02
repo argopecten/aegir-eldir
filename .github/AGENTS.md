@@ -1,136 +1,256 @@
-# AI Agent Quick Reference - aegir-eldir
+# AI Agent Guide — aegir-eldir (Theme)
 
-**Repository**: Theme Component (Eldir Theme)  
-**Current Location**: `/var/aegir/aegir-2601/web/themes/contrib/aegir-eldir/`  
-**GitHub**: https://github.com/argopecten/aegir-eldir  
-**Part of**: Aegir Hostmaster (multi-repository project)
+> **Repository**: Drupal 11 theme for Aegir hosting system
+> **Local Path**: `web/themes/contrib/aegir-eldir/`
+> **GitHub**: https://github.com/argopecten/aegir-eldir
 
 ## You Are Here
 
-This is the **Theme Component** - a standalone Git repository that is also a submodule of the main aegir-hostmaster project.
+This is the **Theme Component** — a Drupal theme (NOT a module). It contains Twig templates, CSS, JS, and preprocess functions. No PHP classes, no `src/` directory, no services.
 
 **This component handles**:
-- ✅ Twig templates (page, node, entity-specific)
-- ✅ CSS (variables, BEM components, responsive layout)
-- ✅ JavaScript (Drupal.behaviors)
-- ✅ Preprocess functions (eldir.theme)
-- ✅ Theme libraries and assets
-- ❌ Entity logic (that's aegir-hosting)
-- ❌ Form validation (that's aegir-hosting)
-- ❌ Backend operations (that's aegir-provision)
+- ✅ Twig templates (21 files — pages, entities, components)
+- ✅ CSS architecture (6 files, ~3,889 lines — custom properties, BEM, responsive)
+- ✅ JavaScript behaviors (9 behaviors, 313 lines)
+- ✅ Preprocess functions (24 functions in `eldir.theme`)
+- ✅ Custom theme hooks (4 component-level hooks)
+- ❌ Entity logic (→ aegir-hosting)
+- ❌ Form validation (→ aegir-hosting)
+- ❌ Backend operations (→ aegir-provision)
 
-## Development Environment
+## Architecture
 
-**Target Platform**: Ubuntu 24.04 LTS or later versions  
-**Technology Stack**:
-- Drupal 11.x
-- PHP 8.3+
-- Modern CSS3 (custom properties, flexbox, grid)
-- Modern JavaScript (ES6+)
+```
+Drupal Render API → Theme Layer
+    ↓
+eldir.theme (24 preprocess functions)
+    ↓
+templates/ (21 Twig files)
+    ↓
+css/ (6 files) + js/ (1 file, 9 behaviors)
+```
 
-## Development Guidelines
+### File Tree
 
-**Critical Rules**:
-1. ⚠️ **Breaking changes allowed** - We ignore backward compatibility
-2. ⚠️ **No update hooks** - Do NOT create update hooks unless explicitly requested
-3. 📝 **Documentation on request only** - Update docs only when specifically asked
-4. 🎨 **Modern CSS/JS only** - Use CSS variables, flexbox, grid, ES6+ freely
-5. 🔄 **Clean implementation** - Prioritize modern patterns over legacy support
-6. ♿ **WCAG AA required** - All UI must meet accessibility standards
+```
+eldir.info.yml              # Theme definition, base theme: false
+eldir.theme                 # 24 preprocess functions + hook_theme()
+eldir.libraries.yml         # Single library: eldir/global-styling
+eldir.breakpoints.yml       # 5 breakpoints (0, 768, 1024, 1280, 1600)
+eldir.settings.yml          # Theme settings defaults
+config/
+├── install/
+│   ├── block.block.eldir_main_menu.yml
+│   └── block.block.eldir_secondary_menu.yml
+└── schema/eldir.schema.yml
+css/
+├── variables.css           # CSS custom properties (284 lines)
+├── base.css                # Reset/normalize (266 lines)
+├── layout.css              # Grid layout, sidebar regions (329 lines)
+├── components.css          # BEM component styles (997 lines)
+├── aegir.css               # Aegir-specific hosting styles (1671 lines)
+└── responsive.css          # Media query overrides (342 lines)
+js/
+└── eldir.js                # 9 Drupal.behaviors (313 lines)
+templates/
+├── html.html.twig          # HTML wrapper
+├── page.html.twig          # Default page layout
+├── page--hosting.html.twig # Hosting pages (with sidebar)
+├── page--user--login.html.twig
+├── page--user--password.html.twig
+├── page--user--register.html.twig
+├── node.html.twig          # Node display
+├── block.html.twig         # Block wrapper
+├── region.html.twig        # Region wrapper
+├── menu--main.html.twig    # Main navigation
+├── menu--secondary.html.twig
+├── hosting-server.html.twig    # Server entity display
+├── hosting-site.html.twig      # Site entity display
+├── hosting-task.html.twig      # Task entity display
+├── hosting-queues-table.html.twig
+├── hosting-service-status-cell.html.twig
+└── components/
+    ├── hosting-status-badge.html.twig  # Status indicator
+    ├── hosting-panel.html.twig         # Collapsible panel
+    ├── hosting-task-card.html.twig     # Task summary card
+    └── hosting-entity-chip.html.twig   # Inline entity reference
+```
 
-## Essential Documentation
+## CSS Architecture
 
-**Start here for this component**:
-- **[AI-INSTRUCTIONS.md](AI-INSTRUCTIONS.md)** - Complete technical guide for this component (1200+ lines)
-- **[doc/Home.md](../doc/Home.md)** - User-facing documentation
+### File Loading Order (via `eldir.libraries.yml`)
 
-**For cross-component work**:
-- **[Parent Repo AI Guide](../../../../.github/AI-AGENT-GUIDE.md)** - Navigation across all 4 repositories
-- **[Parent Repo Architecture](../../../../.github/ARCHITECTURE.md)** - Integration architecture
+| Layer | File | SMACSS Category | Weight |
+|-------|------|----------------|--------|
+| 1 | `variables.css` | Custom Properties | -100 |
+| 2 | `base.css` | Base/Reset | default |
+| 3 | `layout.css` | Layout (grid, sidebar) | layout |
+| 4 | `components.css` | Components (BEM) | component |
+| 5 | `aegir.css` | Theme (hosting-specific) | theme |
+| 6 | `responsive.css` | Media Queries | theme |
+
+### CSS Custom Properties (variables.css)
+
+All theming goes through CSS custom properties defined in `:root`:
+- `--aegir-color-*` — Color palette
+- `--aegir-spacing-*` — Margins/padding
+- `--aegir-font-*` — Typography
+- `--aegir-radius-*` — Border radius
+- `--aegir-shadow-*` — Box shadows
+- `--aegir-transition-*` — Transitions
+
+### BEM Naming Convention
+
+```css
+.hosting-server { }              /* Block */
+.hosting-server__header { }      /* Element */
+.hosting-server--disabled { }    /* Modifier */
+```
+
+## Breakpoints (5)
+
+| Name | Query | Use |
+|------|-------|-----|
+| `eldir.mobile` | `min-width: 0px` | Base/mobile-first |
+| `eldir.tablet` | `min-width: 768px` | Tablet |
+| `eldir.desktop` | `min-width: 1024px` | Desktop (sidebar appears) |
+| `eldir.wide` | `min-width: 1280px` | Wide desktop |
+| `eldir.ultrawide` | `min-width: 1600px` | Ultra-wide |
+
+**Note**: Breakpoints are 0/768/1024/1280/1600 — NOT 360/768/1024/1440/1920 as some docs claim.
+
+## JavaScript Behaviors (9)
+
+| Behavior | Purpose |
+|----------|---------|
+| `eldirSmoothScroll` | Smooth scroll for anchor links |
+| `eldirResponsiveTables` | Make tables responsive on mobile |
+| `eldirMobileNav` | Mobile navigation toggle |
+| `eldirFormEnhancement` | Enhanced form interactions |
+| `eldirAutoExpandTextarea` | Auto-growing textareas |
+| `eldirLiveTaskStatus` | Live task status polling |
+| `eldirCollapsible` | Collapsible panel behavior |
+| `eldirActiveTrail` | Active menu trail highlighting |
+| `eldirCopyCode` | Copy code block to clipboard |
+
+All behaviors use `Drupal.behaviors.*` pattern with `once()` for attach/detach safety.
+
+## Preprocess Functions (24)
+
+### Core Preprocess
+- `eldir_theme()` — registers 4 custom theme hooks
+- `eldir_theme_suggestions_page_alter()` — adds `page__hosting` for hosting routes
+- `eldir_preprocess_html()` — body classes (aegir, wide, not-logged-in, node type)
+- `eldir_preprocess_page()` — page variables, navigation
+- `eldir_preprocess_node()` — node template variables
+
+### Entity Preprocess
+- `eldir_preprocess_entity__hosting_server()` — server view variables
+- `eldir_preprocess_entity__hosting_site()` — site view variables
+- `eldir_preprocess_entity__hosting_client()` — client view variables
+- `eldir_preprocess_entity__hosting_task()` — task view variables
+- `eldir_preprocess_hosting_site()` — site-specific overrides
+- `eldir_preprocess_hosting_platform()` — platform-specific overrides
+- `eldir_preprocess_hosting_server()` — server-specific overrides
+
+### Component Preprocess
+- `eldir_preprocess_hosting_status_badge()` — status colors/icons
+- `eldir_preprocess_hosting_panel()` — collapsible panel state
+- `eldir_preprocess_hosting_task_card()` — task card rendering
+- `eldir_preprocess_hosting_entity_chip()` — entity chip rendering
+
+### UI Element Preprocess
+- `eldir_preprocess_menu__main()` — main menu rendering
+- `eldir_preprocess_menu_local_tasks()` — tabs rendering
+- `eldir_preprocess_table()` — table enhancements
+- `eldir_preprocess_form()` — form classes
+- `eldir_preprocess_form_element()` — form element wrapper
+
+### Utility Functions
+- `eldir_form_system_theme_settings_alter()` — theme settings form
+- `eldir_build_menu()` — menu rendering helper
+- `eldir_add_entity_metadata_attributes()` — data attributes for JS
+
+## Custom Theme Hooks (4)
+
+Defined in `eldir_theme()`, usable via `{{ theme('hook_name', {vars}) }}`:
+
+| Hook | Template | Variables |
+|------|----------|-----------|
+| `hosting_status_badge` | `components/hosting-status-badge` | `status`, `label`, `icon`, `attributes` |
+| `hosting_panel` | `components/hosting-panel` | `title`, `content`, `collapsible`, `collapsed`, `actions`, `attributes` |
+| `hosting_task_card` | `components/hosting-task-card` | `task_id`, `task_type`, `status`, `timestamp`, `description`, `site`, `platform`, `log`, `attributes` |
+| `hosting_entity_chip` | `components/hosting-entity-chip` | `entity_type`, `entity_id`, `label`, `url`, `status`, `icon`, `attributes` |
+
+## Regions (8)
+
+```
+┌─────────────────────────────────────────────┐
+│                 navigation                   │
+├─────────────────────────────────────────────┤
+│                   header                     │
+├─────────────────────────────────────────────┤
+│                    help                      │
+├──────────────────────┬──────────────────────┤
+│                      │   sidebar_first       │
+│      content         │   (Sidebar top)       │
+│                      ├──────────────────────┤
+│                      │   sidebar_second      │
+│                      │   (Sidebar bottom)    │
+├──────────────────────┴──────────────────────┤
+│              content_bottom                  │
+├─────────────────────────────────────────────┤
+│                   footer                     │
+└─────────────────────────────────────────────┘
+```
+
+## Page Suggestion System
+
+The `eldir_theme_suggestions_page_alter()` function routes hosting pages:
+
+- Routes starting with `hosting.` or `entity.hosting_` → `page--hosting.html.twig`
+- **Exception**: Entity canonical pages (`entity.hosting_*.canonical`) → default `page.html.twig` (they render their own sidebar)
+
+## Development Rules
+
+1. **No PHP classes** — this is a theme, not a module. No `src/` directory.
+2. **No business logic** in preprocess — only formatting, classes, and variable prep
+3. **BEM naming** for all CSS classes: `.block__element--modifier`
+4. **CSS custom properties** for all colors/spacing/typography — no hardcoded values
+5. **Mobile-first** responsive approach — base styles for mobile, media queries for larger
+6. **`once()` in JS** — all behaviors must use `once()` for Drupal AJAX compatibility
+7. **WCAG AA** accessibility compliance required
+8. **Base theme**: `false` — Eldir is standalone (D11 pattern). 79 stable9 templates copied into `templates/` for markup ownership. Do not add a base theme dependency.
+9. **SDC migration planned** — currently uses traditional template + hook pattern; migrate to Single Directory Components per [doc/TODO.md](../doc/TODO.md)
+10. **Breaking changes allowed** — no backward compatibility
+
+## Known Issues
+
+- No `hosting-platform.html.twig` template — platforms render with generic entity template despite having a preprocess function
+- Some preprocess functions use global `\Drupal::` calls instead of injected services (acceptable in themes)
+- Use `\Drupal::service(ThemeSettingsProvider::class)->getSetting()` instead of deprecated `theme_get_setting()`
+- No automated visual regression tests
+
+## Statistics
+
+| Metric | Count |
+|--------|-------|
+| Twig templates | 21 |
+| CSS files | 6 (~3,889 lines) |
+| JS file | 1 (313 lines) |
+| JS behaviors | 9 |
+| Preprocess functions | 24 |
+| Custom theme hooks | 4 |
+| Regions | 8 |
+| Breakpoints | 5 |
+| Config files | 3 |
+| PHP classes | **0** |
+| Tests | **0** |
 
 ## Related Components
 
-**Frontend** (when you need to understand entity data):
-- Path: `../../modules/contrib/aegir-hosting/`
-- AI Docs: [../../../modules/contrib/aegir-hosting/.github/AI-INSTRUCTIONS.md](../../../modules/contrib/aegir-hosting/.github/AI-INSTRUCTIONS.md)
-
-**Backend** (when you need to understand infrastructure):
-- Path: `../../drush/Commands/contrib/aegir-provision/`
-- AI Docs: [../../../drush/Commands/contrib/aegir-provision/.github/AI-INSTRUCTIONS.md](../../../drush/Commands/contrib/aegir-provision/.github/AI-INSTRUCTIONS.md)
-
-## Quick Navigation
-
-```bash
-# Check context
-pwd                    # Should show: .../aegir-eldir
-git remote -v          # Should show: argopecten/aegir-eldir
-
-# Work in this component
-git status             # Shows changes in eldir only
-git checkout -b feat   # Creates branch in eldir repo
-
-# Commit workflow
-git add . && git commit -m "message"  # Commit in eldir
-cd ../../../../                        # Go to parent repo
-git add web/themes/contrib/aegir-eldir  # Stage submodule update
-git commit -m "Update eldir"           # Commit in parent
-```
-
-## Component Boundaries
-
-**You should modify files here when**:
-- Adding/changing Twig templates
-- Updating CSS styles or variables
-- Modifying JavaScript behaviors
-- Changing preprocess functions
-- Adding theme hooks or suggestions
-
-**You should NOT modify files here when**:
-- Adding entity fields → Use aegir-hosting
-- Changing business logic → Use aegir-hosting
-- Implementing Drush commands → Use aegir-provision
-- Generating Apache configs → Use aegir-provision
-
-## Integration Points
-
-**This component receives**:
-- Render arrays from hosting module entity view builders
-- Variables from preprocess functions
-- Custom theme hooks defined in hosting modules
-
-**This component provides**:
-- HTML output via Twig templates
-- Styled UI via CSS
-- Interactive behaviors via JavaScript
-
-## Key Files
-
-- `eldir.theme` - Preprocess functions, theme hooks
-- `templates/page.html.twig` - Page layout
-- `templates/hosting-*.html.twig` - Entity-specific templates
-- `css/variables.css` - CSS custom properties
-- `css/aegir.css` - Aegir-specific styles (BEM components)
-- `js/eldir.js` - JavaScript behaviors
-
-## Design System
-
-- **CSS Variables**: `css/variables.css` for theming
-- **BEM Methodology**: `.block__element--modifier` naming
-- **Mobile-first**: Responsive design from small screens up
-- **5 Breakpoints**: mobile (360px), tablet (768px), desktop (1024px), wide (1440px), ultra-wide (1920px)
-- **WCAG AA**: Accessibility compliance
-
-## Critical Principle
-
-**Theme only presents data** - never contains business logic:
-- ✅ Format dates for display
-- ✅ Add CSS classes based on state
-- ✅ Render entity data
-- ❌ Calculate values
-- ❌ Validate input
-- ❌ Make API calls
-- ❌ Database queries
-
----
-
-**Need more context?** Read [AI-INSTRUCTIONS.md](AI-INSTRUCTIONS.md) for complete technical details.
+| Component | Path | When to reference |
+|-----------|------|-------------------|
+| Hosting (Frontend) | `web/modules/contrib/aegir-hosting/` | Entity fields, render arrays, theme hooks |
+| Provision (Backend) | `vendor/argopecten/aegir-provision/` | Understanding what data exists |
+| Main repo | `.github/AGENTS.md` | Cross-component architecture |

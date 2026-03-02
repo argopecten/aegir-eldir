@@ -1,0 +1,4 @@
+interface:
+  display_name: "Eldir Entity Template"
+  short_description: "Create/update entity Twig template flow"
+  default_prompt: "Use $eldir-create-entity-template to add or refine an Eldir entity template with preprocess and CSS updates."

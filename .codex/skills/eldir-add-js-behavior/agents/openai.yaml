@@ -1,0 +1,4 @@
+interface:
+  display_name: "Eldir JS Behavior"
+  short_description: "Add safe Drupal behaviors in theme"
+  default_prompt: "Use $eldir-add-js-behavior to add or refine a Drupal behavior in js/eldir.js with once() and cleanup."
