@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Extension\ThemeSettingsProvider;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Url;
@@ -86,7 +87,7 @@ function eldir_preprocess_html(array &$variables) {
   $attributes = &$variables['attributes'];
   $attributes['class'][] = 'aegir';
 
-  if (theme_get_setting('wide_layout')) {
+  if (\Drupal::service(ThemeSettingsProvider::class)->getSetting('wide_layout')) {
     $attributes['class'][] = 'wide';
   }
 
@@ -134,7 +135,7 @@ function eldir_preprocess_html(array &$variables) {
 function eldir_preprocess_page(array &$variables) {
   // D11 no longer provides logo/site_name/front_page in page preprocess.
   // Set them explicitly for the page template.
-  $variables['logo'] = theme_get_setting('logo.url');
+  $variables['logo'] = \Drupal::service(ThemeSettingsProvider::class)->getSetting('logo.url');
   $variables['site_name'] = \Drupal::config('system.site')->get('name');
   $variables['front_page'] = Url::fromRoute('<front>')->toString();
 
@@ -172,15 +173,15 @@ function eldir_preprocess_page(array &$variables) {
     }
   }
 
-  if (!empty($variables['logo']) && theme_get_setting('use_svg_logo')) {
+  if (!empty($variables['logo']) && \Drupal::service(ThemeSettingsProvider::class)->getSetting('use_svg_logo')) {
     $theme_path = \Drupal::theme()->getActiveTheme()->getPath();
     if (strpos($variables['logo'], $theme_path) !== FALSE && strpos($variables['logo'], 'logo.png') !== FALSE) {
       $variables['svg_logo'] = base_path() . $theme_path . '/images/svg/aegir_logo_horizontal.svg';
     }
   }
 
-  $main_menu_name = theme_get_setting('main_menu_name') ?: 'main';
-  $secondary_menu_name = theme_get_setting('secondary_menu_name') ?: 'secondary';
+  $main_menu_name = \Drupal::service(ThemeSettingsProvider::class)->getSetting('main_menu_name') ?: 'main';
+  $secondary_menu_name = \Drupal::service(ThemeSettingsProvider::class)->getSetting('secondary_menu_name') ?: 'secondary';
   $variables['main_menu'] = eldir_build_menu($main_menu_name);
   $variables['secondary_menu'] = eldir_build_menu($secondary_menu_name);
 
@@ -439,26 +440,26 @@ function eldir_form_system_theme_settings_alter(array &$form, FormStateInterface
   $form['eldir_settings']['use_svg_logo'] = [
     '#type' => 'checkbox',
     '#title' => t('Prefer SVG logo'),
-    '#default_value' => theme_get_setting('use_svg_logo'),
+    '#default_value' => \Drupal::service(ThemeSettingsProvider::class)->getSetting('use_svg_logo'),
   ];
 
   $form['eldir_settings']['wide_layout'] = [
     '#type' => 'checkbox',
     '#title' => t('Enable wide layout'),
-    '#default_value' => theme_get_setting('wide_layout'),
+    '#default_value' => \Drupal::service(ThemeSettingsProvider::class)->getSetting('wide_layout'),
   ];
 
   $form['eldir_settings']['main_menu_name'] = [
     '#type' => 'textfield',
     '#title' => t('Main menu machine name'),
-    '#default_value' => theme_get_setting('main_menu_name'),
+    '#default_value' => \Drupal::service(ThemeSettingsProvider::class)->getSetting('main_menu_name'),
     '#description' => t('Defaults to "main" if left blank.'),
   ];
 
   $form['eldir_settings']['secondary_menu_name'] = [
     '#type' => 'textfield',
     '#title' => t('Secondary menu machine name'),
-    '#default_value' => theme_get_setting('secondary_menu_name'),
+    '#default_value' => \Drupal::service(ThemeSettingsProvider::class)->getSetting('secondary_menu_name'),
     '#description' => t('Defaults to "secondary" if left blank.'),
   ];
 }
